@@ -8,3 +8,7 @@ def home(request):
 
 def signup(request):
   return render(request, 'sign_up_in.html')
+
+
+
+
