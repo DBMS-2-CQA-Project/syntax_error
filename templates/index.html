@@ -8,20 +8,43 @@
   <title>Home</title>
 </head>
 <body class="bg-slate-400">
+  <div class="bg-red">
 
-
-
-
-  {% if not id%}
-  <div class="text-3xl">hello Guest</div>
-  {%else%}
-  <div class="text-3xl inline">hello {{display_name}}</div>
-  {%endif%}
-
-  <br>
+  </div>
   <a href="signin">Signin</a>
   <a href="signup">Signup</a>
-  <div class="text-[50px]">home page
+
+  {% if not id%}
+    <div class="text-3xl">hello Guest</div>
+    {%else%}
+    <div class="text-3xl inline">hello {{display_name}}</div>
+      {%endif%}
+
+  {% if not user%}
+    Hello Guest
+    {%else%}
+    hello {{user_id}} bro<br>
+    <a href='editProfile'>Edit Profile</a>
+    <br>
+  
+    {%endif%}
+
+  <form action="/search" method="POST">
+    {% csrf_token %}
+    <input type="text" placeholder="search" required name="searchValue">
+    <select name="searchBy" id="searchBy" required>
+      <option value="userId">User ID</option>
+      <option value="tags">Tags</option>
+    </select>
+    <input type="submit" value="Submit" class="hover:cursor-pointer">
+  </form>
+
+  {%for i in topPosts%}
+  <div class="text-xl bg-slate-500 p-5">{{ i.body }}</div>
+  <br>
+  <br>
+  {%endfor%}
+
 </div>
 <div>
   
