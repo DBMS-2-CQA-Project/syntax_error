@@ -12,10 +12,10 @@ def home(request):
 def signin(request):
 
   if request.method=='POST':
-    accountid=request.POST.get('accountid')
+    id=request.POST.get('id')
     pw=request.POST.get('pw')
-    print(accountid,pw)
-    curr_user=users.objects.filter(account_id=accountid,pw=pw)
+    print(id,pw)
+    curr_user=users.objects.filter(id=id)
     print(curr_user)
     if not curr_user:
       print("dsskjds")

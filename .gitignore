@@ -1,5 +1,5 @@
 /syntax_error_venv
 .env
-__pycache__
+/__pycache__
 /Data
-migrations
+/setup/migrations
