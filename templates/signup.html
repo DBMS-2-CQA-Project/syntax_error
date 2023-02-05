@@ -87,20 +87,15 @@
         <div id="signup">
           <div class="head"><b style="font-family: Roboto;color:rgb(255, 0, 251)">Sign Up</b></div>
 
-          <form action="/signup" method="POST">
+          <form action="/test" method="POST">
             {% csrf_token %}
-
-            <div class="Input">
-              <label for="name" style="color:rgb(238, 255, 0);">Full Name</label>
-
-              <input type="text" placeholder="Enter Your Full Name" id="name" name="name"
-                style="border: 2px solid black;" required> <br>
-            </div>
-            <div class="Input">
+           
+            
+            <!--<div class="Input">
               <label for="email" style="color:rgb(238, 255, 0);">Email Id</label>
               <input type="email" placeholder="Enter Your IITH Email Id" id="email" name="email" style="border: 2px solid black;"
                 required><br>
-            </div>
+            </div>-->
             <!-- <div class="Input">
               <label for="mob" style="color:rgb(238, 255, 0);">Username</label>
               <input type="tel" placeholder="Enter Your Mobile Number" id="mobno" name="mobno"
@@ -108,17 +103,30 @@
             </div> -->
             
             <div class="Input">
-              <label for="pw" style="color:rgb(238, 255, 0);">Type Password</label>
-              <input type="password" placeholder="Enter Your Password" id="pw" name="pw"
+              <label for="account_id" style="color:rgb(238, 255, 0);">Enter account_id</label>
+              <input type="Number" placeholder="Enter Your account_id" id="account_id" name="account_id"
                 style="border: 2px solid black;" required><br>
             </div>
             <div class="Input">
-              <label for="re_pw" style="color:rgb(238, 255, 0);">Confirm Password</label>
-              <input type="text" placeholder="Confirm Password" id="re_pw" name="re_pw" style="border: 2px solid black;"
-                required><br>
+              <label for="display_name" style="color:rgb(238, 255, 0);">Display Name</label>
+
+              <input type="text" placeholder="Enter Your Display Name" id="display_name" name="display_name"
+                style="border: 2px solid black;" required> <br>
             </div>
 
-            <input type="submit" value="Continue">
+            <div class="Input">
+              <label for="location" style="color:rgb(238, 255, 0);">Confirm location</label>
+              <input type="text" placeholder="Confirm Location" id="location" name="location" style="border: 2px solid black;"
+                required><br>
+            </div>
+            <div class="Input">
+              <label for="about_me" style="color:rgb(238, 255, 0);">About me</label>
+
+              <input type="Text" placeholder="About you" id="about_me" name="about_me"
+                style="border: 2px solid black;" required> <br>
+            </div>
+
+            <input type="submit" value="Submit">
           </form>
         </div>
       </div>
@@ -148,6 +156,75 @@
   </div>
 
   </div>
+<!--- 
+        <script>
+          
+            // Function to check Whether both passwords
+            // is same or not.
+            function checkPassword(form) {
+                password1 = form.password1.value;
+                password2 = form.password2.value;
+  
+                // If password not entered
+                if (password1 == '')
+                    alert ("Please enter Password");
+                      
+                // If confirm password not entered
+                else if (password2 == '')
+                    alert ("Please enter confirm password");
+                      
+                // If Not same return False.    
+                else if (password1 != password2) {
+                    alert ("\nPassword did not match: Please try again...")
+                    return false;
+                }
+  
+                // If same return True.
+                else{
+                    alert("Password Match: Welcome to GeeksforGeeks!")
+                    return true;
+                }
+            }
+        </script>
+        <style>
+            .gfg {
+                font-size:40px;
+                color:green;
+                font-weight:bold;
+                text-align:center;
+            }
+            .geeks {
+                font-size:17px;
+                text-align:center;
+                margin-bottom:20px;
+            }
+        </style>
+   
+        <div class = "gfg">GeeksforGeeks</div>
+        <div class = "geeks">A computer science portal for geeks</div>
+        <form onSubmit = "return checkPassword(this)">
+        <table border = 1 align = "center">
+            <tr>
+                <!-- Enter Username
+                <td>Username:</td>
+                <td><input type = text name = name size = 25</td>
+            </tr>
+            <tr>
+                <!-- Enter Password. 
+                <td>Password:</td>
+                <td><input type = password name = password1 size = 25</td>
+            </tr>
+            <tr>
+                <!-- To Confirm Password. 
+                <td>Confirm Password:</td>
+                <td><input type = password name = password2 size = 25></td>
+            </tr>
+            <tr>
+                <td colspan = 2 align = right>
+                <input type = submit value = "Submit"></td>
+            </tr>
+        </table>
+        </form> -->
 
 </body>
 

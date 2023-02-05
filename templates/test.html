@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>The queryset object:</p>
+{{ mymembers }}
+
+<p>Loop through the items:</p>
+
+<table border='1'>
+  <tr>
+    <th>account_id </th>
+    <th>reputation </th>
+    <th>views </th>
+    <th>down_votes </th>
+    <th>up_votes </th>
+    <th>display_name </th>
+    <th>location </th>
+    <th>about_me</th>
+  </tr>
+  {% for x in mymembers %}
+    <tr>
+      <td>{{ x.account_id }}</td>
+      <td>{{ x.reputation }}</td>
+      <td>{{ x.views }}</td>
+      <td>{{ x.down_votes }}</td>
+      <td>{{ x.up_votes }}</td>
+      <td>{{ x.display_name }}</td>
+      <td>{{ x.location }}</td>
+      <td>{{ x.about_me }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>    
