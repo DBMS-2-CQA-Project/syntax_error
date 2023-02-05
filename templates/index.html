@@ -7,9 +7,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
   <title>Home</title>
 </head>
-<body>
+<body class="bg-slate-400">
+
+
+
+
+  {% if not account_id%}
+  Hello Guest
+  {%else%}
+  hello {{account_id}}
+  {%endif%}
+
+  <br>
   <a href="signin">Signin</a>
   <div class="text-[50px]">home page
 </div>
+
 </body>
 </html>
