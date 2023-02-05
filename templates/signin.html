@@ -21,15 +21,15 @@
       <div class="head"><b style="font-family: Roboto, serif; color:rgb(239 14 64 / 70%);">Sign In</b></div>
       <form action="/signin" method="POST">
         {% csrf_token %}
-        
+
         <div class="Input">
-          <label for="email_mobno">Email or Phone</label>
-          <input type="text" id="email_mobno" onfocus="chan_1()" name="email_mobno" required
-            style="border: 2px solid black;  ;" placeholder=" IITH Email Id"><br>
+          <label for="accountid">Account ID</label>
+          <input type="text" id="accountid" onfocus="chan_1()" name="accountid" required
+            style="border: 2px solid black;  ;" placeholder="account ID"><br>
         </div>
         <div class="Input">
-          <label for="pwc">Password</label>
-          <input type="password" id="pwc" name="pwc" onfocus="chan_2()" placeholder="Password" required
+          <label for="pw">Password</label>
+          <input type="password" id="pw" name="pw" onfocus="chan_2()" placeholder="Password" required
             style="border: 2px solid black;"><br>
         </div>
 
