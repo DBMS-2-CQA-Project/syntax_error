@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from setup.models import users, posts
+from setup.models import users, posts, comments
 from django.contrib import auth
 
 dataIt=[0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -71,9 +71,22 @@ def edited(request):
 
 
 def home(request):
-  queries= posts.objects.all().order_by('-view_count')[:10]
+  queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
   print(queries)
   return render(request, 'index.html',{'topPosts':list(queries.values())})
+
+def eachpost(request):
+  if request.method=='POST':
+    id=request.POST.get('id')
+    answersList=list(posts.objects.filter(parent_id=id).values())
+    for i in range(len(answersList)):
+      answersList[i]['index']=i
+    ques=posts.objects.filter(id=id)
+    commentsList=[]
+    for i in answersList:
+      commentsList.append(list(comments.objects.filter(post_id=i['id']).values()))
+    print(answersList[3]['index'])
+    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList})
 
 
 
@@ -82,41 +95,18 @@ def signin(request):
   if request.method=='POST':
     id=request.POST.get('id')
     pw=request.POST.get('display_name')
-    print(id,pw)
-    curr_user=users.objects.filter(id=id)
-    print(curr_user)
-    if not curr_user:
+    currUser=users.objects.filter(id=id)
+    if not currUser:
       return HttpResponse("Check your credential")
-    else:
+    else:    
+      queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
 
-      UserCurrent=users.objects.filter(id=id)
-      #UserCurrent = [i for i in UserCurrent]  # converts ValuesQuerySet into Python list
-      print(UserCurrent)
-      listIt =[]
-      for x in UserCurrent:
-        listIt.append(x.id)
-        listIt.append(x.account_id)
-        listIt.append(x.reputation)
-        listIt.append(x.views)
-        listIt.append(x.down_votes)
-        listIt.append(x.up_votes)
-        listIt.append(x.display_name)
-        listIt.append(x.location)
-        listIt.append(x.profile_image_url)
-        listIt.append(x.website_url)
-        listIt.append(x.about_me)
-        listIt.append(x.creation_date)
-        listIt.append(x.last_access_date)
-        global dataIt
-        dataIt=listIt
+      return render(request, 'index.html',{'user':list(currUser.values()), 'topPosts':list(queries.values())})
 
-
-      
-      return render(request, 'index.html',{'user_id':listIt[0],'user_account_id':listIt[1],'user_reputation':listIt[2],'user_views':listIt[3],'user_down_views':listIt[4],'user_up_views':listIt[5],'user_display_name':listIt[6],'user_location':listIt[7],'user_profile_image_url':listIt[8],'user_website_url':listIt[9],'user_about_me':listIt[10],'user_creation_date':listIt[11],'user_last_access_date':listIt[12]})
-  return render(request,'signin.html')
 
 def signup(request):
   return render(request, 'signup.html')
+
 
 def editProfile(request):
   listIt=dataIt
@@ -137,10 +127,8 @@ def search(request):
       global searchValueList
 
       searchValueList=searchValue.split(' ')
-      # print(searchValueList)
       allPostsList=list(posts.objects.all().values())
       relatedPostsList=find_using_tags(allPostsList,searchValueList)
-      print(len(relatedPostsList))
 
 
 

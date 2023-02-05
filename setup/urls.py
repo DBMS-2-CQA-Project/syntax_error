@@ -12,5 +12,7 @@ urlpatterns=[
   path('signin',views.signin,name="djsfhdj"),
   path('signup',views.signup,name="djsfhdj"),
   path('edited',views.edited,name="djsfhdj"),
-  path('search',views.search,name="djsfhdj")
+  path('search',views.search,name="djsfhdj"),
+  path('eachpost',views.eachpost,name="djsfhdj"),
+
 ]
