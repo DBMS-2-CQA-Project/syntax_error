@@ -10,12 +10,15 @@
 <body class="bg-slate-400">
 
 
+ 
 
-
-  {% if not account_id%}
+  {% if not user%}
   Hello Guest
   {%else%}
-  hello {{account_id}}
+  hello {{user_id}} bro<br>
+  <a href='editProfile'>Edit Profile</a>
+  <br>
+
   {%endif%}
 
   <br>
