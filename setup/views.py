@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from .models import users
 from setup.models import users
 from django.contrib import auth
 
@@ -43,16 +42,17 @@ def home(request):
   # queries=
   return render(request, 'index.html')
 
+
+
 def signin(request):
 
   if request.method=='POST':
     id=request.POST.get('id')
-    pw=request.POST.get('pw')
+    pw=request.POST.get('display_name')
     print(id,pw)
     curr_user=users.objects.filter(id=id)
     print(curr_user)
     if not curr_user:
-      print("dsskjds")
       return HttpResponse("Check your credential")
     else:
       return render(request, 'index.html',list(curr_user.values())[0])

@@ -12,15 +12,19 @@
 
 
 
-  {% if not account_id%}
-  Hello Guest
+  {% if not id%}
+  <div class="text-3xl">hello Guest</div>
   {%else%}
-  hello {{account_id}}
+  <div class="text-3xl inline">hello {{display_name}}</div>
   {%endif%}
 
   <br>
   <a href="signin">Signin</a>
+  <a href="signup">Signup</a>
   <div class="text-[50px]">home page
+</div>
+<div>
+  
 </div>
 
 </body>
