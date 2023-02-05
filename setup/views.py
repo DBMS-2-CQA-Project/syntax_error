@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from .models import user
+from .models import users
 
 def test(request):
   
-  print(request.POST.get('email_mobno'))
+  # print(request.POST.get('email_mobno'))
 
-  mydata = user.objects.all().values()
+  mydata = users.objects.all().values()
 
   # template = loader.get_template('template.html')
   context = {
@@ -25,10 +25,10 @@ def test(request):
   print(new_display_name)
   new_location=request.POST.get('location')
   new_about_me=request.POST.get('about_me')
-  new_fellow=user(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
+  new_fellow=users(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
   new_fellow.save()
   # new data
-  mydata = user.objects.all().values()
+  mydata = users.objects.all().values()
 
   # template = loader.get_template('template.html')
   context = {
