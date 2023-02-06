@@ -16,8 +16,13 @@ urlpatterns=[
   path('manageCookies',views.manageCookies,name="manageCookies"),
   path('scookie',views.setcookie),  
   path('gcookie',views.getcookie),
-  
+  path('createPost',views.createPost,name="djsfhdj"),
+  path('PostCreated',views.PostCreated,name="CreatedPost"),
+
+  path('AllYourPosts',views.AllYourPosts,name="AllYourPosts"),
+  path('PostAnswer',views.PostAnswer,name="PostAnswer"),
+  path('AnsweredPost',views.AnsweredPost,name="AnsweredPost"),
   path('search',views.search,name="djsfhdj"),
-  path('eachpost',views.eachpost,name="djsfhdj"),
+  path('eachpost',views.eachpost,name="djsfhdj")
 
 ]
