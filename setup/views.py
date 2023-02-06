@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from setup.models import users, posts, comments
 from django.contrib import auth
+# from django.utils.safestring import mark_safe
 
 dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
 parentID_for_AnswerPost=1
@@ -21,12 +22,18 @@ def test(request):
   #print(mydata[length-1]['id'])
   new_id=1+mydata[length-1]['id']
   new_account_id=request.POST.get('account_id')
+
   new_reputation=0
+
   new_views=0
+
   new_down_votes=0
+
   new_up_votes=0
+
   new_display_name=request.POST.get('display_name')
-  print(new_display_name)
+
+
   new_location=request.POST.get('location')
   new_about_me=request.POST.get('about_me')
   new_fellow=users(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
@@ -72,7 +79,7 @@ def edited(request):
 
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  print(queries)
+
   return render(request, 'index.html',{'topPosts':list(queries.values())})
 
 def eachpost(request):
@@ -148,7 +155,6 @@ def search(request):
   if request.method=='POST':
     searchBy=request.POST.get('searchBy')
     searchValue=request.POST.get('searchValue')
-    print(searchBy,searchValue)
     if searchBy=='userId':
       global relatedPostsList
       relatedPosts=posts.objects.filter(owner_user_id=searchValue)

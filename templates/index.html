@@ -40,10 +40,11 @@
     {%for i in topPosts%}
     <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
       <div class="text-4xl mb-5">
-        {{i.title}}
+        {{i.title|safe}}
       </div>
       <div>
-        {{ i.body }}
+        
+        {{i.body|safe}}
       </div>
     
       <div>

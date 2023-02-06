@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        {{ques.0.body}}
+        {{ques.0.body|safe}}
         <form action="/AnsweredPost" method="POST">
             id=models.IntegerField(("id"),primary_key=True)
             # generate id
