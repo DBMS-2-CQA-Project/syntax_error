@@ -79,14 +79,15 @@ def eachpost(request):
   if request.method=='POST':
     id=request.POST.get('id')
     answersList=list(posts.objects.filter(parent_id=id).values())
-    for i in range(len(answersList)):
-      answersList[i]['index']=i
+    # for i in range(len(answersList)):
+    #   answersList[i]['index']=i
+
     ques=posts.objects.filter(id=id)
-    commentsList=[]
+
+    # commentsList=[]
     for i in answersList:
-      commentsList.append(list(comments.objects.filter(post_id=i['id']).values()))
-    print(answersList[3]['index'])
-    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList})
+      i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
+    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList,})
 
 
 

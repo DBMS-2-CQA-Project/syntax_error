@@ -18,19 +18,23 @@
   <div>
     <div class="text-center text-5xl my-5">Answers</div>
     {%for i in answersList%}
-    <div class="text-xl bg-slate-400 p-5 m-5 rounded-sm">
+    <div class="text-lg bg-slate-400 p-5 m-5 rounded-md">
+      <!-- <div>
+        {{i.owner_display_name}}
+      </div> -->
       <div >
         {{i.body}}
       </div>
       <div>
-        {%with ind=i.index %}
-        {%for j in commentsList.ind %}
-        <div>
-          <br><br><br><br>
+        <!-- {{i.}} -->
+      </div>
+      <div>
+        <div class="m-5 text-3xl">Comments</div>
+        {%for j in i.commentsList%}
+        <div class="m-3 text-base">
           {{j.text}}
         </div>
         {%endfor%}
-        {%endwith%}
       </div>
     </div>
     {%endfor%}
