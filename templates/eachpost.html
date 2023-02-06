@@ -13,21 +13,21 @@
     {{ques.0.title}}
   </div>
   <div class="p-5">
-    {{ques.0.body}}
+    {{ques.0.body|safe}}
   </div>
   <div>
     <div class="text-center text-5xl my-5">Answers</div>
     {%for i in answersList%}
     <div class="text-xl bg-slate-400 p-5 m-5 rounded-sm">
       <div >
-        {{i.body}}
+        {{i.body|safe}}
       </div>
       <div>
         {%with ind=i.index %}
         {%for j in commentsList.ind %}
         <div>
           <br><br><br><br>
-          {{j.text}}
+          {{j.text|safe}}
         </div>
         {%endfor%}
         {%endwith%}
