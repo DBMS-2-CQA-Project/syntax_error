@@ -3,10 +3,10 @@
 <body>
 
 <p>The queryset object:</p>
-{{ mymembers }}
+{% comment %} {{ mymembers }} {% endcomment %}
 
 <p>Loop through the items:</p>
-
+Welcome New user
 <table border='1'>
   <tr>
     <th>account_id </th>
@@ -18,7 +18,7 @@
     <th>location </th>
     <th>about_me</th>
   </tr>
-  {% for x in mymembers %}
+  {% comment %} {% for x in mymembers %}
     <tr>
       <td>{{ x.account_id }}</td>
       <td>{{ x.reputation }}</td>
@@ -29,7 +29,7 @@
       <td>{{ x.location }}</td>
       <td>{{ x.about_me }}</td>
     </tr>
-  {% endfor %}
+  {% endfor %} {% endcomment %}
 </table>
 
 </body>

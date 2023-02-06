@@ -4,8 +4,8 @@ from django.template import loader
 from setup.models import users, posts, comments
 from django.contrib import auth
 
-dataIt=[0,0,0,0,0,0,0,0,0,0,0,0,0]
-
+dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
+parentID_for_AnswerPost=1
 UserCurrent=users.objects.filter(id=2)
 def test(request):
   
@@ -78,6 +78,8 @@ def home(request):
 def eachpost(request):
   if request.method=='POST':
     id=request.POST.get('id')
+    global parentID_for_AnswerPost
+    parentID_for_AnswerPost=id
     answersList=list(posts.objects.filter(parent_id=id).values())
     for i in range(len(answersList)):
       answersList[i]['index']=i
@@ -166,13 +168,87 @@ def search(request):
     return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
 
 
+############
+#  CREATE POST
+def createPost(request):
+  listIt=dataIt
+  return render(request,'createPost.html',{'owner_user_id':listIt[0],'owner_display_name':listIt[6]})
+
+def PostCreated(request):
+   if request.method=='POST':
+    postIdGeneration = posts.objects.all().values()
+    leng=len(postIdGeneration)
+    CPid= 1+postIdGeneration[leng-1]['id']
+    from datetime import datetime
+    Current_timestamp=datetime.now()
+    CPcontent_license="CC BY-SA 4.0"
+    CPtitle=request.POST.get('createPostTitle')
+    CPTags=request.POST.get('createPostTags')
+    CPBody=request.POST.get('createPostBody')
+    CPowner_user_id=dataIt[0]
+    CPowner_display_name=dataIt[6]
+    # Upload data in posts table
+    new_CreatePost=posts(id=CPid,owner_user_id=CPowner_user_id,last_editor_user_id=None,
+	post_type_id=1,accepted_answer_id=None,score=0,parent_id=0,view_count=0,answer_count=0,comment_count=0,owner_display_name=CPowner_display_name,
+	last_editor_display_name =None,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody,favorite_count=None,
+  creation_date =Current_timestamp,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=Current_timestamp)
+    new_CreatePost.save()
+    print(new_CreatePost)
+    # Upload data in postHistory(later)
 
 
 
+    return render(request, 'YourPost.html', {'CreatedPost':new_CreatePost,'owner_user_id':dataIt[0],'owner_display_name':dataIt[6]})
 
 
 
+################################
 
+def  PostAnswer(request):
+  if request.method=='POST':
+    ques=posts.objects.filter(id=parentID_for_AnswerPost)
+    return render(request,'PostAnswer.html',{'ques':list(ques.values()),'owner_user_id':dataIt[0],'owner_display_name':dataIt[6]})
+
+
+def AnsweredPost(request):
+   if request.method=='POST':
+    postIdGeneration = posts.objects.all().values()
+    leng=len(postIdGeneration)
+    CPid= 1+postIdGeneration[leng-1]['id']
+    from datetime import datetime
+    Current_timestamp=datetime.now()
+    CPcontent_license="CC BY-SA 4.0"
+    CPtitle=request.POST.get('createPostTitle')
+    CPTags=request.POST.get('createPostTags')
+    CPBody=request.POST.get('createPostBody')
+    CPowner_user_id=dataIt[0]
+    CPowner_display_name=dataIt[6]
+    # Upload data in posts table
+    new_AnswerPost=posts(id=CPid,owner_user_id=CPowner_user_id,last_editor_user_id=None,
+	post_type_id=2,accepted_answer_id=None,score=0,parent_id=parentID_for_AnswerPost,view_count=0,answer_count=0,comment_count=0,owner_display_name=CPowner_display_name,
+	last_editor_display_name =None,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody,favorite_count=None,
+  creation_date =Current_timestamp,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=Current_timestamp)
+    new_AnswerPost.save()
+    # Update the quesion/ create post thing
+    ParentIt=posts.objects.filter(id=parentID_for_AnswerPost).values()
+    print(ParentIt[0]['answer_count'])
+    current_answer_count= ParentIt[0]['answer_count']+1
+    posts.objects.filter(id=parentID_for_AnswerPost).update(answer_count=current_answer_count)
+    print(new_AnswerPost)
+    # Upload data in postHistory(later)
+
+
+
+    return render(request, 'AnsweredPost.html', {'AnswerPost':new_AnswerPost})
+
+
+def AllYourPosts(request):
+      postsAll=posts.objects.filter(owner_user_id=49553)
+      postsAll=list(postsAll.values())
+      print(len(postsAll))
+      return render(request,'AllYourPosts.html',{'postsAll':postsAll})
+
+###########
 
 def find(tag, str):
     """ A helper function which will helps in finding 
