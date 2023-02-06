@@ -120,6 +120,32 @@ def editProfile(request):
   return render(request, 'editProfile.html',{'user_id':listIt[0],'user_account_id':listIt[1],'user_reputation':listIt[2],'user_views':listIt[3],'user_down_views':listIt[4],'user_up_views':listIt[5],'user_display_name':listIt[6],'user_location':listIt[7],'user_profile_image_url':listIt[8],'user_website_url':listIt[9],'user_about_me':listIt[10],'user_creation_date':listIt[11],'user_last_access_date':listIt[12]})
 
 
+
+#############
+# MANAGE COOKIES
+def manageCookies(request):
+  return render(request,'manageCookies.html')
+from django.shortcuts import render  
+from django.http import HttpResponse  
+  
+def setcookie(request):  
+    response = HttpResponse("Cookie Set")  
+    response.set_cookie('java-tutorial', 'javatpoint.com')  
+    return response  
+def getcookie(request):  
+    tutorial  = request.COOKIES['java-tutorial']  
+    return HttpResponse("java tutorials @: "+  tutorial);  
+
+
+
+def set_cookie(response, key, value):
+    response.set_cookie(key,value)
+    
+def view(request):
+    response = HttpResponse("hello")
+    set_cookie(response, 'name', 'jujule')
+    return response
+
 # Check out template.html to see how the mymembers object
 # was used in the HTML code. 
 # Create your views here.
