@@ -7,23 +7,59 @@
     <script src="https://cdn.tailwindcss.com"></script>
   <title>Home</title>
 </head>
-<body class="bg-slate-400">
+<body class="bg-slate-300">
+  <div class="bg-red">
+
+  </div>
+  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
+  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
 
 
- 
+  {% if not user.0 %}
+    Hello Guest
+    {%else%}
+    hello {{user.0.display_name}} bro<br>
+    <a href='editProfile'>Edit Profile</a>
+  
+    <br>
+  
+    {%endif%}
 
-  {% if not user%}
-  Hello Guest
-  {%else%}
-  hello {{user_id}} bro<br>
-  <a href='editProfile'>Edit Profile</a>
-  <br>
+  <form action="/search" method="POST">
+    {% csrf_token %}
+    <input type="text" placeholder="search posts" required name="searchValue">
+    <select name="searchBy" id="searchBy" required>
+      <option value="userId">User ID</option>
+      <option value="tags">Tags</option>
+    </select>
+    <input type="submit" value="Submit" class="hover:cursor-pointer">
+  </form>
 
-  {%endif%}
+  <div>
+    <div class="text-4xl mt-10 text-center">Trending Posts</div>
+    {%for i in topPosts%}
+    <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
+      <div class="text-4xl mb-5">
+        {{i.title}}
+      </div>
+      <div>
+        {{ i.body }}
+      </div>
+    
+      <div>
+        <form action="/eachpost" method="POST">
+          <input type="hidden" value={{i.id}} name="id">
+          <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
+        </form>
+      </div>
+    
+    </div>
+    {%endfor%}
+  </div>
 
-  <br>
-  <a href="signin">Signin</a>
-  <div class="text-[50px]">home page
+</div>
+<div>
+  
 </div>
 
 </body>

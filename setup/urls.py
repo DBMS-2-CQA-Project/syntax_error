@@ -15,6 +15,9 @@ urlpatterns=[
   path('edited',views.edited,name="djsfhdj"),
   path('manageCookies',views.manageCookies,name="manageCookies"),
   path('scookie',views.setcookie),  
-  path('gcookie',views.getcookie)  
+  path('gcookie',views.getcookie),
   
+  path('search',views.search,name="djsfhdj"),
+  path('eachpost',views.eachpost,name="djsfhdj"),
+
 ]

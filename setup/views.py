@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from .models import users
-from setup.models import users
+from setup.models import users, posts, comments
 from django.contrib import auth
 
 dataIt=[0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -72,48 +71,42 @@ def edited(request):
 
 
 def home(request):
-  # queries=
-  return render(request, 'index.html')
+  queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
+  print(queries)
+  return render(request, 'index.html',{'topPosts':list(queries.values())})
+
+def eachpost(request):
+  if request.method=='POST':
+    id=request.POST.get('id')
+    answersList=list(posts.objects.filter(parent_id=id).values())
+    for i in range(len(answersList)):
+      answersList[i]['index']=i
+    ques=posts.objects.filter(id=id)
+    commentsList=[]
+    for i in answersList:
+      commentsList.append(list(comments.objects.filter(post_id=i['id']).values()))
+    print(answersList[3]['index'])
+    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList})
+
+
 
 def signin(request):
 
   if request.method=='POST':
-    id=request.POST.get('accountid')
-    pw=request.POST.get('pw')
-    print(id,pw)
-    curr_user=users.objects.filter(id=id)
-    print(curr_user)
-    if not curr_user:
-      print("dsskjds")
+    id=request.POST.get('id')
+    pw=request.POST.get('display_name')
+    currUser=users.objects.filter(id=id)
+    if not currUser:
       return HttpResponse("Check your credential")
-    else:
+    else:    
+      queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
 
-      UserCurrent=users.objects.filter(id=id)
-      #UserCurrent = [i for i in UserCurrent]  # converts ValuesQuerySet into Python list
-      print(UserCurrent)
-      listIt =[]
-      for x in UserCurrent:
-        listIt.append(x.id)
-        listIt.append(x.account_id)
-        listIt.append(x.reputation)
-        listIt.append(x.views)
-        listIt.append(x.down_votes)
-        listIt.append(x.up_votes)
-        listIt.append(x.display_name)
-        listIt.append(x.location)
-        listIt.append(x.profile_image_url)
-        listIt.append(x.website_url)
-        listIt.append(x.about_me)
-        listIt.append(x.creation_date)
-        listIt.append(x.last_access_date)
-        global dataIt
-        dataIt=listIt
-      
-      return render(request, 'index.html',{'user_id':listIt[0],'user_account_id':listIt[1],'user_reputation':listIt[2],'user_views':listIt[3],'user_down_views':listIt[4],'user_up_views':listIt[5],'user_display_name':listIt[6],'user_location':listIt[7],'user_profile_image_url':listIt[8],'user_website_url':listIt[9],'user_about_me':listIt[10],'user_creation_date':listIt[11],'user_last_access_date':listIt[12]})
-  return render(request,'signin.html')
+      return render(request, 'index.html',{'user':list(currUser.values()), 'topPosts':list(queries.values())})
+
 
 def signup(request):
   return render(request, 'signup.html')
+
 
 def editProfile(request):
   listIt=dataIt
@@ -149,19 +142,95 @@ def view(request):
 # Check out template.html to see how the mymembers object
 # was used in the HTML code. 
 # Create your views here.
+def search(request):
+  if request.method=='POST':
+    searchBy=request.POST.get('searchBy')
+    searchValue=request.POST.get('searchValue')
+    print(searchBy,searchValue)
+    if searchBy=='userId':
+      global relatedPostsList
+      relatedPosts=posts.objects.filter(owner_user_id=searchValue)
+      relatedPostsList=list(relatedPosts.values())
 
-# def home(request):
-#   return render(request, 'index.html')
+    elif searchBy=='tags':
+      global searchValueList
 
-# def signin(request):
-#   print(request.POST.get('email_mobno'))
-#   return render(request, 'signin.html')
+      searchValueList=searchValue.split(' ')
+      allPostsList=list(posts.objects.all().values())
+      relatedPostsList=find_using_tags(allPostsList,searchValueList)
 
-# def signup(request):
-#   print(request.POST.get('email_mobno'))
-#   return render(request, 'signup.html')
 
-  
-# def signinData(request):
-#   if request.method=='POST':
 
+    if not relatedPostsList:
+      return HttpResponse("no matches found")
+    return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
+
+
+
+
+
+
+
+
+
+
+def find(tag, str):
+    """ A helper function which will helps in finding 
+        if a tag is present in a list of tags 
+        of the form  "<tag1> <tag2> ... " 
+        Returns True if present
+                                            """
+    if not str:
+      return False                                     
+    tag_list = str[1:-1].split('><')
+    if(tag in tag_list):
+        return True
+         
+    return False
+
+
+def find_using_tags(d , tags):
+    """
+        Arguments: d = list of dictionaries,
+               *tags = variable number of tags which the user is searching for
+    
+    Function to print all the rows in the list of dict
+    which contains all the tags which the user is searching for(intersection)
+    """
+    is_present = False
+    temp_list=[]
+    for i in range(len(d)):
+
+        for tag in tags:
+            if(find(tag, d[i]['tags'])):
+                is_present = True
+            else:
+                is_present = False
+                break
+        if(is_present):
+          temp_list.append(d[i])
+    return temp_list
+
+
+
+def find_using_xyz(d, attribute, value):
+    """ Function to print all the rows in the list 
+        of dicts which contains the value which the user 
+        is searching for according to the attribute he/she chose. 
+        """
+    tempList=[]                                                             
+    for i in range(len(d)):
+        if(d[i][attribute] == value):
+            tempList.append(d[i])
+    return tempList
+
+
+# Sample list of dictionaries
+d = [{'id': 1, 'owner_id': 8802, 'tags': "<python> <c++>"}, 
+{'id': 2, 'owner_id': 123, 'tags': "<python> <c>"}, 
+{'id': 3, 'owner_id': 1234, 'tags': "<javascript> <cp>"}, 
+{'id': 4, 'owner_id': 1234, 'tags': "<java> <c#>"}, 
+{'id': 5, 'owner_id': 1234, 'tags': "<django> <flask>"}, 
+{'id': 6, 'owner_id': 1234, 'tags': "<python> <latex>"},
+{'id': 7, 'owner_id': 211, 'tags': "<c--> <c++>"}, 
+{'id': 8, 'owner_id': 211, 'tags': "<python> <cpp>"}]
