@@ -13,9 +13,9 @@ urlpatterns=[
   path('signin',views.signin,name="djsfhdj"),
   path('signup',views.signup,name="djsfhdj"),
   path('edited',views.edited,name="djsfhdj"),
-  path('manageCookies',views.manageCookies,name="manageCookies"),
-  path('scookie',views.setcookie),  
-  path('gcookie',views.getcookie),
+  # path('manageCookies',views.manageCookies,name="manageCookies"),
+  # path('scookie',views.setcookie),
+  # path('gcookie',views.getcookie),
   path('createPost',views.createPost,name="djsfhdj"),
   path('PostCreated',views.PostCreated,name="CreatedPost"),
 

@@ -4,6 +4,8 @@ from django.template import loader
 from setup.models import users, posts, comments
 from django.contrib import auth
 from datetime import datetime
+from django.contrib import messages
+# from django.utils.safestring import mark_safe
 
 dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
 parentID_for_AnswerPost=1
@@ -22,12 +24,18 @@ def test(request):
   #print(mydata[length-1]['id'])
   new_id=1+mydata[length-1]['id']
   new_account_id=request.POST.get('account_id')
+
   new_reputation=0
+
   new_views=0
+
   new_down_votes=0
+
   new_up_votes=0
+
   new_display_name=request.POST.get('display_name')
-  print(new_display_name)
+
+
   new_location=request.POST.get('location')
   new_about_me=request.POST.get('about_me')
   new_fellow=users(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
@@ -73,10 +81,11 @@ def edited(request):
 
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  print(queries)
+
   return render(request, 'index.html',{'topPosts':list(queries.values())})
 
 def eachpost(request):
+  messages.success(request, "Post Created")
   if request.method=='POST':
     id=request.POST.get('id')
     global parentID_for_AnswerPost
@@ -100,12 +109,15 @@ def signin(request):
     id=request.POST.get('id')
     pw=request.POST.get('display_name')
     currUser=users.objects.filter(id=id)
+
     if not currUser:
       return HttpResponse("Check your credential")
-    else:    
+    else:
       queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-
-      return render(request, 'index.html',{'user':list(currUser.values()), 'topPosts':list(queries.values())})
+      response=render(request, 'index.html',{'user':list(currUser.values()), 'topPosts':list(queries.values())})
+      response.set_cookie('userId',list(currUser.values())[0]['id'])
+      response.set_cookie('loginStatus',True)
+      return response
   return render(request,'signin.html')
 
 
@@ -121,28 +133,26 @@ def editProfile(request):
 
 #############
 # MANAGE COOKIES
-def manageCookies(request):
-  return render(request,'manageCookies.html')
-from django.shortcuts import render  
-from django.http import HttpResponse  
+# def manageCookies(request):
+#   return render(request,'manageCookies.html')
+# from django.shortcuts import render  
+# from django.http import HttpResponse  
   
-def setcookie(request):  
-    response = HttpResponse("Cookie Set")  
-    response.set_cookie('java-tutorial', 'javatpoint.com')  
-    return response  
-def getcookie(request):  
-    tutorial  = request.COOKIES['java-tutorial']  
-    return HttpResponse("java tutorials @: "+  tutorial);  
+# def setcookie(request):  
+#     response = HttpResponse("Cookie Set")  
+#     response.set_cookie('java-tutorial', 'javatpoint.com')  
+#     return response  
+# def getcookie(request):  
+#     tutorial  = request.COOKIES['java-tutorial']  
+#     return HttpResponse("java tutorials @: "+  tutorial);  
 
-
-
-def set_cookie(response, key, value):
-    response.set_cookie(key,value)
+# def set_cookie(response, key, value):
+#     response.set_cookie(key,value)
     
-def view(request):
-    response = HttpResponse("hello")
-    set_cookie(response, 'name', 'jujule')
-    return response
+# def view(request):
+#     response = HttpResponse("hello")
+#     set_cookie(response, 'name', 'jujule')
+#     return response
 
 # Check out template.html to see how the mymembers object
 # was used in the HTML code. 
@@ -151,7 +161,6 @@ def search(request):
   if request.method=='POST':
     searchBy=request.POST.get('searchBy')
     searchValue=request.POST.get('searchValue')
-    print(searchBy,searchValue)
     if searchBy=='userId':
       global relatedPostsList
       relatedPosts=posts.objects.filter(owner_user_id=searchValue)
@@ -172,31 +181,43 @@ def search(request):
 
 
 ############
-#  CREATE POST
+#  CREATE POST PAGE
 def createPost(request):
-  listIt=dataIt
-  return render(request,'createPost.html',{'owner_user_id':listIt[0],'owner_display_name':listIt[6]})
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    return render(request,'createPost.html')
+  return HttpResponse('first login bro')
 
+############
+# UPDATING POST TO DATABASE
 def PostCreated(request):
   if request.method=='POST':
-    lastRowById = posts.objects.all().order_by('id')[:1]
-    CPid= 1+lastRowById['id']
-    CPownerUserId=request.POST.get('OwnerUserId')
-    CPownerDisplayName=request.POST.get('OwnerDisplayName')
-    CPcreation_date=datetime.now()
-    CPcontent_license="CC BY-SA 4.0"
-    CPtitle=request.POST.get('createPostTitle')
-    CPTags=request.POST.get('createPostTags')
-    CPBody=request.POST.get('createPostBody')
     
-    # Upload data in posts table
-    new_CreatePost=posts(id=CPid,owner_user_id=CPownerUserId,last_editor_user_id=None,
-	post_type_id=1,accepted_answer_id=None,score=0,parent_id=0,view_count=0,answer_count=0,comment_count=0,owner_display_name=CPownerDisplayName,
-	last_editor_display_name =None,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody,favorite_count=None,
-  creation_date =CPcreation_date,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=CPcreation_date)
-    new_CreatePost.save()
-    print(new_CreatePost)
-    # Upload data in postHistory(later)
+    if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+
+      lastRowById = posts.objects.all().order_by('id')[:1]
+      CPid= 1+lastRowById['id']
+      CPownerUserId=request.COOKIES['userId']
+
+      ownerUser=list(users.objects.filter(id=CPownerUserId).values())
+
+      CPpostTypeId=1
+      CPownerDisplayName=ownerUser['display_name']
+      CPcommentCount=0
+      CPanswerCount=0
+      CPcreationDate=datetime.now()
+      CPcontent_license="CC BY-SA 4.0"
+      CPtitle=request.POST.get('createPostTitle')
+      CPTags=request.POST.get('createPostTags')
+      CPBody=request.POST.get('createPostBody')
+      
+      # Upload data in posts table
+      new_CreatePost=posts(id=CPid, owner_user_id=CPownerUserId, post_type_id=1, score=0, view_count=0, answer_count=0, comment_count=0, owner_display_name=CPownerDisplayName,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody, creation_date =CPcreationDate,last_activity_date=CPcreationDate)
+      new_CreatePost.save()
+      print(new_CreatePost)
+      messages.success(request, "Post Created")
+      return
+      # Upload data in postHistory(later)
+    
 
 
 # -- select real_id from (select T.id as real_id from setup_posts as S, setup_posts as T where T.post_type_id=1 and S.id=T.id and T.owner_user_id=S.last_editor_user_id);

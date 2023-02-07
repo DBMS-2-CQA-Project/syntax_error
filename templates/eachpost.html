@@ -13,7 +13,7 @@
     {{ques.0.title}}
   </div>
   <div class="p-5">
-    {{ques.0.body}}
+    {{ques.0.body|safe}}
   </div>
   <div>
     <div class="text-center text-5xl my-5">Answers</div>
@@ -23,7 +23,7 @@
         {{i.owner_display_name}}
       </div> -->
       <div >
-        {{i.body}}
+        {{i.body|safe}}
       </div>
       <div>
         <!-- {{i.}} -->
@@ -32,7 +32,7 @@
         <div class="m-5 text-3xl">Comments</div>
         {%for j in i.commentsList%}
         <div class="m-3 text-base">
-          {{j.text}}
+          {{j.text|safe}}
         </div>
         {%endfor%}
       </div>
