@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {{postdata.0.id}}<br>
+        {{owner_user_id}}<br>
+        {{id}}
+        <!DOCTYPE html>
+        <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+        <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+        <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+        <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+        <html>
+            <head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <title></title>
+                <meta name="description" content="">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link rel="stylesheet" href="">
+            </head>
+            <body>
+                <form action="/PostEdited" method="POST">
+                id=models.IntegerField(("id"),primary_key=True)
+                # generate id
+                owner_user_id=models.IntegerField(("owner_user_id"), null=True)
+                <p>id:{{postdata.0.id}}</p><br>
+                <p>owner_user_id:{{postdata.0.owner_user_id}}</p><br>
+                <p>last_editor_user_id:{{postdata.0.last_editor_user_id}}</p><br>
+                <p>post_type_id:{{postdata.0.post_type_id}}</p><br>
+                <p>accepted_answer_id:{{postdata.0.accepted_answer_id}}</p><br>
+                <p>score:{{postdata.0.score}}</p><br>
+                <p>parent_id:{{postdata.0.parent_id}}</p><br>
+                <p>view_count:{{postdata.0.view_count}}</p><br>
+                <p>answer_count:{{postdata.0.answer_count}}</p><br>
+                <p>comment_count:{{postdata.0.comment_count}}</p><br>
+                <p> owner_display_name:{{postdata.0.owner_display_name}}</p><br>
+                <p>last_editor_display_name:{{postdata.0.last_editor_display_name}}</p><br>
+                <input type='text' id='EditedPostTitle' name='EditedPostTitle' value="{{postdata.0.title}}">title</input><br>
+                <input type='text' id='EditedPostTags' name='EditedPostTags'   value="{{postdata.0.tags}}">tags</input><br>
+                <input type='text' id='EditedPostcontent_license' name='EditedPostcontent_license'   value="{{postdata.0.content_license}}">content_license</input><br>
+                <input type='text' id='EditedPostBody' name='EditedPostBody'  value="{{postdata.0.body}}">BODY</input><br>
+                <p>favorite_count={{postdata.0.favorite_count}}</p><br>
+                <p>creation_date={{postdata.0.creation_date}}</p><br>
+                <p>community_owned_date={{postdata.0.community_owned_date}}</p><br>
+                <p>closed_date={{postdata.0.closed_date}}</p><br>
+                <p>last_edit_date={{postdata.0.last_edit_date}}</p><br>
+                <p>last_activity_date={{postdata.0.last_activity_date}}</p><br>
+                <input type='submit'>Edit post</input>
+                <input type='hidden' name='ThePostaData' id='ThePostaData' value="{{postdata.0.id}}"/>
+                <input type='hidden' name='TotalPostData' id='TotalPostData' value="{{postdata}}"/>
+                    
+            </form>
+        
+        
+                <!--[if lt IE 7]>
+                    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+                <![endif]-->
+                
+                <script src="" async defer></script>
+            </body>
+        </html>
+
+
+
+
+        <script src="" async defer></script>
+    </body>
+</html>

@@ -23,6 +23,9 @@ urlpatterns=[
   path('PostAnswer',views.PostAnswer,name="PostAnswer"),
   path('AnsweredPost',views.AnsweredPost,name="AnsweredPost"),
   path('search',views.search,name="djsfhdj"),
-  path('eachpost',views.eachpost,name="djsfhdj")
+  path('eachpost',views.eachpost,name="djsfhdj"),
+  path('Singlepost',views.Singlepost,name="Singlepost"),
+  path('PostEdited',views.PostEdited,name="AllYourPosts"),
+  path('EditedPostPage',views.PostEdited,name="EditedPostPage")
 
 ]

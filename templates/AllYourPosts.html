@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
+      hello
+      
         {%for i in postsAll%}
         <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
           <div class="text-4xl mb-5">
@@ -23,9 +25,10 @@
           </div>
         
           <div>
-            <form action="/eachpost" method="POST">
+            <form action="/Singlepost" method="POST">
               <input type="hidden" value={{i.id}} name="id">
-              <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
+              <input type="submit" name='submit' value="Edit" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer"/>
+              <input type="submit" name='submit' value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer"/>
             </form>
           </div>
         

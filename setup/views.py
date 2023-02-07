@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from setup.models import users, posts, comments
 from django.contrib import auth
-
+PostData=0
 dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
 parentID_for_AnswerPost=1
 UserCurrent=users.objects.filter(id=2)
@@ -26,7 +26,7 @@ def test(request):
   new_down_votes=0
   new_up_votes=0
   new_display_name=request.POST.get('display_name')
-  print(new_display_name)
+  #print(new_display_name)
   new_location=request.POST.get('location')
   new_about_me=request.POST.get('about_me')
   new_fellow=users(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
@@ -65,14 +65,14 @@ def edited(request):
     if(not updated_about_me):
       updated_data.about_me= updated_about_me
     updated_data.save()
-    print(updated_data)
+    #print(updated_data)
   
   return render(request, 'edited.html')
 
 
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  print(queries)
+  #print(queries)
   return render(request, 'index.html',{'topPosts':list(queries.values())})
 
 def eachpost(request):
@@ -87,7 +87,7 @@ def eachpost(request):
     commentsList=[]
     for i in answersList:
       commentsList.append(list(comments.objects.filter(post_id=i['id']).values()))
-    print(answersList[3]['index'])
+    #print(answersList[3]['index'])
     return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList})
 
 
@@ -148,7 +148,7 @@ def search(request):
   if request.method=='POST':
     searchBy=request.POST.get('searchBy')
     searchValue=request.POST.get('searchValue')
-    print(searchBy,searchValue)
+    #print(searchBy,searchValue)
     if searchBy=='userId':
       global relatedPostsList
       relatedPosts=posts.objects.filter(owner_user_id=searchValue)
@@ -193,7 +193,7 @@ def PostCreated(request):
 	last_editor_display_name =None,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody,favorite_count=None,
   creation_date =Current_timestamp,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=Current_timestamp)
     new_CreatePost.save()
-    print(new_CreatePost)
+    #print(new_CreatePost)
     # Upload data in postHistory(later)
 
 
@@ -231,22 +231,52 @@ def AnsweredPost(request):
     new_AnswerPost.save()
     # Update the quesion/ create post thing
     ParentIt=posts.objects.filter(id=parentID_for_AnswerPost).values()
-    print(ParentIt[0]['answer_count'])
+    #print(ParentIt[0]['answer_count'])
     current_answer_count= ParentIt[0]['answer_count']+1
     posts.objects.filter(id=parentID_for_AnswerPost).update(answer_count=current_answer_count)
-    print(new_AnswerPost)
+    #print(new_AnswerPost)
     # Upload data in postHistory(later)
 
 
 
     return render(request, 'AnsweredPost.html', {'AnswerPost':new_AnswerPost})
 
+owner_user_id_ForEditingPosts=160
+def Singlepost(request):
+    output=request.POST.get('submit')
+    id=request.POST.get('id')
+    if(output=="Edit"):
+      global PostData
+      PostData=posts.objects.filter(id=id,owner_user_id=owner_user_id_ForEditingPosts).values()
+      print(PostData)
+      return render(request, 'editYourPost.html', {'postdata':PostData,'owner_user_id':owner_user_id_ForEditingPosts,'id':id})
+
+    return render(request, 'eachPost.html')
+
 
 def AllYourPosts(request):
-      postsAll=posts.objects.filter(owner_user_id=49553)
+      owner_user_id=owner_user_id_ForEditingPosts
+      postsAll=posts.objects.filter(owner_user_id=owner_user_id)
       postsAll=list(postsAll.values())
-      print(len(postsAll))
-      return render(request,'AllYourPosts.html',{'postsAll':postsAll})
+      #print(len(postsAll))
+      return render(request,'AllYourPosts.html',{'postsAll':postsAll,'owner_user_id':owner_user_id})
+
+# def EditingSinglePost(request):
+
+def PostEdited(request):  
+  print(PostData)
+  # currentPostId=PostData['id']
+  EPTitle=request.POST.get('EditedPostTitle')
+  EPTags=request.POST.get('EditedPostTags')
+  EPContent_license=request.POST.get('EditedPostcontent_license')
+  EPBody=request.POST.get('EditedPostBody')
+  EPId=request.POST.get('ThePostaData')
+  # TotalData=request.POST.get('TotalPostData')
+  posts.objects.filter(id=EPId).update(tags=EPTags,title=EPTitle,body=EPBody,content_license=EPContent_license)
+  TotalData=posts.objects.filter(id=EPId).values()
+  print("hello")
+  return render(request,'EditedPostPage.html',{'PostData':TotalData})
+
 
 ###########
 
