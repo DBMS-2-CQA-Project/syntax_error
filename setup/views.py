@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from setup.models import users, posts, comments
 from django.contrib import auth
+from datetime import datetime
 
 dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
 parentID_for_AnswerPost=1
@@ -105,6 +106,7 @@ def signin(request):
       queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
 
       return render(request, 'index.html',{'user':list(currUser.values()), 'topPosts':list(queries.values())})
+  return render(request,'signin.html')
 
 
 def signup(request):
@@ -176,28 +178,35 @@ def createPost(request):
   return render(request,'createPost.html',{'owner_user_id':listIt[0],'owner_display_name':listIt[6]})
 
 def PostCreated(request):
-   if request.method=='POST':
-    postIdGeneration = posts.objects.all().values()
-    leng=len(postIdGeneration)
-    CPid= 1+postIdGeneration[leng-1]['id']
-    from datetime import datetime
-    Current_timestamp=datetime.now()
+  if request.method=='POST':
+    lastRowById = posts.objects.all().order_by('id')[:1]
+    CPid= 1+lastRowById['id']
+    CPownerUserId=request.POST.get('OwnerUserId')
+    CPownerDisplayName=request.POST.get('OwnerDisplayName')
+    CPcreation_date=datetime.now()
     CPcontent_license="CC BY-SA 4.0"
     CPtitle=request.POST.get('createPostTitle')
     CPTags=request.POST.get('createPostTags')
     CPBody=request.POST.get('createPostBody')
-    CPowner_user_id=dataIt[0]
-    CPowner_display_name=dataIt[6]
+    
     # Upload data in posts table
-    new_CreatePost=posts(id=CPid,owner_user_id=CPowner_user_id,last_editor_user_id=None,
-	post_type_id=1,accepted_answer_id=None,score=0,parent_id=0,view_count=0,answer_count=0,comment_count=0,owner_display_name=CPowner_display_name,
+    new_CreatePost=posts(id=CPid,owner_user_id=CPownerUserId,last_editor_user_id=None,
+	post_type_id=1,accepted_answer_id=None,score=0,parent_id=0,view_count=0,answer_count=0,comment_count=0,owner_display_name=CPownerDisplayName,
 	last_editor_display_name =None,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody,favorite_count=None,
-  creation_date =Current_timestamp,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=Current_timestamp)
+  creation_date =CPcreation_date,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=CPcreation_date)
     new_CreatePost.save()
     print(new_CreatePost)
     # Upload data in postHistory(later)
 
 
+# -- select real_id from (select T.id as real_id from setup_posts as S, setup_posts as T where T.post_type_id=1 and S.id=T.id and T.owner_user_id=S.last_editor_user_id);
+
+# select * from setup_post_history where post_id=26264;
+
+# -- 134 724
+
+# -- select A.real_id,count(*) from setup_post_history as B, (select T.id as real_id from setup_posts as S, setup_posts as T where T.post_type_id=1 and S.id=T.id and T.owner_user_id=S.last_editor_user_id) as A where A.real_id=B.post_id group by A.real_id having count(*)<4
+# -- select post_id from setup_post_history as B where post_history_type_id=1 or post_history_type_id=2 or post_history_type_id=3 group by post_id having count(*)=3
 
     return render(request, 'YourPost.html', {'CreatedPost':new_CreatePost,'owner_user_id':dataIt[0],'owner_display_name':dataIt[6]})
 
