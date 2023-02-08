@@ -7,50 +7,40 @@ from datetime import datetime
 from django.contrib import messages
 # from django.utils.safestring import mark_safe
 
-dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
-parentID_for_AnswerPost=1
-UserCurrent=users.objects.filter(id=2)
-def test(request):
-  
-  # print(request.POST.get('email_mobno'))
+def signup(request):
+  if request.method=='POST':
 
-  mydata = users.objects.all().values()
+    lastRowById = list(users.objects.all().order_by('-id')[:1].values())
 
-  # template = loader.get_template('template.html')
-  context = {
-    'mymembers': mydata
-  }
-  length=len(mydata)
-  #print(mydata[length-1]['id'])
-  new_id=1+mydata[length-1]['id']
-  new_account_id=request.POST.get('account_id')
+    newId= 1+lastRowById[0]['id']
+    print(newId)
+    new_account_id=request.POST.get('account_id')
+    new_reputation=0
+    new_views=0
+    new_down_votes=0
+    new_up_votes=0
+    new_display_name=request.POST.get('display_name')
+    newCreationDate=datetime.now()
+    newLastAccessDate=datetime.now()
 
-  new_reputation=0
+    new_location=request.POST.get('location')
+    new_about_me=request.POST.get('about_me')
+    new_fellow=users(id=newId,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me,creation_date=newCreationDate, last_access_date=newLastAccessDate)
+    
+    new_fellow.save()
+    # print(new_fellow)
+    new_fellow=users.objects.filter(id=newId)
+    queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
+    response=render(request, 'index.html',{'user':list(new_fellow.values()), 'topPosts':list(queries.values())})
+    response.set_cookie('userId',newId)
+    response.set_cookie('loginStatus',True)
+    return response
+  return render(request, 'signup.html')
 
-  new_views=0
 
-  new_down_votes=0
-
-  new_up_votes=0
-
-  new_display_name=request.POST.get('display_name')
-
-
-  new_location=request.POST.get('location')
-  new_about_me=request.POST.get('about_me')
-  new_fellow=users(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
-  new_fellow.save()
-  # new data
-  mydata = users.objects.all().values()
-
-  # template = loader.get_template('template.html')
-  context = {
-    'mymembers': mydata
-  }
-  # return HttpResponse(loader.get_template('test.html'),render(context, request))
-  return render(request, 'test.html', context)
-
-def edited(request):
+def profileEdited(request):
+# if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+  id=request.COOKIES['userId']
   updated_account_id= request.POST['updated_account_id']
   updated_display_name = request.POST['updated_display_name']
   updated_location= request.POST['updated_location']
@@ -58,49 +48,36 @@ def edited(request):
   updated_website_url= request.POST['updated_website_url']
   updated_about_me= request.POST['updated_about_me']
  
-  UserCurrent= users.objects.filter(id=dataIt[0])
-  for x in UserCurrent:
-    updated_data=x
-    if(not updated_account_id):
-      updated_data.account_id= updated_account_id
-    if(not updated_display_name):
-      updated_data.display_name= updated_display_name
-    if(not updated_location):
-      updated_data.location= updated_location
-    if(not updated_profile_image_url):
-      updated_data.profile_image_url= updated_profile_image_url
-    if(not updated_website_url):
-      updated_data.website_url= updated_website_url
-    if(not updated_about_me):
-      updated_data.about_me= updated_about_me
-    updated_data.save()
-    print(updated_data)
+  currUser= users.objects.get(id=id)
+
+  currUser.account_id= updated_account_id
+  currUser.display_name= updated_display_name
+  currUser.location= updated_location
+  currUser.profile_image_url= updated_profile_image_url
+  currUser.website_url= updated_website_url
+  currUser.about_me= updated_about_me
+  currUser.save()
+  print(currUser)
   
-  return render(request, 'edited.html')
+  return home(request)
 
+# logout function
+def logout(request):
+  queries= list(posts.objects.filter(post_type_id=1).order_by('-view_count')[:10].values())
+  response=render(request,'index.html',{'topPosts':queries})
+  response.delete_cookie('userId')
+  response.delete_cookie('loginStatus')
+  return response
 
+# home page
 def home(request):
-  queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
+  queries= list(posts.objects.filter(post_type_id=1).order_by('-view_count')[:10].values())
 
-  return render(request, 'index.html',{'topPosts':list(queries.values())})
-
-def eachpost(request):
-  messages.success(request, "Post Created")
-  if request.method=='POST':
-    id=request.POST.get('id')
-    global parentID_for_AnswerPost
-    parentID_for_AnswerPost=id
-    answersList=list(posts.objects.filter(parent_id=id).values())
-    # for i in range(len(answersList)):
-    #   answersList[i]['index']=i
-
-    ques=posts.objects.filter(id=id)
-
-    # commentsList=[]
-    for i in answersList:
-      i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
-    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList,})
-
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    currUserId=request.COOKIES['userId']
+    currUserList=list(users.objects.filter(id=currUserId).values())
+    return render(request, 'index.html',{'user':currUserList, 'topPosts':queries})
+  return render(request, 'index.html',{'topPosts':queries})
 
 
 def signin(request):
@@ -121,38 +98,41 @@ def signin(request):
   return render(request,'signin.html')
 
 
-def signup(request):
-  return render(request, 'signup.html')
+  
+
+
+
+def eachpost(request):
+  messages.success(request, "Post Created")
+  if request.method=='POST':
+    id=request.POST.get('id')
+    global parentID_for_AnswerPost
+    parentID_for_AnswerPost=id
+    answersList=list(posts.objects.filter(parent_id=id).values())
+    # for i in range(len(answersList)):
+    #   answersList[i]['index']=i
+
+    ques=posts.objects.filter(id=id)
+
+    # commentsList=[]
+    for i in answersList:
+      i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
+    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList,})
+
+
+
+
 
 
 def editProfile(request):
-  listIt=dataIt
-  return render(request, 'editProfile.html',{'user_id':listIt[0],'user_account_id':listIt[1],'user_reputation':listIt[2],'user_views':listIt[3],'user_down_views':listIt[4],'user_up_views':listIt[5],'user_display_name':listIt[6],'user_location':listIt[7],'user_profile_image_url':listIt[8],'user_website_url':listIt[9],'user_about_me':listIt[10],'user_creation_date':listIt[11],'user_last_access_date':listIt[12]})
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    currUserId=request.COOKIES['userId']
+    currUser=list(users.objects.filter(id=currUserId).values())[0]
+    return render(request, 'editProfile.html',{'user':currUser})
+  else:
+    return HttpResponse("first login dude")
 
 
-
-#############
-# MANAGE COOKIES
-# def manageCookies(request):
-#   return render(request,'manageCookies.html')
-# from django.shortcuts import render  
-# from django.http import HttpResponse  
-  
-# def setcookie(request):  
-#     response = HttpResponse("Cookie Set")  
-#     response.set_cookie('java-tutorial', 'javatpoint.com')  
-#     return response  
-# def getcookie(request):  
-#     tutorial  = request.COOKIES['java-tutorial']  
-#     return HttpResponse("java tutorials @: "+  tutorial);  
-
-# def set_cookie(response, key, value):
-#     response.set_cookie(key,value)
-    
-# def view(request):
-#     response = HttpResponse("hello")
-#     set_cookie(response, 'name', 'jujule')
-#     return response
 
 # Check out template.html to see how the mymembers object
 # was used in the HTML code. 
@@ -194,8 +174,8 @@ def PostCreated(request):
     
     if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
 
-      lastRowById = posts.objects.all().order_by('id')[:1]
-      CPid= 1+lastRowById['id']
+      lastRowById = list(posts.objects.all().order_by('id')[:1].values())
+      CPid= 1+lastRowById[0]['id']
       CPownerUserId=request.COOKIES['userId']
 
       ownerUser=list(users.objects.filter(id=CPownerUserId).values())
@@ -214,8 +194,9 @@ def PostCreated(request):
       new_CreatePost=posts(id=CPid, owner_user_id=CPownerUserId, post_type_id=1, score=0, view_count=0, answer_count=0, comment_count=0, owner_display_name=CPownerDisplayName,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody, creation_date =CPcreationDate,last_activity_date=CPcreationDate)
       new_CreatePost.save()
       print(new_CreatePost)
+      new_CreatePostList=list(new_CreatePost.values())
       messages.success(request, "Post Created")
-      return
+      return render(request,'eachpost',{'newPost':new_CreatePostList})
       # Upload data in postHistory(later)
     
 

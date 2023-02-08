@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+   <div class="flex sticky p-3 top-0 bg-white h-20 items-center justify-evenly">
+  
+
+  <form action="/search" method="POST">
+    {% csrf_token %}
+    <input type="text" placeholder="search posts" required name="searchValue" class="border-2">
+    <select name="searchBy" id="searchBy" class="p-1.5" required>
+      <option value="userId">User ID</option>
+      <option value="tags">Tags</option>
+    </select>
+    <input type="submit" value="Submit" class="hover:cursor-pointer bg-slate-400 p-1 rounded">
+  </form>
+
+  {% if not user.0 %}
+  <a href="signin" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signin</a>
+  <a href="signup" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signup</a>
+  {%else%}
+  <!-- <a href='editProfile' class="hover:cursor-pointer p-2 bg-slate-400 m-1 rounded">Edit Profile</a> -->
+  <a href="logout" class="hover:cursor-pointer p-1 bg-slate-400 rounded h-fit">Logout</a>
+  <a href="editProfile" class=""><img src="{{user.0.profile_image_url}}" alt=""
+      class="rounded-full object-contain h-12 mx-2"></a>
+  {%endif%}
+ </div>
+ {% block content%}
+ {%endblock%}
+</body>
+</html>

@@ -8,33 +8,13 @@
   <title>Home</title>
 </head>
 <body class="bg-slate-300">
+  {% extends "./components/navbar.html" %}
+  {% block content%}
+
+  
   <div class="bg-red">
 
   </div>
-  
-
-
-  {% if not user.0 %}
-  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
-  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
-    <div>Hello Guest</div>
-    {%else%}
-    hello {{user.0.display_name}} bro<br>
-    <a href='editProfile' class="bg-slate-500 p-2 rounded-md">Edit Profile</a>
-  <br>
-    <br>
-  
-    {%endif%}
-
-  <form action="/search" method="POST">
-    {% csrf_token %}
-    <input type="text" placeholder="search posts" required name="searchValue">
-    <select name="searchBy" id="searchBy" required>
-      <option value="userId">User ID</option>
-      <option value="tags">Tags</option>
-    </select>
-    <input type="submit" value="Submit" class="hover:cursor-pointer">
-  </form>
 
   <div>
     <div class="text-4xl mt-10 text-center">Trending Posts</div>
@@ -63,6 +43,6 @@
 <div>
   
 </div>
-
+{%endblock%}
 </body>
 </html>

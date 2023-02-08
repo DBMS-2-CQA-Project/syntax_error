@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+
 <html>
     <head>
         <meta charset="utf-8">
@@ -10,10 +7,17 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <form action="/PostCreated" method="POST">
+        <!-- <script src="marked.min.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <style>
+            input[type="text"] {
+                white-space: pre;
+            }
+        </style>
+        </head>
+        
+        <body>
+            <form action="/PostCreated" method="POST">
         <p>owner_user_id:{{owner_user_id}}</p>
         <p>last_editor_user_id:NULL</p>
         <p>post_type_id:1</p>
@@ -25,13 +29,16 @@
         <p>comment_count:0</p>
         <p> owner_display_name:{{owner_display_name}}</p>
         <p>last_editor_display_name:NULL</p>
-        <input type="hidden" name="ownerUserId" id="ownerUserId" value={{owner_user_id}}>
+        <input type="hidden"  name="ownerUserId" id="ownerUserId" value={{owner_user_id}}>
         <input type="hidden" name="ownerDisplayName" id="ownerDisplayName" value={{owner_display_name}}>
+        
 
         <input type='text' id='createPostTitle' name='createPostTitle'>title</input>
         <input type='text' id='createPostTags' name='createPostTags'>tags</input>
         <p>content_license:</p>
-        <input type='text' id='createPostBody' name='createPostBody'>BODY</input>
+        <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you query in markdown" ></textarea>
+        <input type="hidden" id="createPostBody" id='createPostBody'>
+        <div id="markup"></div>
         <p>favorite_count=models.IntegerField(("favorite_count"),null=True)</p>
         <p>creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)</p>
         <p>community_owned_date=models.DateTimeField(("community_owned_date"),auto_now_add=True, null=True)</p>
@@ -41,11 +48,16 @@
         <input type='submit'>Create post</input>
         </form>
 
-
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
-        <script src="" async defer></script>
+        <script>
+            marpup=document.getElementById('markup')
+            markdown= document.getElementById('markdown')
+            createPostBody = document.getElementById('createPostBody')
+            function markdownToHtml(){
+                console.log(markdown.value)
+                console.log(marked.parse(markdown.value))
+                markup.innerHTML = marked.parse(markdown.value)
+                createPostBody.value= marked.parse(markdown.value)
+            }
+        </script>
     </body>
 </html>

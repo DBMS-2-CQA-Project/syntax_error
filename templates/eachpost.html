@@ -9,6 +9,11 @@
   <title>Document</title>
 </head>
 <body class="bg-slate-300">
+  <div>
+    {%for msg in messages%}
+    {{msg}}
+    {%endfor%}
+  </div>
   <div class="text-4xl p-5">
     {{ques.0.title}}
   </div>
