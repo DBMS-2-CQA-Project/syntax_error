@@ -57,12 +57,12 @@
                 <p>closed_date={{postdata.0.closed_date}}</p><br>
                 <p>last_edit_date={{postdata.0.last_edit_date}}</p><br>
                 <p>last_activity_date={{postdata.0.last_activity_date}}</p><br>
-                <input type='submit'>Edit post</input>
+                <input type='submit' name='EditIt' value='1'>Edit post</input>
                 <input type='hidden' name='ThePostaData' id='ThePostaData' value="{{postdata.0.id}}"/>
                 <input type='hidden' name='TotalPostData' id='TotalPostData' value="{{postdata}}"/>
-                    
+                <input type='submit' name='EditIt' value='2'>Delete post</input>
             </form>
-        
+           
         
                 <!--[if lt IE 7]>
                     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>

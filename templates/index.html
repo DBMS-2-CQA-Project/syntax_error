@@ -11,16 +11,18 @@
   <div class="bg-red">
 
   </div>
-  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
-  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
+  
 
 
   {% if not user.0 %}
-    Hello Guest
+  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
+  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
+    <div>Hello Guest</div>
     {%else%}
     hello {{user.0.display_name}} bro<br>
-    <a href='editProfile'>Edit Profile</a>
-  
+    <a href='editProfile' class="bg-slate-500 p-2 rounded-md">Edit Profile</a>
+    <a href='AllYourPosts' class="bg-slate-500 p-2 rounded-md">All Your Posts</a>
+  <br>
     <br>
   
     {%endif%}
@@ -40,10 +42,11 @@
     {%for i in topPosts%}
     <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
       <div class="text-4xl mb-5">
-        {{i.title}}
+        {{i.title|safe}}
       </div>
       <div>
-        {{ i.body }}
+        
+        {{i.body|safe}}
       </div>
     
       <div>

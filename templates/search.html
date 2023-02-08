@@ -18,8 +18,10 @@
 
   </script> -->
     <div class="text-lg bg-slate-400 p-2 m-3 rounded-lg">
-
-    {{i.body}}:{{i.owner_user_id}}
+      <div class="text-4xl mb-5">
+        {{i.title|safe}}
+      </div>
+    {{i.body|safe}}:{{i.owner_user_id}}
     <form action="/eachpost" method="POST">
       <input type="hidden" value={{i.id}} name="id">
       <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">

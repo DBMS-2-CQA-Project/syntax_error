@@ -3,3 +3,5 @@
 /__pycache__
 /Data
 /migrations
+data_load.sql
+data_analysis.txt

@@ -13,9 +13,9 @@ urlpatterns=[
   path('signin',views.signin,name="djsfhdj"),
   path('signup',views.signup,name="djsfhdj"),
   path('edited',views.edited,name="djsfhdj"),
-  path('manageCookies',views.manageCookies,name="manageCookies"),
-  path('scookie',views.setcookie),  
-  path('gcookie',views.getcookie),
+  # path('manageCookies',views.manageCookies,name="manageCookies"),
+  # path('scookie',views.setcookie),
+  # path('gcookie',views.getcookie),
   path('createPost',views.createPost,name="djsfhdj"),
   path('PostCreated',views.PostCreated,name="CreatedPost"),
 
@@ -26,6 +26,7 @@ urlpatterns=[
   path('eachpost',views.eachpost,name="djsfhdj"),
   path('Singlepost',views.Singlepost,name="Singlepost"),
   path('PostEdited',views.PostEdited,name="AllYourPosts"),
-  path('EditedPostPage',views.PostEdited,name="EditedPostPage")
-
+  path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
+  path('AddComment',views.AddComment,name="AddComment"),
+  path('CommentAdded',views.CommentAdded,name="CommentAdded")
 ]
