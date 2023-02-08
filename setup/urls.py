@@ -19,4 +19,9 @@ urlpatterns=[
   path('eachpost',views.eachpost,name="djsfhdj"),
   path('logout',views.logout,name="logout"),
 
+  path('Singlepost',views.Singlepost,name="Singlepost"),
+  path('PostEdited',views.PostEdited,name="AllYourPosts"),
+  path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
+  path('AddComment',views.AddComment,name="AddComment"),
+  path('CommentAdded',views.CommentAdded,name="CommentAdded")
 ]

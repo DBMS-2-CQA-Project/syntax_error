@@ -69,6 +69,27 @@ def logout(request):
   response.delete_cookie('loginStatus')
   return response
 
+# queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
+#   return render(request, 'index.html',{'topPosts':list(queries.values())})
+
+# def eachpost(request):
+#   messages.success(request, "Post Created")
+#   if request.method=='POST':
+#     id=request.POST.get('id')
+#     global parentID_for_AnswerPost
+#     parentID_for_AnswerPost=id
+#     answersList=list(posts.objects.filter(parent_id=id).values())
+#     # for i in range(len(answersList)):
+#     #   answersList[i]['index']=i
+
+#     ques=posts.objects.filter(id=id)
+
+#     # commentsList=[]
+#     for i in answersList:
+#       i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
+#     return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList,})
+
+
 # home page
 def home(request):
   queries= list(posts.objects.filter(post_type_id=1).order_by('-view_count')[:10].values())
@@ -243,25 +264,108 @@ def AnsweredPost(request):
     new_AnswerPost.save()
     # Update the quesion/ create post thing
     ParentIt=posts.objects.filter(id=parentID_for_AnswerPost).values()
-    print(ParentIt[0]['answer_count'])
+    #print(ParentIt[0]['answer_count'])
     current_answer_count= ParentIt[0]['answer_count']+1
     posts.objects.filter(id=parentID_for_AnswerPost).update(answer_count=current_answer_count)
-    print(new_AnswerPost)
+    #print(new_AnswerPost)
     # Upload data in postHistory(later)
 
 
 
     return render(request, 'AnsweredPost.html', {'AnswerPost':new_AnswerPost})
 
+def Singlepost(request):
+  
+  owner_user_id_ForEditingPosts=160
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    owner_user_id_ForEditingPosts=request.COOKIES['userId']
+    output=request.POST.get('submit')
+    id=request.POST.get('id')
+    if(output=="Edit"):
+      global PostData
+      PostData=posts.objects.filter(id=id,owner_user_id=owner_user_id_ForEditingPosts).values()
+      print(PostData)
+      return render(request, 'editYourPost.html', {'postdata':PostData,'owner_user_id':owner_user_id_ForEditingPosts,'id':id})
+
+    return render(request, 'eachPost.html')
+
 
 def AllYourPosts(request):
-      postsAll=posts.objects.filter(owner_user_id=49553)
+  
+      owner_user_id_ForEditingPosts=160
+      if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+        owner_user_id_ForEditingPosts=request.COOKIES['userId']
+      owner_user_id=owner_user_id_ForEditingPosts
+      print(owner_user_id)
+      postsAll=posts.objects.filter(owner_user_id=owner_user_id)
       postsAll=list(postsAll.values())
-      print(len(postsAll))
-      return render(request,'AllYourPosts.html',{'postsAll':postsAll})
+      print(postsAll)
+      #print(len(postsAll))
+      return render(request,'AllYourPosts.html',{'postsAll':postsAll,'owner_user_id':owner_user_id})
 
+# def EditingSinglePost(request):
+
+def PostEdited(request):  
+  # currentPostId=PostData['id']
+  ToDo=request.POST.get('EditIt')
+  EPId=request.POST.get('ThePostaData')
+  print(ToDo)
+  if(ToDo=='2'):
+            print("Bro it is deleted")
+            posts.objects.filter(id=EPId).delete()
+  else:          
+    EPTitle=request.POST.get('EditedPostTitle')
+    EPTags=request.POST.get('EditedPostTags')
+    EPContent_license=request.POST.get('EditedPostcontent_license')
+    EPBody=request.POST.get('EditedPostBody')
+    EPId=request.POST.get('ThePostaData')
+    EPlast_edit_date=datetime.now()
+    # TotalData=request.POST.get('TotalPostData')
+    posts.objects.filter(id=EPId).update(tags=EPTags,title=EPTitle,body=EPBody,content_license=EPContent_license,last_edit_date=EPlast_edit_date)
+    TotalData=posts.objects.filter(id=EPId).values()
+  return render(request,'EditedPostPage.html')
+   
+def CommentAdded(request):
+    ThePostId=request.POST.get('PostId')
+    ThePostContent_license=request.POST.get('ThePostContent_license')
+    user_id=request.POST.get('user_id')
+    Bodytext=request.POST.get('Bodytext')
+    print(ThePostId)
+    # Updated the comments table here
+    CommentWriter= users.objects.filter(id=user_id).values()
+    CommentWriter=CommentWriter[0]['display_name']
+    # getting user_display_name from users table
+    CoomentIdGeneration = comments.objects.all().values()
+    leng=len(CoomentIdGeneration)
+    CId= 1+CoomentIdGeneration[leng-1]['id']
+    Ccreation_date=datetime.now()
+    new_comment=comments(id=CId, post_id=ThePostId, user_id=user_id, score=0, content_license=ThePostContent_license, user_display_name=CommentWriter,text=Bodytext,creation_date =Ccreation_date)
+    new_comment.save()
+
+    # Updated the posts table here
+    a=request.POST.get('ThePostcomment_count')
+    print(a,"fkskfs")
+
+    ThePostcomment_count=1+int(a)
+    Clast_activity_date=datetime.now()
+    posts.objects.filter(id=ThePostId).update(comment_count=ThePostcomment_count,last_activity_date=Clast_activity_date)
+    print("The shit of comment adding is done")
+    
+    return render(request, 'eachPost.html')
 ###########
+def AddComment(request):
+  v=request.POST.get('AboutPostData')
+  ThePostId=int(v)
+  ThePost=list(posts.objects.filter(id=ThePostId).values())[0]
+  # print(ThePost)
+  user_id=000
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+      user_id=request.COOKIES['userId']
+  return render(request,'CommentPage.html',{'PostData':ThePost,'user_id':user_id})
 
+
+
+#################
 def find(tag, str):
     """ A helper function which will helps in finding 
         if a tag is present in a list of tags 

@@ -20,6 +20,8 @@
   <div class="p-5">
     {{ques.0.body|safe}}
   </div>
+  <form action="/AddComment" method="POST">
+
   <div>
     <div class="text-center text-5xl my-5">Answers</div>
     {%for i in answersList%}
@@ -40,11 +42,14 @@
           {{j.text|safe}}
         </div>
         {%endfor%}
+        <input type="hidden" name="AboutPostData" value= {{i.id}}>
+        <input type="submit" value="AddComment" ></input>
       </div>
     </div>
     {%endfor%}
   </div>
  
+</form>
   <form action="/PostAnswer" method="POST">
     <input type='submit'>AnswerPost</input>
   </form>
