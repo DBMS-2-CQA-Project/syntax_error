@@ -8,29 +8,29 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <title>Signin</title>
-  
+
 
 </head>
 
-<body>
+<body class="bg-slate-300">
   <div id="heading" class="text-xl">
   </div>
 
   <div id="login">
     <div id="signin">
       <div class="head"><b style="font-family: Roboto, serif; color:rgb(239 14 64 / 70%);">Sign In</b></div>
-      <form action="/signin" method="POST">
+      <form action="/signin" method="POST" class="mx-auto inline ">
         {% csrf_token %}
 
         <div class="Input">
           <label for="id">ID</label>
-          <input type="text" id="id" onfocus="chan_1()" name="id" required
-            style="border: 2px solid black;  ;" placeholder="ID"><br>
+          <input type="text" id="id" onfocus="chan_1()" name="id" required style="border: 2px solid black;  ;"
+            placeholder="ID"><br>
         </div>
         <div class="Input">
           <label for="pw">Password</label>
           <input type="text" id="pw" name="pw" onfocus="chan_2()" placeholder="Password" required
-            style="border: 2px solid black;"><br>
+            style="border: 2px solid black;">
         </div>
 
 

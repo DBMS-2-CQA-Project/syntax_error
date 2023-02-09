@@ -9,33 +9,47 @@
   <title>Document</title>
 </head>
 <body class="bg-slate-300">
+  <div>
+    {%for msg in messages%}
+    {{msg}}
+    {%endfor%}
+  </div>
   <div class="text-4xl p-5">
     {{ques.0.title}}
   </div>
   <div class="p-5">
     {{ques.0.body|safe}}
   </div>
+  <form action="/AddComment" method="POST">
+
   <div>
     <div class="text-center text-5xl my-5">Answers</div>
     {%for i in answersList%}
-    <div class="text-xl bg-slate-400 p-5 m-5 rounded-sm">
+    <div class="text-lg bg-slate-400 p-5 m-5 rounded-md">
+      <!-- <div>
+        {{i.owner_display_name}}
+      </div> -->
       <div >
         {{i.body|safe}}
       </div>
       <div>
-        {%with ind=i.index %}
-        {%for j in commentsList.ind %}
-        <div>
-          <br><br><br><br>
+        <!-- {{i.}} -->
+      </div>
+      <div>
+        <div class="m-5 text-3xl">Comments</div>
+        {%for j in i.commentsList%}
+        <div class="m-3 text-base">
           {{j.text|safe}}
         </div>
         {%endfor%}
-        {%endwith%}
+        <input type="hidden" name="AboutPostData" value= {{i.id}}>
+        <input type="submit" value="AddComment" ></input>
       </div>
     </div>
     {%endfor%}
   </div>
  
+</form>
   <form action="/PostAnswer" method="POST">
     <input type='submit'>AnswerPost</input>
   </form>
