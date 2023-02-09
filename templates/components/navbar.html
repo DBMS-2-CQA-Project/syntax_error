@@ -12,9 +12,9 @@
 
   <form action="/search" method="POST">
     {% csrf_token %}
-    <input type="text" placeholder="search posts" required name="searchValue" class="border-2">
+    <input type="text" placeholder="search posts" id = "autosearch" required name="searchValue" class="border-2">
     <select name="searchBy" id="searchBy" class="p-1.5" required>
-      <option value="userId">User ID</option>
+      <option value="username">User name</option>
       <option value="tags">Tags</option>
     </select>
     <input type="submit" value="Submit" class="hover:cursor-pointer bg-slate-400 p-1 rounded">

@@ -23,31 +23,6 @@
 
   </div>
 
-  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
-  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
-
-
-  {% if not user.0 %}
-  Hello Guest
-  {%else%}
-  hello {{user.0.display_name}} bro<br>
-  <a href='editProfile'>Edit Profile</a>
-
-  <br>
-  
-
-  {%endif%}
-
-  <form action="/search" method="POST">
-    {% csrf_token %}
-    <select name="searchBy" id="searchBy" required >
-      <option value="username">User Name</option>
-      <option value="tags">Tags</option>
-    </select>
-
-    <input type="text" id="autosearch" placeholder="search posts" required name="searchValue">
-    <input type="submit" value="Submit" class="hover:cursor-pointer">
-  </form>
     <script type="text/javascript">
     $("#searchBy").change(function changeData() {
       var data=[]
@@ -87,7 +62,7 @@
 
       <div>
         <form action="/eachpost" method="POST">
-          <input type="hidden" value={{i.id}} name="id">
+          <input type="hidden" value={{i.id}} name="id" >
           <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
         </form>
       </div>
