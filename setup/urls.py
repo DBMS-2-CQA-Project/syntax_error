@@ -24,4 +24,5 @@ urlpatterns=[
   path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
   path('AddComment',views.AddComment,name="AddComment"),
   path('CommentAdded',views.CommentAdded,name="CommentAdded")
+  # path('profile',views.profile,name="profile")
 ]
