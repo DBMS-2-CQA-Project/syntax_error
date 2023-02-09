@@ -1,8 +1,10 @@
+import re
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from setup.models import users, posts, comments
+from setup.models import users, posts, comments,tags
 from django.contrib import auth
+import json
 # from django.utils.safestring import mark_safe
 
 dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
@@ -80,22 +82,31 @@ def edited(request):
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
 
-  return render(request, 'index.html',{'topPosts':list(queries.values())})
+  all_tags = list(tags.objects.values_list('tag_name',flat = True))
+  all_user_names = list(users.objects.values_list('display_name',flat = True))
+  for i in range(len(all_user_names)):
+    if match := re.search("'", all_user_names[i]):
+      all_user_names[i] = re.sub("'","\'",all_user_names[i])
+  rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names}
+  return render(request, 'index.html', rs_dict)
 
-def eachpost(request):
-  if request.method=='POST':
-    id=request.POST.get('id')
-    global parentID_for_AnswerPost
-    parentID_for_AnswerPost=id
-    answersList=list(posts.objects.filter(parent_id=id).values())
-    for i in range(len(answersList)):
-      answersList[i]['index']=i
-    ques=posts.objects.filter(id=id)
-    commentsList=[]
-    for i in answersList:
-      commentsList.append(list(comments.objects.filter(post_id=i['id']).values()))
-    print(answersList[3]['index'])
-    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList})
+
+def eachpost(request):  
+  if request.method != 'POST':
+    return
+  id=request.POST.get('id')
+  global parentID_for_AnswerPost
+  parentID_for_AnswerPost=id
+  answersList=list(posts.objects.filter(parent_id=id).values())
+  for i in range(len(answersList)):
+    answersList[i]['index']=i
+  ques=posts.objects.filter(id=id)
+  commentsList = [
+      list(comments.objects.filter(post_id=i['id']).values())
+      for i in answersList
+  ]
+  print(answersList[3]['index'])
+  return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList})
 
 
 
@@ -155,10 +166,12 @@ def search(request):
   if request.method=='POST':
     searchBy=request.POST.get('searchBy')
     searchValue=request.POST.get('searchValue')
-    if searchBy=='userId':
+    if searchBy=='username':
       global relatedPostsList
-      relatedPosts=posts.objects.filter(owner_user_id=searchValue)
+      print(searchValue)
+      relatedPosts=posts.objects.filter(owner_display_name=searchValue)
       relatedPostsList=list(relatedPosts.values())
+      
 
     elif searchBy=='tags':
       global searchValueList
@@ -171,7 +184,7 @@ def search(request):
 
     if not relatedPostsList:
       return HttpResponse("no matches found")
-    return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
+  return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
 
 
 ############

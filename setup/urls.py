@@ -25,4 +25,5 @@ urlpatterns=[
   path('search',views.search,name="djsfhdj"),
   path('eachpost',views.eachpost,name="djsfhdj")
 
+
 ]
