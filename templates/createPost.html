@@ -7,7 +7,6 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- <script src="marked.min.js"></script> -->
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <style>
             input[type="text"] {
@@ -17,6 +16,8 @@
         </head>
         
         <body>
+            {% include "./components/navbar.html" %}
+            {% include "./components/messages.html" %}
             <form action="/PostCreated" method="POST">
         <p>owner_user_id:{{owner_user_id}}</p>
         <p>last_editor_user_id:NULL</p>

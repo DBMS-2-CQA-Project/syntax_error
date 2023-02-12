@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+  <title>Home</title>
+</head>
+<body class="bg-slate-300">
+  <div class="bg-red">
+
+  </div>
+  
+ {% load template_filters %}
+
+  {% if not user.0 %}
+  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
+  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
+    <div>Hello Guest</div>
+    {%else%}
+    hello {{user.0.display_name}} bro<br>
+    <a href='editProfile' class="bg-slate-500 p-2 rounded-md">Edit Profile</a>
+    <a href='AllYourPosts' class="bg-slate-500 p-2 rounded-md">All Your Posts</a>
+  <br>
+    <br>
+  
+    {%endif%}
+
+  <form action="/search" method="POST">
+    {% csrf_token %}
+    <input type="text" placeholder="search posts" required name="searchValue">
+    <select name="searchBy" id="searchBy" required>
+      <option value="userId">User ID</option>
+      <option value="tags">Tags</option>
+    </select>
+    <input type="submit" value="Submit" class="hover:cursor-pointer">
+  </form>
+  <div>
+    <div class="text-4xl mt-10 text-center">Trending Posts</div>
+    {%for i in topPosts%}
+    
+    <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
+      {% with i.id|to_string as KeyForUp %}
+      Upvotes: {{UpVotesOfAll|lookup:KeyForUp}}  hello<t><t><b><button type='button' onclick="upvoteIt({{i.id}})" id='upvotes' name='upvotes' style='color:green' >upvote This post</button></b><br>
+      
+        Downvotes: {{DownVotesOfAll|lookup:KeyForUp}} <t><t><b> <button type='button' id='downvotes' name='downvotes' style='color:red'>downvote This post</button><br></b>
+    
+      <div class="text-4xl mb-5">
+        {{i.title|safe}}
+      </div>
+      <div>
+        {{i.body|safe}}
+      </div>
+
+      <div>
+        <form action="/eachpost" method="POST">
+          <input type="hidden" value={{i.id}} name="id">
+          <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
+        </form>
+      </div>
+    </div>
+    {% endwith %}
+    {%endfor%}
+  </div>
+
+</div>
+<div>
+  
+</div>
+
+  <script>
+    function upvoteIt(a){
+      console.log(a)
+
+
+
+    }
+  </script>
+
+
+</body>
+</html>

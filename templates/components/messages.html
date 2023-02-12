@@ -1,0 +1,27 @@
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div>
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li class="msg bg-slate-500 w-fit mt-2 fixed left-[50vw] p-2 rounded text-xl">{{ message }} 
+      <i class="fa fa-window-close" onclick="cut()"></i>
+
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+  {% block content%}
+  {%endblock%}
+
+
+  <script>
+    msg=document.getElementsByClassName("msg")[0]
+    cut=()=>{
+      msg.remove()
+    }
+    setTimeout(()=>{
+      msg.remove()
+    },3000)
+  </script>
