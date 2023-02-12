@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from setup.models import users, posts, comments
+from setup.models import *
 from django.contrib import auth
 from datetime import datetime
 from django.contrib import messages
@@ -81,7 +81,26 @@ def edited(request):
 
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  return render(request, 'index.html',{'topPosts':list(queries.values())})
+  DownVotesCount= downvotes.objects.values()
+  UpVotesCount= upvotes.objects.values()
+  UpVotesCount=list(UpVotesCount)
+  #print(UpVotesCount)
+  a={}
+  for i in range(len(UpVotesCount)):
+    pid=str(UpVotesCount[i]['post_id'])
+    uv=str(UpVotesCount[i]['upvotes'])
+    a[pid]=uv
+  b={}
+  for i in range(len(DownVotesCount)):
+    pid=str(DownVotesCount[i]['post_id'])
+    uv=str(DownVotesCount[i]['downvotes'])
+    b[pid]=uv
+  # print((a))
+  # print(b)
+  # print(UpVotesCount[1]['post_id'])
+  #order_by('-view_count')[:10]
+  
+  return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
 
 def eachpost(request):
   messages.success(request, "Post Created")
@@ -414,6 +433,8 @@ def find_using_xyz(d, attribute, value):
     return tempList
 
 
+# def findTheUpvoteVoteCount(UpVotes,keyIt):
+#   return UpVotes[keyIt]
 # Sample list of dictionaries
 d = [{'id': 1, 'owner_id': 8802, 'tags': "<python> <c++>"}, 
 {'id': 2, 'owner_id': 123, 'tags': "<python> <c>"}, 
