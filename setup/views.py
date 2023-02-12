@@ -437,15 +437,11 @@ def find_using_tags(d , tags):
 
 
 def find_using_xyz(d, attribute, value):
-    """ Function to print all the rows in the list 
+  """ Function to print all the rows in the list 
         of dicts which contains the value which the user 
         is searching for according to the attribute he/she chose. 
         """
-    tempList=[]                                                             
-    for i in range(len(d)):
-        if(d[i][attribute] == value):
-            tempList.append(d[i])
-    return tempList
+  return [d[i] for i in range(len(d)) if (d[i][attribute] == value)]
 
 
 # Sample list of dictionaries
