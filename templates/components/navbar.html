@@ -15,9 +15,11 @@ display: block;
 
   <form action="/search" method="POST">
     {% csrf_token %}
+    <div class = "ui-autocomplete">
     <input type="text" placeholder="search posts" id = "autosearch" required name="searchValue" class="border-2">
+    </div>
     <select name="searchBy" id="searchBy" class="p-1.5" required>
-      <option value="username">User name</option>
+      <option value="username" selected>User name</option>
       <option value="tags">Tags</option>
     </select>
     <input type="submit" value="Submit" class="hover:cursor-pointer bg-slate-400 p-1 rounded">
