@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
     <head>
         <meta charset="utf-8">
@@ -13,27 +9,26 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+{% include "./components/navbar.html" %}
+{% include "./components/messages.html" %}
         <h1>Your credentials:</h1>
         <form action="/edited" method="POST">
             {% csrf_token %}
 
             id:{{user_id}}<br>
-            <input type='text' id='updated_account_id' name='updated_account_id' placeholder={{user_account_id}}>account_id</input> <br>
-            reputation:{{user_reputation}}<br>
-            views:{{user_views}}<br>
-            down_votes:{{user_down_votes}}<br>
-            up_votes:{{user_up_votes}}<br>
-            <input type='text' id='updated_display_name' name='updated_display_name' placeholder={{user_display_name}}>display_name</input> <br>
-            <input type='text' id='updated_location' name='updated_location' placeholder={{user_location}}>location</input> <br>
-            <input type='text' id='updated_profile_image_url' name='updated_profile_image_url' placeholder={{user_profile_image_url}}>profile_image_url</input>
+            <input type='number' id='updated_account_id' name='updated_account_id' value={{user.account_id}}>account_id</input> <br>
+            reputation:{{user.reputation}}<br>
+            views:{{user.views}}<br>
+            down_votes:{{user.down_votes}}<br>
+            up_votes:{{user.up_votes}}<br>
+            <input type='text' id='updated_display_name' name='updated_display_name' value="{{user.display_name}}" required>display_name</input> <br>
+            <input type='text' id='updated_location' name='updated_location' value="{{user.location}}">location</input> <br>
+            <input type='text' id='updated_profile_image_url' name='updated_profile_image_url' value={{user_profile_image_url}}>profile_image_url</input>
             <br>
-            <input type='text' id='updated_website_url' name='updated_website_url' placeholder={{user_website_url}}>website_url</input><br>
-            <input type='text' id='updated_about_me' name='updated_about_me' placeholder={{user_about_me}}>about_me</input> <br>
-            creation_date:{{user_creation_date}}<br>
-            last_access_date:{{user_last_access_date}}<br>
+            <input type='text' id='updated_website_url' name='updated_website_url' value={{user.website_url}}>website_url</input><br>
+            <input type='text' id='updated_about_me' name='updated_about_me' value={{user.about_me}}>about_me</input> <br>
+            creation_date:{{user.creation_date}}<br>
+            last_access_date:{{user.last_access_date}}<br>
             <input type="submit" value="Submit">
             
         </form>

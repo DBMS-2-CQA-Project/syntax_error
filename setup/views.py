@@ -1,56 +1,50 @@
+import re
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+parentID_for_AnswerPost=0
 from setup.models import *
 from django.contrib import auth
+import json
 from datetime import datetime
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+
 # from django.utils.safestring import mark_safe
 
-dataIt=[423930,100,0,0,0,0,'pradeep','hyd',0,0,0,0,0]
-parentID_for_AnswerPost=1
-UserCurrent=users.objects.filter(id=2)
-def test(request):
-  
-  # print(request.POST.get('email_mobno'))
+def signup(request):
+  if request.method=='POST':
 
-  mydata = users.objects.all().values()
+    lastRowById = list(users.objects.all().order_by('-id')[:1].values())
 
-  # template = loader.get_template('template.html')
-  context = {
-    'mymembers': mydata
-  }
-  length=len(mydata)
-  #print(mydata[length-1]['id'])
-  new_id=1+mydata[length-1]['id']
-  new_account_id=request.POST.get('account_id')
+    newId= 1+lastRowById[0]['id']
+    print(newId)
+    new_account_id=request.POST.get('account_id')
+    new_reputation=0
+    new_views=0
+    new_down_votes=0
+    new_up_votes=0
+    new_display_name=request.POST.get('display_name')
+    newCreationDate=datetime.now()
+    newLastAccessDate=datetime.now()
+    new_location=request.POST.get('location')
+    new_about_me=request.POST.get('about_me')
+    new_fellow=users(id=newId,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me,creation_date=newCreationDate, last_access_date=newLastAccessDate)
+    
+    new_fellow.save()
+    new_fellow=users.objects.filter(id=newId)
 
-  new_reputation=0
+    response=HttpResponseRedirect('/')
+    response.set_cookie('userId',newId)
+    response.set_cookie('loginStatus',True)
+    return response
 
-  new_views=0
-
-  new_down_votes=0
-
-  new_up_votes=0
-
-  new_display_name=request.POST.get('display_name')
+  return render(request, 'signup.html')
 
 
-  new_location=request.POST.get('location')
-  new_about_me=request.POST.get('about_me')
-  new_fellow=users(id=new_id,account_id=new_account_id,reputation=new_reputation,views=new_views,down_votes=new_down_votes,up_votes=new_up_votes,display_name=new_display_name,location=new_location,about_me=new_about_me)
-  new_fellow.save()
-  # new data
-  mydata = users.objects.all().values()
-
-  # template = loader.get_template('template.html')
-  context = {
-    'mymembers': mydata
-  }
-  # return HttpResponse(loader.get_template('test.html'),render(context, request))
-  return render(request, 'test.html', context)
-
-def edited(request):
+def profileEdited(request):
+# if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+  id=request.COOKIES['userId']
   updated_account_id= request.POST['updated_account_id']
   updated_display_name = request.POST['updated_display_name']
   updated_location= request.POST['updated_location']
@@ -58,27 +52,28 @@ def edited(request):
   updated_website_url= request.POST['updated_website_url']
   updated_about_me= request.POST['updated_about_me']
  
-  UserCurrent= users.objects.filter(id=dataIt[0])
-  for x in UserCurrent:
-    updated_data=x
-    if(not updated_account_id):
-      updated_data.account_id= updated_account_id
-    if(not updated_display_name):
-      updated_data.display_name= updated_display_name
-    if(not updated_location):
-      updated_data.location= updated_location
-    if(not updated_profile_image_url):
-      updated_data.profile_image_url= updated_profile_image_url
-    if(not updated_website_url):
-      updated_data.website_url= updated_website_url
-    if(not updated_about_me):
-      updated_data.about_me= updated_about_me
-    updated_data.save()
-    #print(updated_data)
+  currUser= users.objects.get(id=id)
+
+  currUser.account_id= updated_account_id
+  currUser.display_name= updated_display_name
+  currUser.location= updated_location
+  currUser.profile_image_url= updated_profile_image_url
+  currUser.website_url= updated_website_url
+  currUser.about_me= updated_about_me
+  currUser.save()
+  print(currUser)
   
-  return render(request, 'edited.html')
+  return HttpResponseRedirect('/')
+
+# logout function
+def logout(request):
+  response=HttpResponseRedirect('/')
+  response.delete_cookie('userId')
+  response.delete_cookie('loginStatus')
+  return response
 
 
+# home page
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
   DownVotesCount= downvotes.objects.values()
@@ -100,25 +95,41 @@ def home(request):
   # print(UpVotesCount[1]['post_id'])
   #order_by('-view_count')[:10]
   
-  return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
+  # return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
+  all_tags = list(tags.objects.values_list('tag_name',flat = True))
+  all_user_names = list(users.objects.values_list('display_name',flat = True))
+  for i in range(len(all_user_names)):
+    if match := re.search("'", all_user_names[i]):
+      all_user_names[i] = re.sub("'","\'",all_user_names[i])
 
-def eachpost(request):
-  messages.success(request, "Post Created")
-  if request.method=='POST':
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    currUserId=request.COOKIES['userId']
+    currUser=list(users.objects.filter(id=currUserId).values())
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser,'UpVotesOfAll':a,'DownVotesOfAll':b}
+  else:
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'UpVotesOfAll':a,'DownVotesOfAll':b}
+  return render(request, 'index.html', rs_dict)
+
+
+def eachpost(request):  
+  if request.method == 'POST':
     id=request.POST.get('id')
-    global parentID_for_AnswerPost
-    parentID_for_AnswerPost=id
+
     answersList=list(posts.objects.filter(parent_id=id).values())
-    # for i in range(len(answersList)):
-    #   answersList[i]['index']=i
-
+    for i in range(len(answersList)):
+      answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
-
-    # commentsList=[]
-    for i in answersList:
-      i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
-    return render(request,'eachpost.html',{'ques':list(ques.values()),'answersList':answersList,})
-
+    commentsList = [
+        list(comments.objects.filter(post_id=i['id']).values())
+        for i in answersList
+    ]
+    if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+      currUserId=request.COOKIES['userId']
+      currUser=list(users.objects.filter(id=currUserId).values())
+      currDict={'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList,'user':currUser}
+    else:
+      currDict={'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList}
+    return render(request,'eachpost.html',currDict)
 
 
 def signin(request):
@@ -129,48 +140,32 @@ def signin(request):
     currUser=users.objects.filter(id=id)
 
     if not currUser:
-      return HttpResponse("Check your credential")
+      messages.error(request, "Check your credentials")
+      return HttpResponseRedirect('/signin')
+      
     else:
-      queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-      response=render(request, 'index.html',{'user':list(currUser.values()), 'topPosts':list(queries.values())})
+      response=HttpResponseRedirect('/')
       response.set_cookie('userId',list(currUser.values())[0]['id'])
       response.set_cookie('loginStatus',True)
       return response
   return render(request,'signin.html')
 
 
-def signup(request):
-  return render(request, 'signup.html')
+
+
+
 
 
 def editProfile(request):
-  listIt=dataIt
-  return render(request, 'editProfile.html',{'user_id':listIt[0],'user_account_id':listIt[1],'user_reputation':listIt[2],'user_views':listIt[3],'user_down_views':listIt[4],'user_up_views':listIt[5],'user_display_name':listIt[6],'user_location':listIt[7],'user_profile_image_url':listIt[8],'user_website_url':listIt[9],'user_about_me':listIt[10],'user_creation_date':listIt[11],'user_last_access_date':listIt[12]})
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    currUserId=request.COOKIES['userId']
+    currUser=list(users.objects.filter(id=currUserId).values())[0]
+    return render(request, 'editProfile.html',{'user':currUser})
+  else:
+    messages.error(request, 'First you have to login')
+    return HttpResponseRedirect('/')
 
 
-
-#############
-# MANAGE COOKIES
-# def manageCookies(request):
-#   return render(request,'manageCookies.html')
-# from django.shortcuts import render  
-# from django.http import HttpResponse  
-  
-# def setcookie(request):  
-#     response = HttpResponse("Cookie Set")  
-#     response.set_cookie('java-tutorial', 'javatpoint.com')  
-#     return response  
-# def getcookie(request):  
-#     tutorial  = request.COOKIES['java-tutorial']  
-#     return HttpResponse("java tutorials @: "+  tutorial);  
-
-# def set_cookie(response, key, value):
-#     response.set_cookie(key,value)
-    
-# def view(request):
-#     response = HttpResponse("hello")
-#     set_cookie(response, 'name', 'jujule')
-#     return response
 
 # Check out template.html to see how the mymembers object
 # was used in the HTML code. 
@@ -179,10 +174,12 @@ def search(request):
   if request.method=='POST':
     searchBy=request.POST.get('searchBy')
     searchValue=request.POST.get('searchValue')
-    if searchBy=='userId':
+    if searchBy=='username':
       global relatedPostsList
-      relatedPosts=posts.objects.filter(owner_user_id=searchValue)
+      print(searchValue)
+      relatedPosts=posts.objects.filter(owner_display_name=searchValue)
       relatedPostsList=list(relatedPosts.values())
+      
 
     elif searchBy=='tags':
       global searchValueList
@@ -194,7 +191,8 @@ def search(request):
 
 
     if not relatedPostsList:
-      return HttpResponse("no matches found")
+      messages.error(request, "No matches found")
+      return HttpResponseRedirect('/')
     return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
 
 
@@ -203,7 +201,9 @@ def search(request):
 def createPost(request):
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
     return render(request,'createPost.html')
-  return HttpResponse('first login bro')
+  messages.info(request, "You have to login for creating posts")
+  print("yes")
+  return render(request,'signin.html')
 
 ############
 # UPDATING POST TO DATABASE
@@ -212,8 +212,8 @@ def PostCreated(request):
     
     if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
 
-      lastRowById = posts.objects.all().order_by('id')[:1]
-      CPid= 1+lastRowById['id']
+      lastRowById = list(posts.objects.all().order_by('id')[:1].values())
+      CPid= 1+lastRowById[0]['id']
       CPownerUserId=request.COOKIES['userId']
 
       ownerUser=list(users.objects.filter(id=CPownerUserId).values())
@@ -232,23 +232,12 @@ def PostCreated(request):
       new_CreatePost=posts(id=CPid, owner_user_id=CPownerUserId, post_type_id=1, score=0, view_count=0, answer_count=0, comment_count=0, owner_display_name=CPownerDisplayName,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody, creation_date =CPcreationDate,last_activity_date=CPcreationDate)
       new_CreatePost.save()
       print(new_CreatePost)
+      new_CreatePostList=list(new_CreatePost.values())
       messages.success(request, "Post Created")
-      return
-      # Upload data in postHistory(later)
-    
+      return render(request,'eachpost',{'newPost':new_CreatePostList})
 
-
-# -- select real_id from (select T.id as real_id from setup_posts as S, setup_posts as T where T.post_type_id=1 and S.id=T.id and T.owner_user_id=S.last_editor_user_id);
-
-# select * from setup_post_history where post_id=26264;
-
-# -- 134 724
-
-# -- select A.real_id,count(*) from setup_post_history as B, (select T.id as real_id from setup_posts as S, setup_posts as T where T.post_type_id=1 and S.id=T.id and T.owner_user_id=S.last_editor_user_id) as A where A.real_id=B.post_id group by A.real_id having count(*)<4
-# -- select post_id from setup_post_history as B where post_history_type_id=1 or post_history_type_id=2 or post_history_type_id=3 group by post_id having count(*)=3
 
     return render(request, 'YourPost.html', {'CreatedPost':new_CreatePost,'owner_user_id':dataIt[0],'owner_display_name':dataIt[6]})
-
 
 
 ################################
@@ -308,18 +297,17 @@ def Singlepost(request):
 
 def AllYourPosts(request):
   
-      owner_user_id_ForEditingPosts=160
       if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
-        owner_user_id_ForEditingPosts=request.COOKIES['userId']
-      owner_user_id=owner_user_id_ForEditingPosts
-      print(owner_user_id)
-      postsAll=posts.objects.filter(owner_user_id=owner_user_id)
-      postsAll=list(postsAll.values())
-      print(postsAll)
-      #print(len(postsAll))
-      return render(request,'AllYourPosts.html',{'postsAll':postsAll,'owner_user_id':owner_user_id})
+        currUserId=request.COOKIES['userId']
+        allPosts=list(posts.objects.filter(owner_user_id=currUserId).values())
+        if len(allPosts)>0:
+          return render(request,'AllYourPosts.html',{'postsAll':allPosts})
+        messages.info(request, "You haven't created any posts")
+        return HttpResponseRedirect('/')
+      messages.error(request, "First you have to login")
+      return HttpResponseRedirect('/')
 
-# def EditingSinglePost(request):
+
 
 def PostEdited(request):  
   # currentPostId=PostData['id']

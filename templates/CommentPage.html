@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
     <head>
         <meta charset="utf-8">
@@ -13,6 +9,9 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
+        {% include "./components/navbar.html" %}
+        {% include "./components/messages.html" %}
+
     <form action="/CommentAdded" method="POST">
         <p>post_id:{{PostData.id}}</p>
         <p>user_id:{{user_id}}</p>
@@ -28,6 +27,5 @@
         <input type='text' id='Bodytext' name='Bodytext'>text</input>
         <input type='submit'>Add Comment</input>
         </form>
-        <script src="" async defer></script>
     </body>
 </html>

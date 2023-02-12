@@ -3,19 +3,12 @@ from . import views
 from django.contrib import admin  
 
 urlpatterns=[
-  path('test',views.test,name="test"),
+  path('signup',views.signup,name="signup"),
   path('editProfile',views.editProfile,name="editProfile"),
-  # path('signin',views.signin,name="djsfhdj"),
-  # path('signup',views.signup,name="djsfhdj"),
-  # path('signindata',views.signinData,name="djsfhdj"),
-  # path('signupdata',views.signupdata,name="djsfhdj")
   path('',views.home,name="djsfhdj"),
   path('signin',views.signin,name="djsfhdj"),
   path('signup',views.signup,name="djsfhdj"),
-  path('edited',views.edited,name="djsfhdj"),
-  # path('manageCookies',views.manageCookies,name="manageCookies"),
-  # path('scookie',views.setcookie),
-  # path('gcookie',views.getcookie),
+  path('edited',views.profileEdited,name="djsfhdj"),
   path('createPost',views.createPost,name="djsfhdj"),
   path('PostCreated',views.PostCreated,name="CreatedPost"),
 
@@ -24,9 +17,12 @@ urlpatterns=[
   path('AnsweredPost',views.AnsweredPost,name="AnsweredPost"),
   path('search',views.search,name="djsfhdj"),
   path('eachpost',views.eachpost,name="djsfhdj"),
+  path('logout',views.logout,name="logout"),
+
   path('Singlepost',views.Singlepost,name="Singlepost"),
   path('PostEdited',views.PostEdited,name="AllYourPosts"),
   path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
   path('AddComment',views.AddComment,name="AddComment"),
   path('CommentAdded',views.CommentAdded,name="CommentAdded")
+  # path('profile',views.profile,name="profile")
 ]

@@ -1,7 +1,8 @@
-/syntax_error_venv
+syntax_error_venv
 .env
-/__pycache__
+__pycache__
 /Data
-/migrations
+migrations
 data_load.sql
+.vscode
 data_analysis.txt

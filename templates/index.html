@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+ 
   <title>Home</title>
 </head>
+
 <body class="bg-slate-300">
+  
+
+  {% include "./components/navbar.html" %}
+  {% include "./components/messages.html" %}  
   <div class="bg-red">
 
   </div>
-  {% if not user.0 %}
-  <a href="signin" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signin</a>
-  <a href="signup" class="hover:cursor-pointer p-2 bg-slate-400 m-1">Signup</a>
-    <div>Hello Guest</div>
-    {%else%}
-    hello {{user.0.display_name}} bro<br>
-    <a href='editProfile' class="bg-slate-500 p-2 rounded-md">Edit Profile</a>
-    <a href='AllYourPosts' class="bg-slate-500 p-2 rounded-md">All Your Posts</a>
-  <br>
-    <br>
-  
-    {%endif%}
 
-  <form action="/search" method="POST">
-    {% csrf_token %}
-    <input type="text" placeholder="search posts" required name="searchValue">
-    <select name="searchBy" id="searchBy" required>
-      <option value="userId">User ID</option>
-      <option value="tags">Tags</option>
-    </select>
-    <input type="submit" value="Submit" class="hover:cursor-pointer">
-  </form>
+    
+
+  
+
   <div>
     <div class="text-4xl mt-10 text-center">Trending Posts</div>
     {%for i in topPosts%}
@@ -42,15 +36,17 @@
         {{i.title|safe}}
       </div>
       <div>
+
         {{i.body|safe}}
       </div>
 
       <div>
         <form action="/eachpost" method="POST">
-          <input type="hidden" value={{i.id}} name="id">
+          <input type="hidden" value={{i.id}} name="id" >
           <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
         </form>
       </div>
+
     </div>
     {%endfor%}
   </div>
@@ -60,5 +56,30 @@
   
 </div>
 
+
+
+<script type="text/javascript">
+  $("#searchBy").change(function changeData() {
+    var data = []
+    if ($(this).val() == "username") {
+      data = {% autoescape on %}
+    { { avail_users | safe } }
+    {% endautoescape %}
+  }
+      else {
+      data = {{ avail_tags| safe }};
+
+      }
+  $("#autosearch").autocomplete({
+    minLength: 2,
+    source: function (request, response) {
+      var results = $.ui.autocomplete.filter(data, request.term);
+      response(results.slice(0, 10));
+    }
+  });
+    }
+    );
+</script>
 </body>
+
 </html>
