@@ -1,13 +1,12 @@
 import re
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from setup.models import users, posts, comments,tags
 from django.contrib import auth
 import json
 from datetime import datetime
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 
 # from django.utils.safestring import mark_safe
 
