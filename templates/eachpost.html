@@ -14,12 +14,29 @@
     {% include "./components/messages.html" %}
 
   <div class="text-4xl p-5">
+    
     {{ques.0.title}}
   </div>
   <div class="p-5">
     {{ques.0.body|safe}}
   </div>
-  
+  <div class="m-5 text-3xl">Comments</div>
+  <button onclick="showCommentOption({{ques.0.id}})">Add comment</button>
+  <form action="/CommentAdded" method="POST">
+    <input type="hidden" name="PostId" id="PostId" value={{ ques.0.id }}>
+    <input type="hidden" name="user_id" id="user_id" value={{ ques.0.owner_user_id }}>
+    <input type="hidden" name="ThePostContent_license" id="ThePostContent_licenseer_id"
+      value="{{ques.0.content_license}}">
+    <input type="hidden" name="ThePostcomment_count" id="ThePostcomment_count" value={{ques.0.comment_count}}>
+    
+    <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
+    <input type='submit'></input>
+    </form>
+
+  <div class="hidden" id={{i.id}}>
+
+    <form action="/CommentAdded" method="POST">
+    </div>
 
   <div>
     <div class="text-center text-5xl my-5">Answers</div>
@@ -43,13 +60,14 @@
         {%endfor%}
         <button onclick="showCommentOption({{i.id}})">Add comment</button>
 
-        <div class="hidden" id={{i.id}}>
+        <div class="hidden" id={{i.id}}> 
           <form action="/CommentAdded" method="POST">
-          <input type="hidden" name="PostId" id="PostId" value={{i.id}}>
-          <input type="hidden" name="user_id" id="user_id" value={{user_id}}>
+          <input type="hidden" name="PostId" id="PostId" value={{ i.id }}>
+          
+          <input type="hidden" name="user_id" id="user_id" value={{ i.owner_user_id }}>
           <input type="hidden" name="ThePostContent_license" id="ThePostContent_licenseer_id"
-            value="{{PostData.Content_license}}">
-          <input type="hidden" name="ThePostcomment_count" id="ThePostcomment_count" value={{PostData.comment_count}}>
+            value="{{i.content_license}}">
+          <input type="hidden" name="ThePostcomment_count" id="ThePostcomment_count" value={{i.comment_count}}>
           
           <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
           <input type='submit'></input>

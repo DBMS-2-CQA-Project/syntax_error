@@ -7,10 +7,21 @@
       <script src="https://cdn.tailwindcss.com"></script>
 
   <title>Document</title>
+  <!--
+  <h1>filter By</h1>
+  <form action='\OrderByUpvotes' method='POST'>
+  <input type='hidden' id='upvotesSort' name='upvotesSort' value="{{relatedPostsData}}" ></input>
+  <input type='submit' id='upvotesSortFix' name='upvotesSortFix'>Upvotes</input>
+</form>
+-->
 </head>
 <body class="bg-slate-300">
   {% include "./components/navbar.html" %}
   {% include "./components/messages.html" %}
+  
+
+
+  
   <div class="my-10 mx-auto text-center text-5xl">Search result for {{searchValue}}</div>
 
   {%for i in relatedPostsList%}
@@ -19,7 +30,7 @@
       <div class="text-4xl mb-5">
         {{i.title|safe}}
       </div>
-    {{i.body|safe}}:{{i.owner_display_name}}
+    {{i.body|safe}}
     <form action="/eachpost" method="POST">
       <input type="hidden" value={{i.id}} name="id">
       <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">

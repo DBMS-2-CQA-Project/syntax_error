@@ -9,8 +9,32 @@ import json
 from datetime import datetime
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-
+relatedPostsData=posts.objects.filter(post_type_id=1)
 # from django.utils.safestring import mark_safe
+
+# filter of upvotes and time:
+# def OrderByUpvotes(request):
+#   #queriesOrder= posts.objects.filter(post_type_id=1).order_by('creation_date')[:10]
+  
+#   all_tags = list(tags.objects.values_list('tag_name',flat = True))
+#   all_user_names = list(users.objects.values_list('display_name',flat = True))
+#   queriesOrder=relatedPostsData.order_by('-creation_date')
+#   queriesOrder=relatedPostsData.order_by('-creation_date')
+  
+#   #request.POST.get('upvotesSort')
+#   # print(type(queriesOrder))
+#   queriesOrder=queriesOrder #.order_by('creation_date')
+#   print(queriesOrder)
+#   queriesOrder=list(queriesOrder.values())
+
+#   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+#     currUserId=request.COOKIES['userId']
+#     currUser=list(users.objects.filter(id=currUserId).values())
+#     rs_dict = {'topPosts':queriesOrder}
+#   else:
+#     rs_dict = {'topPosts':queriesOrder}
+#   return render(request, 'search.html', {'relatedPostsList':queriesOrder,'avail_tags':all_tags,'avail_users':all_user_names})
+
 
 def signup(request):
   if request.method=='POST':
@@ -94,7 +118,8 @@ def home(request):
   # print(b)
   # print(UpVotesCount[1]['post_id'])
   #order_by('-view_count')[:10]
-  
+  global relatedPostsData
+  relatedPostsData= posts.objects.filter(post_type_id=1)
   # return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
   all_tags = list(tags.objects.values_list('tag_name',flat = True))
   all_user_names = list(users.objects.values_list('display_name',flat = True))
@@ -178,6 +203,8 @@ def search(request):
       global relatedPostsList
       print(searchValue)
       relatedPosts=posts.objects.filter(owner_display_name=searchValue)
+      global relatedPostsData
+      relatedPostsData=relatedPosts
       relatedPostsList=list(relatedPosts.values())
       
 
@@ -193,6 +220,7 @@ def search(request):
     if not relatedPostsList:
       messages.error(request, "No matches found")
       return HttpResponseRedirect('/')
+
     return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
 
 
@@ -200,9 +228,14 @@ def search(request):
 #  CREATE POST PAGE
 def createPost(request):
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
-    return render(request,'createPost.html')
+    currUserId=request.COOKIES['userId']
+    owner_display_name=users.objects.filter(id=currUserId).values()
+    owner_display_name=owner_display_name[0]['display_name']
+    return render(request,'createPost.html',{'owner_user_id':currUserId,'owner_display_name':owner_display_name})
   messages.info(request, "You have to login for creating posts")
   print("yes")
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    currUserId=request.COOKIES['userId']
   return render(request,'signin.html')
 
 ############
@@ -300,8 +333,9 @@ def AllYourPosts(request):
       if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
         currUserId=request.COOKIES['userId']
         allPosts=list(posts.objects.filter(owner_user_id=currUserId).values())
+        user=list(users.objects.filter(id=currUserId).values())
         if len(allPosts)>0:
-          return render(request,'AllYourPosts.html',{'postsAll':allPosts})
+          return render(request,'AllYourPosts.html',{'postsAll':allPosts,"user":user})
         messages.info(request, "You haven't created any posts")
         return HttpResponseRedirect('/')
       messages.error(request, "First you have to login")
@@ -332,18 +366,25 @@ def PostEdited(request):
 def CommentAdded(request):
     ThePostId=request.POST.get('PostId')
     ThePostContent_license=request.POST.get('ThePostContent_license')
-    user_id=request.POST.get('user_id')
+    # user_id=request.POST.get('user_id')
     Bodytext=request.POST.get('Bodytext')
+    currUserId=0
     print(ThePostId)
+    if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+      currUserId=request.COOKIES['userId']
+     # owner_display_name=users.objects.filter(id=currUserId).values()
+    #  owner_display_name=owner_display_name[0]['display_name']
+    
+    print(currUserId)
     # Updated the comments table here
-    CommentWriter= users.objects.filter(id=user_id).values()
+    CommentWriter= users.objects.filter(id=currUserId).values()
     CommentWriter=CommentWriter[0]['display_name']
     # getting user_display_name from users table
     CoomentIdGeneration = comments.objects.all().values()
     leng=len(CoomentIdGeneration)
     CId= 1+CoomentIdGeneration[leng-1]['id']
     Ccreation_date=datetime.now()
-    new_comment=comments(id=CId, post_id=ThePostId, user_id=user_id, score=0, content_license=ThePostContent_license, user_display_name=CommentWriter,text=Bodytext,creation_date =Ccreation_date)
+    new_comment=comments(id=CId, post_id=ThePostId, user_id=currUserId, score=0, content_license=ThePostContent_license, user_display_name=CommentWriter,text=Bodytext,creation_date =Ccreation_date)
     new_comment.save()
 
     # Updated the posts table here
@@ -355,7 +396,7 @@ def CommentAdded(request):
     posts.objects.filter(id=ThePostId).update(comment_count=ThePostcomment_count,last_activity_date=Clast_activity_date)
     print("The shit of comment adding is done")
     
-    return render(request, 'eachPost.html')
+    return HttpResponseRedirect('/')
 ###########
 def AddComment(request):
   v=request.POST.get('AboutPostData')
