@@ -63,7 +63,7 @@
     var data = []
     if ($(this).val() == "username") {
       data = {% autoescape on %}
-    { { avail_users | safe } }
+    {{ avail_users | safe }}
     {% endautoescape %}
   }
       else {
