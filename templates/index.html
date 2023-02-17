@@ -6,11 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-3.6.3.min.js"
-    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
  
+ 
+      <!-- Include jQuery library -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+      <!-- Include Tagify plugin -->
+      <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.2.0/dist/tagify.min.js"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
   <title>Home</title>
 </head>
 
@@ -54,26 +57,64 @@
 
 
 <script type="text/javascript">
-  $("#searchBy").change(function changeData() {
-    var data = []
-    if ($(this).val() == "username") {
-      data = {% autoescape on %}
-    {{ avail_users | safe }}
-    {% endautoescape %}
-  }
-      else {
-      data = {{ avail_tags| safe }};
 
-      }
-  $("#autosearch").autocomplete({
-    minLength: 2,
-    source: function (request, response) {
-      var results = $.ui.autocomplete.filter(data, request.term);
-      response(results.slice(0, 10));
-    }
-  });
-    }
-    );
+const tag = document.getElementById("autosearch");
+var hidden_tag = document.getElementById("autosearch_hidden");
+
+
+const tagify = new Tagify(tag,{
+            whitelist : [],
+            enforceWhitelist : true,
+            maxTags : 5,
+            autocomplete : {
+                 enabled : true,
+                 minLength : 1,
+                 maxItems : 10
+            },
+            callbacks: {
+                   add: function(e) {
+            
+                  var tags = tagify.value.map(tag => tag.value).join(' ');
+                  hidden_tag.value = tags;
+                
+
+             },
+                   remove : function (e){
+                    console.log("Tag removed :",e.detail.data.value);
+                    var tags = tagify.value.map(tag => tag.value).join(' ');
+                    hidden_tag.value = tags;
+
+            }
+                 
+                   
+                    }
+  
+       
+         });
+
+
+ 
+  $('#searchBy').on('change', function() {
+  var selectedOption = $(this).val();
+   console.log(selectedOption)
+   var data = [];
+  // Update the tagify whitelist based on the selected option
+  if (selectedOption == 'username') {
+      data = {% autoescape on %}
+                       {{ avail_users | safe }}
+                       {% endautoescape %};
+      tagify.settings.maxTags = 1;
+     
+
+  }
+   else if (selectedOption == 'tags') {
+     data = {{ avail_tags| safe }} ;
+  }
+  tagify.settings.whitelist = data;
+  
+});
+
+
 </script>
 </body>
 

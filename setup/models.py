@@ -21,9 +21,9 @@ class users(models.Model):
 class posts(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # owner_user_id=models.IntegerField(("owner_user_id"), null=True)
-    owner_user_id= models.ForeignKey(users,related_name = 'owner_user_id',on_delete = models.SET('Anonymous'))
+    owner_user_id= models.ForeignKey(users,related_name = 'owner_user',db_column = 'owner_user_id',on_delete = models.SET_NULL,null=True)
     # last_editor_user_id=models.IntegerField(("last_editor_user_id"),null=True)
-    last_editor_user_id= models.ForeignKey(users,related_name = 'last_editor_user_id',on_delete = models.SET('Anonymous'))
+    last_editor_user_id= models.ForeignKey(users,related_name = 'last_editor_user',db_column = 'last_editor_user_id',on_delete = models.SET_NULL,null = True)
     post_type_id=models.SmallIntegerField(("post_type_id"), null=False)
     accepted_answer_id=models.IntegerField(("accepted_answer_id"),null=True)
     score=models.IntegerField(("score"), null=False)
@@ -47,9 +47,9 @@ class posts(models.Model):
 class tags(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # excerpt_post_id=models.IntegerField(("excerpt_post_id"),null=True)
-    excerpt_post_id = models.ForeignKey(posts,related_name = 'excerpt_post_id',on_delete = models.PROTECT)
+    excerpt_post_id = models.ForeignKey(posts,related_name = 'excerpt_post',db_column = 'excerpt_post_id',on_delete = models.PROTECT)
     # wiki_post_id=models.IntegerField(("wiki_post_id"),null=True)
-    wiki_post_id = models.ForeignKey(posts,related_name = 'wiki_post_id',on_delete = models.PROTECT)
+    wiki_post_id = models.ForeignKey(posts,related_name = 'wiki_post',db_column = 'wiki_post_id',on_delete = models.PROTECT)
     tag_name=models.CharField(("tag_name"),max_length=255,null=False)
     count=models.IntegerField(("count"),default=0)
 
@@ -58,7 +58,7 @@ class tags(models.Model):
 class badges(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # user_id=models.IntegerField(null=False)
-    user_id = models.ForeignKey(users,on_delete = models.CASCADE)
+    user_id = models.ForeignKey(users,db_column = 'user_id',on_delete = models.CASCADE)
     Class=models.SmallIntegerField(null=False)
     name=models.CharField(("name"),max_length=64,null=False)
     tag_based=models.BooleanField(("tag_based"),null=False)
@@ -69,9 +69,9 @@ class badges(models.Model):
 class votes(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # user_id=models.IntegerField(("user_id"),null=True)
-    user_id = models.ForeignKey(users,related_name = 'user_id',on_delete = models.CASCADE)
+    user_id = models.ForeignKey(users,related_name = 'user_id',db_column = 'user_id',on_delete = models.CASCADE)
     # post_id=models.IntegerField(("post_id"), null=False)
-    post_id = models.ForeignKey(posts,related_name = 'post_id_votes',on_delete = models.CASCADE)
+    post_id = models.ForeignKey(posts,related_name = 'post_id_votes',db_column = 'post_id',on_delete = models.CASCADE)
     vote_type_id=models.SmallIntegerField(("vote_type_id"), null=False)
     bounty_amount=models.SmallIntegerField(("bounty_amount"),null=True)
     creation_date=models.DateTimeField(("creation_date"), auto_now_add=True,null=False)
@@ -80,9 +80,9 @@ class votes(models.Model):
 class comments(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # post_id=models.IntegerField(("post_id"), null=False)
-    post_id = models.ForeignKey(posts,on_delete = models.CASCADE) 
+    post_id = models.ForeignKey(posts,db_column = 'post_id',on_delete = models.CASCADE) 
     # user_id=models.IntegerField(("user_id"),null=True)
-    user_id = models.ForeignKey(users,on_delete = models.SET('Anonymous'))
+    user_id = models.ForeignKey(users,db_column = 'user_id',on_delete = models.SET_NULL,null=True)
     score=models.SmallIntegerField(("score"), null=False)
     content_license=models.CharField(("content_license"),max_length=64,null=False)
     user_display_name=models.CharField(("user_display_name",),max_length=64,null=True)
@@ -94,9 +94,9 @@ class comments(models.Model):
 class post_history(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # post_id=models.IntegerField(("post_id"), null=False)
-    post_id = models.ForeignKey(posts,on_delete = models.CASCADE)
+    post_id = models.ForeignKey(posts,db_column = 'post_id',on_delete = models.CASCADE)
     # user_id=models.IntegerField(("user_id"), null=True)
-    user_id = models.ForeignKey(users,on_delete = models.SET('Anonymous'))
+    user_id = models.ForeignKey(users,db_column = 'user_id',on_delete = models.SET_NULL,null = True)
     post_history_type_id=models.SmallIntegerField(("post_history_type_id"), null=False)
     user_display_name=models.CharField(("user_display_name"),max_length=64,null=True)
     content_license=models.CharField(("content_license"),max_length=64, null=True)
@@ -109,9 +109,9 @@ class post_history(models.Model):
 class post_links(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     # related_post_id=models.IntegerField(("related_post_id"), null=False)
-    related_post_id = models.ForeignKey(posts,related_name = 'related_post_id',on_delete = models.PROTECT)
+    related_post_id = models.ForeignKey(posts,related_name = 'related_post_id',db_column = 'related_post_id',on_delete = models.PROTECT)
     # post_id=models.IntegerField(("post_id"), null=False)
-    post_id = models.ForeignKey(posts,related_name = 'post_id_links',on_delete = models.CASCADE)
+    post_id = models.ForeignKey(posts,related_name = 'post_id_links',db_column = 'post_id',on_delete = models.CASCADE)
     link_type_id=models.SmallIntegerField(("link_type_id"), null=False)
     creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)
 
