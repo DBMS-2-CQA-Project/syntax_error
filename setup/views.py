@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-relatedPostsData=posts.objects.filter(post_type_id=1)
+# relatedPostsData=posts.objects.filter(post_type_id=1)
 # from django.utils.safestring import mark_safe
 
 # filter of upvotes and time:
@@ -47,8 +47,8 @@ def signup(request):
     new_account_id=request.POST.get('account_id')
     new_reputation=0
     new_views=0
-    new_down_votes=0
-    new_up_votes=0
+    # new_down_votes=0
+    # new_up_votes=0
     new_display_name=request.POST.get('display_name')
     newCreationDate=datetime.now()
     newLastAccessDate=datetime.now()
@@ -101,39 +101,16 @@ def logout(request):
 # home page
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  # DownVotesCount= downvotes.objects.values()
-  # UpVotesCount= upvotes.objects.values()
-  # UpVotesCount=list(UpVotesCount)
-  #print(UpVotesCount)
-  a={}
-  # for i in range(len(UpVotesCount)):
-  #   pid=str(UpVotesCount[i]['post_id'])
-  #   uv=str(UpVotesCount[i]['upvotes'])
-  #   a[pid]=uv
-  # b={}
-  # for i in range(len(DownVotesCount)):
-  #   pid=str(DownVotesCount[i]['post_id'])
-  #   uv=str(DownVotesCount[i]['downvotes'])
-  #   b[pid]=uv
-  # print((a))
-  # print(b)
-  # print(UpVotesCount[1]['post_id'])
-  #order_by('-view_count')[:10]
-  global relatedPostsData
-  relatedPostsData= posts.objects.filter(post_type_id=1)
-  # return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
+  # global relatedPostsData
+  # relatedPostsData= posts.objects.filter(post_type_id=1)
   all_tags = list(tags.objects.values_list('tag_name',flat = True))
   all_user_names = list(users.objects.values_list('display_name',flat = True))
-  for i in range(len(all_user_names)):
-    if match := re.search("'", all_user_names[i]):
-      all_user_names[i] = re.sub("'","\'",all_user_names[i])
-
-  if 'userId' in request.COOKIES:
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
     currUserId=request.COOKIES['userId']
-    currUser=list(users.objects.filter(id=currUserId).values())[0]
-    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser,}
+    currUser=list(users.objects.filter(id=currUserId).values())
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser}
   else:
-    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,}
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names}
   return render(request, 'index.html', rs_dict)
 
 
@@ -227,7 +204,7 @@ def search(request):
       global relatedPostsData
       relatedPostsData=relatedPosts
       relatedPostsList=list(relatedPosts.values())
-      
+
 
     elif searchBy=='tags':
       global searchValueList
