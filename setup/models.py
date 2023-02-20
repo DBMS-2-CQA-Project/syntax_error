@@ -1,5 +1,5 @@
 from django.db import models
-
+import uuid
 
 # -- Tags
 # CREATE TABLE tags (
@@ -39,7 +39,6 @@ class votes(models.Model):
     bounty_amount=models.SmallIntegerField(("bounty_amount"),null=True)
     creation_date=models.DateTimeField(("creation_date"), auto_now_add=True,null=False)
 
-
 class comments(models.Model):
     id=models.IntegerField(("id"),primary_key=True)
     post_id=models.IntegerField(("post_id"), null=False)
@@ -59,7 +58,7 @@ class post_history(models.Model):
     post_history_type_id=models.SmallIntegerField(("post_history_type_id"), null=False)
     user_display_name=models.CharField(("user_display_name"),max_length=64,null=True)
     content_license=models.CharField(("content_license"),max_length=64, null=True)
-    revision_guid=models.UUIDField(("revision_guid"))
+    revision_guid=models.UUIDField(("revision_guid"),default=uuid.uuid4, editable=False)
     text=models.TextField(("text"), null=True)
     comment=models.TextField(("comment"),null=True)
     creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)
@@ -120,3 +119,13 @@ class users(models.Model):
     about_me=models.TextField(("about_me"),null=True)
     creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)
     last_access_date=models.DateTimeField(("last_access_date"),auto_now_add=True,null=False)
+
+# class upvotes(models.Model):
+#     post_id=models.IntegerField(("post_id"),primary_key=True, null=False)
+#     upvotes=models.IntegerField(("upvotes"),null=False,default=0)
+
+
+# class downvotes(models.Model):
+#     post_id=models.IntegerField(("post_id"),primary_key=True, null=False)
+#     downvotes=models.IntegerField(("downvotes"),null=False, default=0)
+     

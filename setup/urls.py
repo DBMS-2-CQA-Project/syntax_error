@@ -22,7 +22,11 @@ urlpatterns=[
   path('Singlepost',views.Singlepost,name="Singlepost"),
   path('PostEdited',views.PostEdited,name="AllYourPosts"),
   path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
-  path('AddComment',views.AddComment,name="AddComment"),
-  path('CommentAdded',views.CommentAdded,name="CommentAdded")
+  path('CommentAdded',views.CommentAdded,name="CommentAdded"),
+  path('profile',views.profile,name='Profile')
+
+ # path('OrderByUpvotes',views.OrderByUpvotes,name="OrderByUpvotes")
   # path('profile',views.profile,name="profile")
+
+  
 ]

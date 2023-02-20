@@ -1,34 +1,65 @@
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <html>
+    
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <style>
+    .dropdown:hover .dropdown-menu {
+display: block;
+}
+    </style>
+  </head>
+  <body>
+
    <div class="flex sticky p-3 top-0 bg-white h-20 items-center justify-between">
-  
 
   <form action="/search" method="POST">
     {% csrf_token %}
+    <div class = "ui-autocomplete inline">
     <input type="text" placeholder="search posts" id = "autosearch" required name="searchValue" class="border-2">
+    </div>
     <select name="searchBy" id="searchBy" class="p-1.5" required>
-      <option value="username">User name</option>
+      <option value="username" selected>User name</option>
       <option value="tags">Tags</option>
     </select>
     <input type="submit" value="Submit" class="hover:cursor-pointer bg-slate-400 p-1 rounded">
   </form>
-  <div class="flex gap-x-2">
+  <div class="flex gap-x-2 items-center">
     <a href="/createPost" class="hover:cursor-pointer p-1 bg-slate-400 rounded h-fit">Create post</a>
-    {% if not user.0 %}
+    {% if not user %}
     <a href="signin" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signin</a>
     <a href="signup" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signup</a>
     {%else%}
-    <!-- <a href='editProfile' class="hover:cursor-pointer p-2 bg-slate-400 m-1 rounded">Edit Profile</a> -->
-    <a href="logout" class="hover:cursor-pointer p-1 bg-slate-400 rounded h-fit">Logout</a>
-    <a href="profile" class="">
-      {%if user.0.profile_image_url%}
-      <img src="{{user.0.profile_image_url}}" alt="" class="rounded-full object-contain h-12 mx-2">
+    <div class="p-10">
+
+      <div class="dropdown inline-block relative">
+        <button>
+
+           {%if user.profile_image_url%}
+      <img src="{{user.profile_image_url}}" alt="" class="rounded-full object-contain h-12 mx-2 border-4">
       {%else%}
-      <i class="fa fa-user fa-3x" aria-hidden="true"></i>
+      <i class="fa fa-user fa-3x w-[56px] rounded-[50%] border-4" aria-hidden="true"></i>
     
       {%endif%}
-    </a>
+
+        </button>
+        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+          <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/profile">Profile</a></li>
+          <!-- <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/editProfile">Edit Profile</a></li> -->
+          <li class=""><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    
+    </div>
+    
+
     {%endif%}
   </div>
  </div>
+</body>
+</html>

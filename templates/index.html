@@ -5,31 +5,21 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-3.6.3.min.js"
-    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
- 
+
   <title>Home</title>
 </head>
 
 <body class="bg-slate-300">
-  
-
   {% include "./components/navbar.html" %}
   {% include "./components/messages.html" %}  
   <div class="bg-red">
 
   </div>
 
-    
-
-  
-
   <div>
     <div class="text-4xl mt-10 text-center">Trending Posts</div>
     {%for i in topPosts%}
+    
     <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
       <div class="text-4xl mb-5">
         {{i.title|safe}}
@@ -40,8 +30,8 @@
       </div>
 
       <div>
-        <form action="/eachpost" method="POST">
-          <input type="hidden" value={{i.id}} name="id" >
+        <form action="/eachpost" method="GET">
+          <input type="hidden" value={{i.id}} name="quesId" >
           <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
         </form>
       </div>
@@ -62,7 +52,7 @@
     var data = []
     if ($(this).val() == "username") {
       data = {% autoescape on %}
-    { { avail_users | safe } }
+    {{ avail_users | safe }}
     {% endautoescape %}
   }
       else {
