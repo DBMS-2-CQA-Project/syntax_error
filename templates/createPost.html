@@ -9,7 +9,13 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://unpkg.com/@yaireo/tagify@4.3.0/dist/tagify.min.js"></script>
+    
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Include Tagify plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.2.0/dist/tagify.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
 
 
     <style>
@@ -38,24 +44,20 @@
         </div>
         <div>
             <label for=""> Post Tags</label>
-            <input type="text" placeholder="Tags" id="autosearch2" required class="border-2">
+            <input type="text" placeholder="Tags" id="autosearch_tags" required class="border-2">
+            <input type="hidden" id="autosearch_hidden_tags" name="createPostTags">
         </div>
         <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
-            <!-- <label for=""></label> -->
-            <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you answer in markdown" rows="5"
-                cols="40" class="w-full sm:w-1/2 m-1"></textarea>
+            <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you answer in markdown"
+                rows="5" cols="40" class="w-full sm:w-1/2 m-1"></textarea>
             <div id="markup" class="w-full sm:w-1/2 bg-white m-1 min-h-[5rem]"></div>
         </div>
         <input type='submit' value="Submit" class="hover:cursor-pointer p-1 bg-slate-400 rounded w-fit">
-        
-    </div>
-    
-    
 
-    
+    </div>
+
     </form>
-<input name="tags" placeholder="Type and hit enter" class="tagify">
-     
+
     <script>
         markup = document.getElementById('markup')
         markdown = document.getElementById('markdown')
@@ -66,19 +68,47 @@
         }
 
 
-        // data={{avail_tags|safe}};
-        // $("#autosearch2").autocomplete({
-        //     minLength: 2,
-        //     source: function (request, response) {
-        //         var results = $.ui.autocomplete.filter(data, request.term);
-        //         response(results.slice(0, 10));
-        //     }
-        // });
-    var input = document.querySelector('input[name=tags]');
+        const tag = document.getElementById("autosearch_tags");
+        var hidden_tag = document.getElementById("autosearch_hidden_tags");
 
-        var tagify = new Tagify(input, {
-            whitelist: ["Apple", "Banana", "Cherry", "Date", "Elderberry"]
+
+        const tagify = new Tagify(tag, {
+            whitelist: [],
+            enforceWhitelist: true,
+            maxTags: 5,
+            autocomplete: {
+                enabled: true,
+                minLength: 1,
+                maxItems: 10
+            },
+            callbacks: {
+                add: function (e) {
+
+                    var tags = tagify.value.map(tag => tag.value).join('><');
+                    hidden_tag.value = '<'+tags+'>';
+                    console.log(hidden_tag.value)
+
+
+                },
+                remove: function (e) {
+                    console.log("Tag removed :", e.detail.data.value);
+                    var tags = tagify.value.map(tag => tag.value).join(' ');
+                    hidden_tag.value = tags;
+
+                }
+
+
+            }
+
+
         });
+
+        var data = {% autoescape on %}
+        {{ avail_tags | safe }}
+        {% endautoescape %}
+        tagify.settings.whitelist = data;
+
+      
 
     </script>
 </body>

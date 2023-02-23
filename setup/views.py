@@ -108,7 +108,7 @@ def home(request):
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
     currUserId=request.COOKIES['userId']
     currUser=list(users.objects.filter(id=currUserId).values())
-    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser}
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser[0]}
   else:
     rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names}
   return render(request, 'index.html', rs_dict)
@@ -255,6 +255,7 @@ def PostCreated(request):
       CPcontent_license="CC BY-SA 4.0"
       CPtitle=request.POST.get('createPostTitle')
       CPTags=request.POST.get('createPostTags')
+      print(CPTags)
       CPBody=request.POST.get('createPostBody')
       
       # Upload data in posts table

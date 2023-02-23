@@ -8,11 +8,19 @@
   <script src="https://code.jquery.com/jquery-3.6.3.min.js"
     integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+  <!-- Include jQuery library -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include Tagify plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.2.0/dist/tagify.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
   <style>
     .dropdown:hover .dropdown-menu {
 display: block;
 }
     </style>
+
   </head>
   <body>
 
@@ -32,16 +40,17 @@ display: block;
   </form>
   <div class="flex gap-x-2 items-center">
     <a href="/createPost" class="hover:cursor-pointer p-1 bg-slate-400 rounded h-fit">Create post</a>
-    {% if not user %}
+    {% if not user.id %}
     <a href="signin" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signin</a>
     <a href="signup" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signup</a>
+
     {%else%}
     <div class="p-10">
 
       <div class="dropdown inline-block relative">
         <button>
 
-           {%if user.profile_image_url%}
+      {%if user.profile_image_url%}
       <img src="{{user.profile_image_url}}" alt="" class="rounded-full object-contain h-12 mx-2 border-4">
       {%else%}
       <i class="fa fa-user fa-3x w-[56px] rounded-[50%] border-4" aria-hidden="true"></i>
@@ -57,10 +66,76 @@ display: block;
       </div>
     
     </div>
-    
-
     {%endif%}
   </div>
  </div>
+
+
+
+ <!-- <script type="text/javascript">
+
+  const tag = document.getElementById("autosearch");
+  var hidden_tag = document.getElementById("autosearch_hidden");
+
+
+  const tagify = new Tagify(tag, {
+    whitelist: [],
+    enforceWhitelist: true,
+    maxTags: 5,
+    autocomplete: {
+      enabled: true,
+      minLength: 1,
+      maxItems: 10
+    },
+    callbacks: {
+      add: function (e) {
+
+        var tags = tagify.value.map(tag => tag.value).join(' ');
+        hidden_tag.value = tags;
+
+
+      },
+      remove: function (e) {
+        console.log("Tag removed :", e.detail.data.value);
+        var tags = tagify.value.map(tag => tag.value).join(' ');
+        hidden_tag.value = tags;
+
+      }
+
+
+    }
+
+
+  });
+
+  var data = {% autoescape on %}
+  {{ avail_users | safe }}
+  {% endautoescape %}
+  tagify.settings.maxTags = 1;
+  tagify.settings.whitelist = data;
+
+  $('#searchBy').on('change', function () {
+    var selectedOption = $(this).val();
+
+    var data = [];
+
+    // Update the tagify whitelist based on the selected option
+    if (selectedOption == 'username') {
+      data = {% autoescape on %}
+    {{ avail_users | safe }}
+    {% endautoescape %};
+    tagify.settings.maxTags = 1;
+  }
+
+   else if (selectedOption == 'tags') {
+    data = {{ avail_tags | safe }};
+  }
+  tagify.settings.whitelist = data;
+  
+});
+
+
+</script> -->
+
 </body>
 </html>
