@@ -30,28 +30,28 @@
     {% include "./components/messages.html" %}
 
 
-    <form action="/PostCreated" method="POST"></form>
+    <form action="/PostCreated" method="POST">
 
-    <input type="hidden" name="ownerUserId" id="ownerUserId" value={{owner_user_id}}>
-    <input type="hidden" name="ownerDisplayName" id="ownerDisplayName" value={{owner_display_name}}>
-    <input type="hidden" name="createPostTags" id="createPostTags">
-    <input type="hidden" id="createPostBody" id='createPostBody'>
+    <input type="hidden" id="autosearch_hidden_tags" name="createPostTags" required>
+    <input type="hidden" id="createPostBody" name='createPostBody' required>
 
     <div class="flex flex-col m-auto mt-5 mx-2">
         <div>
             <label for="">Title</label>
-            <input type='text' id='createPostTitle' name='createPostTitle' class="border-2" placeholder="Title">
+            <input type='text' id='createPostTitle' name='createPostTitle' class="border-2" placeholder="Title" required>
         </div>
+        
         <div>
             <label for=""> Post Tags</label>
             <input type="text" placeholder="Tags" id="autosearch_tags" required class="border-2">
-            <input type="hidden" id="autosearch_hidden_tags" name="createPostTags">
         </div>
+
         <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
             <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you answer in markdown"
                 rows="5" cols="40" class="w-full sm:w-1/2 m-1"></textarea>
             <div id="markup" class="w-full sm:w-1/2 bg-white m-1 min-h-[5rem]"></div>
         </div>
+
         <input type='submit' value="Submit" class="hover:cursor-pointer p-1 bg-slate-400 rounded w-fit">
 
     </div>
@@ -65,6 +65,7 @@
         function markdownToHtml() {
             markup.innerHTML = marked.parse(markdown.value)
             createPostBody.value = marked.parse(markdown.value)
+            console.log(createPostBody.value)
         }
 
 

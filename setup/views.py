@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from setup.models import *
 from django.db import models
+from django.forms.models import model_to_dict
 from django.db.models import F
 from django.contrib import auth
 import json
@@ -241,33 +242,26 @@ def PostCreated(request):
     
     if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
 
-      lastRowById = list(posts.objects.all().order_by('id')[:1].values())
+      lastRowById = list(posts.objects.all().order_by('-id')[:1].values())
       CPid= 1+lastRowById[0]['id']
       CPownerUserId=request.COOKIES['userId']
-
-      ownerUser=list(users.objects.filter(id=CPownerUserId).values())
-
-      CPpostTypeId=1
-      CPownerDisplayName=ownerUser['display_name']
-      CPcommentCount=0
-      CPanswerCount=0
+      ownerUser=users.objects.get(id=CPownerUserId)
+      CPownerDisplayName=ownerUser.display_name
+ 
       CPcreationDate=datetime.now()
       CPcontent_license="CC BY-SA 4.0"
       CPtitle=request.POST.get('createPostTitle')
       CPTags=request.POST.get('createPostTags')
-      print(CPTags)
       CPBody=request.POST.get('createPostBody')
       
       # Upload data in posts table
-      new_CreatePost=posts(id=CPid, owner_user_id=CPownerUserId, post_type_id=1, score=0, view_count=0, answer_count=0, comment_count=0, owner_display_name=CPownerDisplayName,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody, creation_date =CPcreationDate,last_activity_date=CPcreationDate)
+      new_CreatePost=posts(id=CPid, owner_user_id=ownerUser, post_type_id=1, score=0, view_count=0, answer_count=0, comment_count=0, owner_display_name=CPownerDisplayName,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody, creation_date =CPcreationDate,last_activity_date=CPcreationDate)
       new_CreatePost.save()
-      print(new_CreatePost)
-      new_CreatePostList=list(new_CreatePost.values())
+      new_CreatePost=model_to_dict(new_CreatePost)
       messages.success(request, "Post Created")
-      return render(request,'eachpost',{'newPost':new_CreatePostList})
+      return HttpResponseRedirect('/')
+      # return render(request,'eachpost',{'newPost':new_CreatePost,'user':model_to_dict(ownerUser)})
 
-
-    return render(request, 'YourPost.html', {'CreatedPost':new_CreatePost,'owner_user_id':dataIt[0],'owner_display_name':dataIt[6]})
 
 
 ################################
@@ -289,26 +283,28 @@ def  PostAnswer(request):
 
 def AnsweredPost(request):
    if request.method=='POST':
-    postIdGeneration = posts.objects.all().values()
-    leng=len(postIdGeneration)
-    CPid= 1+postIdGeneration[leng-1]['id']
+    # if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+
+    currUserId=request.COOKIES['userId']
+    ownerUser=users.objects.get(id=currUserId)
+    curruserName=ownerUser.display_name
+    lastRowById = list(posts.objects.all().order_by('-id')[:1].values())
+    CPid= 1+lastRowById[0]['id']
     CPcontent_license="CC BY-SA 4.0"
 
-    curruserId=request.POST.get('postAnswerUserId')
-    curruserName=request.POST.get('postAnswerUserName')
     currQuesId=request.POST.get('postAnswerQuesId')
     currBody=request.POST.get('postAnswerBody')
-    print(currQuesId)
+    print(currUserId)
 
-    new_AnswerPost=posts(id=CPid,owner_user_id=curruserId, post_type_id=2, score=0,parent_id=currQuesId,view_count=0,answer_count=0,comment_count=0,owner_display_name=curruserName,
+    new_AnswerPost=posts(id=CPid,owner_user_id=ownerUser, post_type_id=2, score=0,parent_id=currQuesId,view_count=0,answer_count=0,comment_count=0,owner_display_name=curruserName,
 	content_license=CPcontent_license,body=currBody, creation_date =datetime.now(),last_activity_date=datetime.now())
     new_AnswerPost.save()
+    print(currUserId)
     # Update the quesion/ create post thing
     ParentIt=posts.objects.filter(id=currQuesId).values()
-    #print(ParentIt[0]['answer_count'])
     current_answer_count= ParentIt[0]['answer_count']+1
     posts.objects.filter(id=currQuesId).update(answer_count=current_answer_count)
-    #print(new_AnswerPost)
+
     # Upload data in postHistory(later)
 
 
@@ -351,7 +347,7 @@ def AllYourPosts(request):
         allPosts=list(posts.objects.filter(owner_user_id=currUserId).values())
         user=list(users.objects.filter(id=currUserId).values())[0]
         if len(allPosts)>0:
-          return render(request,'AllYourPosts.html',{'postsAll':allPosts,"user":user})
+          return render(request,'AllYourPosts.html',{'allPosts':allPosts,"user":user})
         messages.info(request, "You haven't created any posts")
         return HttpResponseRedirect('/')
       messages.error(request, "First you have to login")

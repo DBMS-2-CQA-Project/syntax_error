@@ -40,6 +40,8 @@ display: block;
   </form>
   <div class="flex gap-x-2 items-center">
     <a href="/createPost" class="hover:cursor-pointer p-1 bg-slate-400 rounded h-fit">Create post</a>
+    <a href="/"><i class="fa fa-home m-1" style="font-size:30px" aria-hidden="true"></i></a>
+
     {% if not user.id %}
     <a href="signin" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signin</a>
     <a href="signup" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Signup</a>
@@ -60,6 +62,7 @@ display: block;
         </button>
         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
           <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/profile">Profile</a></li>
+          <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/AllYourPosts">Your Posts</a></li>
           <!-- <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/editProfile">Edit Profile</a></li> -->
           <li class=""><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/logout">Logout</a></li>
         </ul>

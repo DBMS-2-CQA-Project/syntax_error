@@ -11,43 +11,36 @@
     <body>
       {% include "./components/navbar.html" %}
       {% include "./components/messages.html" %}
-      <h1>Your credentials:</h1>
-            {% csrf_token %}
 
-            id:{{user.0.id}}<br>
-            <input type='number' id='updated_account_id' name='updated_account_id' value={{user.0.account_id}}>account_id</input> <br>
-            reputation:{{user.0.reputation}}<br>
-            views:{{user.0.views}}<br>
-            down_votes:{{user.0.down_votes}}<br>
-            up_votes:{{user.0.up_votes}}<br>
-            display_name:{{user.0.display_name}}<br>
-            location:{{user.0.location}}<br>
-            profile_image_url:{{user.0.profile_image_url}}<br>
-            website_url:{{user.0.website_url}}<br>
-            about_me:{{user.0.about_me}}<br>
-            creation_date:{{user.0.creation_date}}<br>
-            last_access_date:{{user.0.last_access_date}}<br>
+            
 
-        {%for i in postsAll%}
-        <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
-          <div class="text-4xl mb-5">
-            {{i.title}}
-          </div>
-          <div>
-            {{ i.body|safe }}
-          </div>
+        <div>
+          <div class="text-4xl mt-10 text-center">All your Posts</div>
+          {%for i in allPosts%}
         
-          <div>
-            <form action="/Singlepost" method="POST">
-              <input type="hidden" value={{i.id}} name="id">
-              <input type="submit" name='submit' value="Edit" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer"/>
-              <input type="submit" name='submit' value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer"/>
-            </form>
-          </div>
+          <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
+            <div class="text-4xl mb-5">
+              {{i.title|safe}}
+            </div>
+            <div>
         
+              {{i.body|safe}}
+            </div>
+        
+            <div>
+              <form action="/eachpost" method="GET">
+                {% if i.post_type_id == 1 %}
+                <input type="hidden" value={{i.id}} name="quesId">
+                {%elif i.post_type_id == 2%}
+                <input type="hidden" value={{i.parent_id}} name="quesId">
+                {%endif%}
+                <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
+              </form>
+            </div>
+        
+          </div>
+          {%endfor%}
         </div>
-        {%endfor%}
         
-        <script src="" async defer></script>
     </body>
 </html>
