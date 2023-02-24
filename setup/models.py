@@ -121,12 +121,13 @@ class users(models.Model):
     creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)
     last_access_date=models.DateTimeField(("last_access_date"),auto_now_add=True,null=False)
 
-class upvotes(models.Model):
-    post_id=models.IntegerField(("post_id"),primary_key=True, null=False)
-    upvotes=models.IntegerField(("upvotes"),null=False,default=0)
+
+# class upvotes(models.Model):
+#     post_id=models.IntegerField(("post_id"),primary_key=True, null=False)
+#     upvotes=models.IntegerField(("upvotes"),null=False,default=0)
 
 
-class downvotes(models.Model):
-    post_id=models.IntegerField(("post_id"),primary_key=True, null=False)
-    downvotes=models.IntegerField(("downvotes"),null=False, default=0)
+# class downvotes(models.Model):
+#     post_id=models.IntegerField(("post_id"),primary_key=True, null=False)
+#     downvotes=models.IntegerField(("downvotes"),null=False, default=0)
      

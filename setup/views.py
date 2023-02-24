@@ -39,7 +39,7 @@ def signup(request):
     response.set_cookie('loginStatus',True)
     return response
 
-  return render(request, 'signup.html')
+  return render(request, 'signup3.html')
 
 
 def profileEdited(request):
@@ -76,20 +76,20 @@ def logout(request):
 # home page
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  DownVotesCount= downvotes.objects.values()
-  UpVotesCount= upvotes.objects.values()
-  UpVotesCount=list(UpVotesCount)
+  # DownVotesCount= downvotes.objects.values()
+  # UpVotesCount= upvotes.objects.values()
+  # UpVotesCount=list(UpVotesCount)
   #print(UpVotesCount)
-  a={}
-  for i in range(len(UpVotesCount)):
-    pid=str(UpVotesCount[i]['post_id'])
-    uv=str(UpVotesCount[i]['upvotes'])
-    a[pid]=uv
-  b={}
-  for i in range(len(DownVotesCount)):
-    pid=str(DownVotesCount[i]['post_id'])
-    uv=str(DownVotesCount[i]['downvotes'])
-    b[pid]=uv
+  # a={}
+  # for i in range(len(UpVotesCount)):
+  #   pid=str(UpVotesCount[i]['post_id'])
+  #   uv=str(UpVotesCount[i]['upvotes'])
+  #   a[pid]=uv
+  # b={}
+  # for i in range(len(DownVotesCount)):
+  #   pid=str(DownVotesCount[i]['post_id'])
+  #   uv=str(DownVotesCount[i]['downvotes'])
+  #   b[pid]=uv
   # print((a))
   # print(b)
   # print(UpVotesCount[1]['post_id'])
@@ -105,9 +105,9 @@ def home(request):
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
     currUserId=request.COOKIES['userId']
     currUser=list(users.objects.filter(id=currUserId).values())
-    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser,'UpVotesOfAll':a,'DownVotesOfAll':b}
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser}
   else:
-    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'UpVotesOfAll':a,'DownVotesOfAll':b}
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names}
   return render(request, 'index.html', rs_dict)
 
 
