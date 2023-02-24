@@ -3,10 +3,10 @@ from . import views
 from django.contrib import admin  
 
 urlpatterns=[
-  path('signup',views.signup,name="signup"),
+  path('signup3',views.signup,name="signup3"),
   path('editProfile',views.editProfile,name="editProfile"),
-  path('',views.home,name="djsfhdj"),
-  path('signin',views.signin,name="djsfhdj"),
+  path('',views.home,name="home"),
+  path('signin',views.signin,name="sign-in"),
   path('signup',views.signup,name="djsfhdj"),
   path('edited',views.profileEdited,name="djsfhdj"),
   path('createPost',views.createPost,name="djsfhdj"),

@@ -65,7 +65,7 @@ def signup(request):
     response.set_cookie('loginStatus',True)
     return response
 
-  return render(request, 'signup.html')
+  return render(request, 'signup3.html')
 
 
 def profileEdited(request):
@@ -102,6 +102,26 @@ def logout(request):
 # home page
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
+  # DownVotesCount= downvotes.objects.values()
+  # UpVotesCount= upvotes.objects.values()
+  # UpVotesCount=list(UpVotesCount)
+  #print(UpVotesCount)
+  # a={}
+  # for i in range(len(UpVotesCount)):
+  #   pid=str(UpVotesCount[i]['post_id'])
+  #   uv=str(UpVotesCount[i]['upvotes'])
+  #   a[pid]=uv
+  # b={}
+  # for i in range(len(DownVotesCount)):
+  #   pid=str(DownVotesCount[i]['post_id'])
+  #   uv=str(DownVotesCount[i]['downvotes'])
+  #   b[pid]=uv
+  # print((a))
+  # print(b)
+  # print(UpVotesCount[1]['post_id'])
+  #order_by('-view_count')[:10]
+  
+  # return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
   # global relatedPostsData
   # relatedPostsData= posts.objects.filter(post_type_id=1)
   all_tags = list(tags.objects.values_list('tag_name',flat = True))
