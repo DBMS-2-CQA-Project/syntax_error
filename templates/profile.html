@@ -6,8 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
-<body>
-  <a href="AllYourPosts">All your posts</a>
-  <a href="editProfile">Edit Your profile</a>
+<body class="bg-slate-300 text-center">
+  {% include "./components/navbar.html" %}
+  {% include "./components/messages.html" %}
+  <div class="m-auto mt-5 text-center items-center inline-block text-center ">
+    {%if user.profile_image_url %}
+    <img src="{{user.profile_image_url}}" alt="" class="rounded-full object-contain h-40 mx-2 border-4">
+    {%else%}
+    <i class="fa fa-user fa-3x w-[80px] rounded-[50%] border-4" aria-hidden="true"></i>
+    {%endif%}
+    <div class="text-2xl">
+{{user.display_name}}
+    </div>
+    id {{user.id}}
+    location {{user.location}}
+    <a href="/AllYourPosts">See all your posts</a>
+  </div>
 </body>
 </html>

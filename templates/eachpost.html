@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,27 +9,49 @@
 
   <title>Document</title>
 </head>
+
 <body class="bg-slate-300">
-  
-    {% include "./components/navbar.html" %}
-    {% include "./components/messages.html" %}
+
+  {% include "./components/navbar.html" %}
+  {% include "./components/messages.html" %}
 
   <div class="text-4xl p-5">
+
     {{ques.0.title}}
   </div>
   <div class="p-5">
     {{ques.0.body|safe}}
   </div>
+  <form action="/PostAnswer" method="POST">
+    <input type="hidden" name="quesId" id="quesId" value={{ques.0.id}}>
+    <input type='submit' class="hover:cursor-pointer p-1 bg-slate-400 rounded" value="Write Answer">
+  </form>
+  <div class="m-5 text-3xl">Comments</div>
   
+{%for j in quesComments%}
+<li class="m-3 text-base">
+  {{j.text|safe}}
+</li>
+{%endfor%}
+
+<button onclick="showCommentOption({{ques.0.id}})" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Add comment</button>
+  <div class="hidden" id={{ques.0.id}}>
+    <form action="/CommentAdded" method="POST">
+      <input type="hidden" name="PostId" id="PostId" value={{ ques.0.id}}>
+    
+      <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
+      <input type='submit'></input>
+    </form>
+  </div>
 
   <div>
-    <div class="text-center text-5xl my-5">Answers</div>
+    <div class="text-center text-5xl my-5">ANSWERS</div>
     {%for i in answersList%}
     <div class="text-lg bg-slate-400 p-5 m-5 rounded-md">
       <!-- <div>
         {{i.owner_display_name}}
       </div> -->
-      <div >
+      <div>
         {{i.body|safe}}
       </div>
       <div>
@@ -37,42 +60,41 @@
       <div>
         <div class="m-5 text-3xl">Comments</div>
         {%for j in i.commentsList%}
-        <div class="m-3 text-base">
+        <li class="m-5 text-base">
           {{j.text|safe}}
-        </div>
+        </li>
         {%endfor%}
-        <button onclick="showCommentOption({{i.id}})">Add comment</button>
+        <button onclick="showCommentOption({{i.id}})" class="hover:cursor-pointer p-1 bg-slate-500 rounded">Add comment</button>
 
         <div class="hidden" id={{i.id}}>
           <form action="/CommentAdded" method="POST">
-          <input type="hidden" name="PostId" id="PostId" value={{i.id}}>
-          <input type="hidden" name="user_id" id="user_id" value={{user_id}}>
-          <input type="hidden" name="ThePostContent_license" id="ThePostContent_licenseer_id"
-            value="{{PostData.Content_license}}">
-          <input type="hidden" name="ThePostcomment_count" id="ThePostcomment_count" value={{PostData.comment_count}}>
-          
-          <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
-          <input type='submit'></input>
+            <input type="hidden" name="PostId" id="PostId" value={{ i.id }}>
+
+            <input type="hidden" name="user_id" id="user_id" value={{ i.owner_user_id }}>
+            <input type="hidden" name="ThePostContent_license" id="ThePostContent_licenseer_id"
+              value="{{i.content_license}}">
+            <input type="hidden" name="ThePostcomment_count" id="ThePostcomment_count" value={{i.comment_count}}>
+
+            <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
+            <input type='submit'></input>
           </form>
         </div>
       </div>
     </div>
     {%endfor%}
   </div>
- 
-  <form action="/PostAnswer" method="POST">
-    <input type='submit'>AnswerPost</input>
-  </form>
+
+  
 
 
   <script>
-    showCommentOption=(id)=>{
+    showCommentOption = (id) => {
       console.log(id)
-      commentOption=document.getElementById(id)
-      if (commentOption.classList.contains('hidden')){
-      commentOption.classList.add('block')
-      commentOption.classList.remove('hidden')
-      
+      commentOption = document.getElementById(id)
+      if (commentOption.classList.contains('hidden')) {
+        commentOption.classList.add('block')
+        commentOption.classList.remove('hidden')
+
       }
       else if (commentOption.classList.contains('block')) {
         commentOption.classList.remove('block')
@@ -82,4 +104,5 @@
   </script>
 
 </body>
+
 </html>

@@ -1,16 +1,41 @@
 import re
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-parentID_for_AnswerPost=0
 from setup.models import *
+from django.db import models
+from django.db.models import F
 from django.contrib import auth
 import json
 from datetime import datetime
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-
+# relatedPostsData=posts.objects.filter(post_type_id=1)
 # from django.utils.safestring import mark_safe
+
+# filter of upvotes and time:
+# def OrderByUpvotes(request):
+#   #queriesOrder= posts.objects.filter(post_type_id=1).order_by('creation_date')[:10]
+  
+#   all_tags = list(tags.objects.values_list('tag_name',flat = True))
+#   all_user_names = list(users.objects.values_list('display_name',flat = True))
+#   queriesOrder=relatedPostsData.order_by('-creation_date')
+#   queriesOrder=relatedPostsData.order_by('-creation_date')
+  
+#   #request.POST.get('upvotesSort')
+#   # print(type(queriesOrder))
+#   queriesOrder=queriesOrder #.order_by('creation_date')
+#   print(queriesOrder)
+#   queriesOrder=list(queriesOrder.values())
+
+#   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+#     currUserId=request.COOKIES['userId']
+#     currUser=list(users.objects.filter(id=currUserId).values())
+#     rs_dict = {'topPosts':queriesOrder}
+#   else:
+#     rs_dict = {'topPosts':queriesOrder}
+#   return render(request, 'search.html', {'relatedPostsList':queriesOrder,'avail_tags':all_tags,'avail_users':all_user_names})
+
 
 def signup(request):
   if request.method=='POST':
@@ -22,8 +47,8 @@ def signup(request):
     new_account_id=request.POST.get('account_id')
     new_reputation=0
     new_views=0
-    new_down_votes=0
-    new_up_votes=0
+    # new_down_votes=0
+    # new_up_votes=0
     new_display_name=request.POST.get('display_name')
     newCreationDate=datetime.now()
     newLastAccessDate=datetime.now()
@@ -96,39 +121,57 @@ def home(request):
   #order_by('-view_count')[:10]
   
   # return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
+  # global relatedPostsData
+  # relatedPostsData= posts.objects.filter(post_type_id=1)
   all_tags = list(tags.objects.values_list('tag_name',flat = True))
   all_user_names = list(users.objects.values_list('display_name',flat = True))
-  for i in range(len(all_user_names)):
-    if match := re.search("'", all_user_names[i]):
-      all_user_names[i] = re.sub("'","\'",all_user_names[i])
-
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
     currUserId=request.COOKIES['userId']
     currUser=list(users.objects.filter(id=currUserId).values())
-    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser}
+    rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names,'user':currUser[0]}
   else:
     rs_dict = {'topPosts':list(queries.values()),'avail_tags':all_tags,'avail_users':all_user_names}
   return render(request, 'index.html', rs_dict)
 
 
 def eachpost(request):  
-  if request.method == 'POST':
-    id=request.POST.get('id')
+  # if request.method == 'POST':
+  #   id=request.POST.get('id')
 
+  #   answersList=list(posts.objects.filter(parent_id=id).values())
+  #   for i in range(len(answersList)):
+  #     answersList[i]['index']=i
+  #   ques=posts.objects.filter(id=id)
+  #   quesComments=list(comments.objects.filter(post_id=id).values())
+
+  #   for i in answersList:
+  #     i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
+
+  #   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+  #     currUserId=request.COOKIES['userId']
+  #     currUser=list(users.objects.filter(id=currUserId).values())
+  #     currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList, 'user':currUser}
+  #   else:
+  #     currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList}
+  #   return render(request,'eachpost.html',currDict)
+  
+  if request.method=='GET':
+    id=request.GET.get('quesId')
     answersList=list(posts.objects.filter(parent_id=id).values())
     for i in range(len(answersList)):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
-    commentsList = [
-        list(comments.objects.filter(post_id=i['id']).values())
-        for i in answersList
-    ]
+    quesComments=list(comments.objects.filter(post_id=id).values())
+
+    for i in answersList:
+      i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
+
     if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
       currUserId=request.COOKIES['userId']
-      currUser=list(users.objects.filter(id=currUserId).values())
-      currDict={'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList,'user':currUser}
+      currUser=list(users.objects.filter(id=currUserId).values())[0]
+      currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList, 'user':currUser}
     else:
-      currDict={'ques':list(ques.values()),'answersList':answersList, 'commentsList':commentsList}
+      currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList}
     return render(request,'eachpost.html',currDict)
 
 
@@ -178,8 +221,10 @@ def search(request):
       global relatedPostsList
       print(searchValue)
       relatedPosts=posts.objects.filter(owner_display_name=searchValue)
+      global relatedPostsData
+      relatedPostsData=relatedPosts
       relatedPostsList=list(relatedPosts.values())
-      
+
 
     elif searchBy=='tags':
       global searchValueList
@@ -193,6 +238,7 @@ def search(request):
     if not relatedPostsList:
       messages.error(request, "No matches found")
       return HttpResponseRedirect('/')
+
     return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
 
 
@@ -200,10 +246,13 @@ def search(request):
 #  CREATE POST PAGE
 def createPost(request):
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
-    return render(request,'createPost.html')
+    currUserId=request.COOKIES['userId']
+    currUser=users.objects.filter(id=currUserId).values()[0]
+    all_tags = list(tags.objects.values_list('tag_name',flat = True))
+    return render(request,'createPost.html',{'user':currUser,'avail_tags':all_tags})
   messages.info(request, "You have to login for creating posts")
-  print("yes")
-  return render(request,'signin.html')
+
+  return HttpResponseRedirect('/signin')
 
 ############
 # UPDATING POST TO DATABASE
@@ -226,6 +275,7 @@ def PostCreated(request):
       CPcontent_license="CC BY-SA 4.0"
       CPtitle=request.POST.get('createPostTitle')
       CPTags=request.POST.get('createPostTags')
+      print(CPTags)
       CPBody=request.POST.get('createPostBody')
       
       # Upload data in posts table
@@ -243,9 +293,18 @@ def PostCreated(request):
 ################################
 
 def  PostAnswer(request):
-  if request.method=='POST':
-    ques=posts.objects.filter(id=parentID_for_AnswerPost)
-    return render(request,'PostAnswer.html',{'ques':list(ques.values()),'owner_user_id':dataIt[0],'owner_display_name':dataIt[6]})
+  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+    currUserId=request.COOKIES['userId']
+    # if request.method=='POST':
+    currUser=list(users.objects.filter(id=currUserId).values())[0]
+    quesId=request.POST.get('quesId')
+    print(quesId)
+    return render(request,'PostAnswer.html',{'quesId':quesId,'user':currUser})
+
+  messages.info(request, "You have to login for answering post")
+
+  return render(request,'signin.html')
+
 
 
 def AnsweredPost(request):
@@ -253,31 +312,30 @@ def AnsweredPost(request):
     postIdGeneration = posts.objects.all().values()
     leng=len(postIdGeneration)
     CPid= 1+postIdGeneration[leng-1]['id']
-    from datetime import datetime
-    Current_timestamp=datetime.now()
     CPcontent_license="CC BY-SA 4.0"
-    CPtitle=request.POST.get('createPostTitle')
-    CPTags=request.POST.get('createPostTags')
-    CPBody=request.POST.get('createPostBody')
-    CPowner_user_id=dataIt[0]
-    CPowner_display_name=dataIt[6]
-    # Upload data in posts table
-    new_AnswerPost=posts(id=CPid,owner_user_id=CPowner_user_id,last_editor_user_id=None,
-	post_type_id=2,accepted_answer_id=None,score=0,parent_id=parentID_for_AnswerPost,view_count=0,answer_count=0,comment_count=0,owner_display_name=CPowner_display_name,
-	last_editor_display_name =None,title =CPtitle,tags =CPTags,	content_license=CPcontent_license,body=CPBody,favorite_count=None,
-  creation_date =Current_timestamp,	community_owned_date=None,	closed_date=None,	last_edit_date=None,	last_activity_date=Current_timestamp)
+
+    curruserId=request.POST.get('postAnswerUserId')
+    curruserName=request.POST.get('postAnswerUserName')
+    currQuesId=request.POST.get('postAnswerQuesId')
+    currBody=request.POST.get('postAnswerBody')
+    print(currQuesId)
+
+    new_AnswerPost=posts(id=CPid,owner_user_id=curruserId, post_type_id=2, score=0,parent_id=currQuesId,view_count=0,answer_count=0,comment_count=0,owner_display_name=curruserName,
+	content_license=CPcontent_license,body=currBody, creation_date =datetime.now(),last_activity_date=datetime.now())
     new_AnswerPost.save()
     # Update the quesion/ create post thing
-    ParentIt=posts.objects.filter(id=parentID_for_AnswerPost).values()
+    ParentIt=posts.objects.filter(id=currQuesId).values()
     #print(ParentIt[0]['answer_count'])
     current_answer_count= ParentIt[0]['answer_count']+1
-    posts.objects.filter(id=parentID_for_AnswerPost).update(answer_count=current_answer_count)
+    posts.objects.filter(id=currQuesId).update(answer_count=current_answer_count)
     #print(new_AnswerPost)
     # Upload data in postHistory(later)
 
 
-
-    return render(request, 'AnsweredPost.html', {'AnswerPost':new_AnswerPost})
+    response=HttpResponseRedirect('/eachpost?quesId='+currQuesId)
+    # return render(request, 'AnsweredPost.html', {'AnswerPost':new_AnswerPost})
+    messages.success(request,'Answer Created')
+    return response
 
 def Singlepost(request):
   
@@ -294,14 +352,26 @@ def Singlepost(request):
 
     return render(request, 'eachPost.html')
 
+def profile(request):
+  if not 'userId' in request.COOKIES:
+    response=HttpResponseRedirect('/')
+    messages.error(request,'You can\'t access this page')
+    return response
+  currUserId=request.COOKIES['userId']
+  currUser=users.objects.filter(id=currUserId).values()[0]
+  # print(currUser,currUser.id)
+  return render(request, 'profile.html',{'user':currUser})
+  
+
 
 def AllYourPosts(request):
   
       if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
         currUserId=request.COOKIES['userId']
         allPosts=list(posts.objects.filter(owner_user_id=currUserId).values())
+        user=list(users.objects.filter(id=currUserId).values())[0]
         if len(allPosts)>0:
-          return render(request,'AllYourPosts.html',{'postsAll':allPosts})
+          return render(request,'AllYourPosts.html',{'postsAll':allPosts,"user":user})
         messages.info(request, "You haven't created any posts")
         return HttpResponseRedirect('/')
       messages.error(request, "First you have to login")
@@ -310,7 +380,6 @@ def AllYourPosts(request):
 
 
 def PostEdited(request):  
-  # currentPostId=PostData['id']
   ToDo=request.POST.get('EditIt')
   EPId=request.POST.get('ThePostaData')
   print(ToDo)
@@ -324,49 +393,39 @@ def PostEdited(request):
     EPBody=request.POST.get('EditedPostBody')
     EPId=request.POST.get('ThePostaData')
     EPlast_edit_date=datetime.now()
-    # TotalData=request.POST.get('TotalPostData')
     posts.objects.filter(id=EPId).update(tags=EPTags,title=EPTitle,body=EPBody,content_license=EPContent_license,last_edit_date=EPlast_edit_date)
     TotalData=posts.objects.filter(id=EPId).values()
   return render(request,'EditedPostPage.html')
    
 def CommentAdded(request):
-    ThePostId=request.POST.get('PostId')
-    ThePostContent_license=request.POST.get('ThePostContent_license')
-    user_id=request.POST.get('user_id')
-    Bodytext=request.POST.get('Bodytext')
-    print(ThePostId)
-    # Updated the comments table here
-    CommentWriter= users.objects.filter(id=user_id).values()
-    CommentWriter=CommentWriter[0]['display_name']
-    # getting user_display_name from users table
-    CoomentIdGeneration = comments.objects.all().values()
-    leng=len(CoomentIdGeneration)
-    CId= 1+CoomentIdGeneration[leng-1]['id']
-    Ccreation_date=datetime.now()
-    new_comment=comments(id=CId, post_id=ThePostId, user_id=user_id, score=0, content_license=ThePostContent_license, user_display_name=CommentWriter,text=Bodytext,creation_date =Ccreation_date)
-    new_comment.save()
+    if request.method=='POST':
+      gotPostId=request.POST.get('PostId')
+      gotPost=posts.objects.filter(id=gotPostId).values()
+      ThePostContent_license="CC BY-SA 4.0"
+      commentBody=request.POST.get('Bodytext')
+      if not 'userId' in request.COOKIES:
+        response=HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        messages.error(request,'You have to login for writing comments')
+        return response
+      currUserId=request.COOKIES['userId']
+      
+      currUser= users.objects.filter(id=currUserId).values() 
+      currUsername=currUser[0]['display_name']
+      CoomentIdGeneration = comments.objects.all().values()
+      leng=len(CoomentIdGeneration)
+      CId= 1+CoomentIdGeneration[leng-1]['id']
+      new_comment=comments(id=CId, post_id=gotPostId, user_id=currUserId, score=0, content_license=ThePostContent_license, user_display_name=currUsername,text=commentBody,creation_date =datetime.now())
+      new_comment.save()
 
-    # Updated the posts table here
-    a=request.POST.get('ThePostcomment_count')
-    print(a,"fkskfs")
+      posts.objects.filter(id=gotPostId).update(comment_count=F('comment_count') + 1)
+      posts.objects.filter(id=gotPostId).update(last_activity_date=datetime.now())
 
-    ThePostcomment_count=1+int(a)
-    Clast_activity_date=datetime.now()
-    posts.objects.filter(id=ThePostId).update(comment_count=ThePostcomment_count,last_activity_date=Clast_activity_date)
-    print("The shit of comment adding is done")
-    
-    return render(request, 'eachPost.html')
-###########
-def AddComment(request):
-  v=request.POST.get('AboutPostData')
-  ThePostId=int(v)
-  ThePost=list(posts.objects.filter(id=ThePostId).values())[0]
-  # print(ThePost)
-  user_id=000
-  if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
-      user_id=request.COOKIES['userId']
-  return render(request,'CommentPage.html',{'PostData':ThePost,'user_id':user_id})
-
+      response=HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+      messages.success(request,'Comment Added')
+      return response
+    response=HttpResponseRedirect('/')
+    messages.error(request,'You can\'t acces this page')
+    return response
 
 
 #################
@@ -410,15 +469,11 @@ def find_using_tags(d , tags):
 
 
 def find_using_xyz(d, attribute, value):
-    """ Function to print all the rows in the list 
+  """ Function to print all the rows in the list 
         of dicts which contains the value which the user 
         is searching for according to the attribute he/she chose. 
         """
-    tempList=[]                                                             
-    for i in range(len(d)):
-        if(d[i][attribute] == value):
-            tempList.append(d[i])
-    return tempList
+  return [d[i] for i in range(len(d)) if (d[i][attribute] == value)]
 
 
 # def findTheUpvoteVoteCount(UpVotes,keyIt):

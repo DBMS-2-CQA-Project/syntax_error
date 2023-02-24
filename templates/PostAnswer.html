@@ -7,40 +7,38 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     </head>
-    <body>
+    <body class="bg-slate-300">
         {% include "./components/navbar.html" %}
         {% include "./components/messages.html" %}
-        {{ques.0.body|safe}}
-        <form action="/AnsweredPost" method="POST">
-            id=models.IntegerField(("id"),primary_key=True)
-            # generate id
-            owner_user_id=models.IntegerField(("owner_user_id"), null=True)
-            <p>owner_user_id:{{owner_user_id}}</p>
-            <p>last_editor_user_id:NULL</p>
-            <p>post_type_id:2</p>
-            <p>accepted_answer_id:NULL</p>
-            <p>score:NULL</p>
-            <p>parent_id:{{ques.0.id}}</p>
-            <p>view_count:0</p>
-            <p>answer_count:0</p>
-            <p>comment_count:0</p>
-            <p> owner_display_name:{{owner_display_name}}</p>
-            <p>last_editor_display_name:NULL</p>
-            <input type='text' id='createPostTitle' name='createPostTitle'>title</input>
-            <input type='text' id='createPostTags' name='createPostTags'>tags</input>
-            <p>content_license:</p>
-            <input type='text' id='createPostBody' name='createPostBody'>BODY</input>
-            <p>favorite_count=models.IntegerField(("favorite_count"),null=True)</p>
-            <p>creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)</p>
-            <p>community_owned_date=models.DateTimeField(("community_owned_date"),auto_now_add=True, null=True)</p>
-            <p>closed_date=models.DateTimeField(("closed_date"),auto_now_add=True, null=True)</p>
-            <p>last_edit_date=models.DateTimeField(("last_edit_date"),auto_now_add=True, null=True)</p>
-            <p>last_activity_date=models.DateTimeField(("last_activity_date"),auto_now_add=True)</p>
-            <input type='submit'>Create post</input>
+
+        
+        <form action="/AnsweredPost" method="POST" class="m-auto w-fit mt-5">
+            <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
+                <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you answer in markdown" rows="5"
+                    cols="40" class="w-full sm:w-1/2 m-1"></textarea>
+                <div id="markup" class="w-full sm:w-1/2 bg-white m-1 min-h-[5rem]"></div>
+            </div>
+            
+            <input type='hidden' id='postAnswerBody' name='postAnswerBody'>
+            <input type="hidden" value="{{user.id}}" name="postAnswerUserId">
+            <input type="hidden" value="{{user.display_name}}" name="postAnswerUserName">
+            <input type="hidden" value={{quesId}} name="postAnswerQuesId">
+            <input type='submit' value="Submit" class="hover:cursor-pointer p-1 bg-slate-400 rounded">
             </form>
         
 
-        <script src="" async defer></script>
+        <script>
+            markup = document.getElementById('markup')
+            markdown = document.getElementById('markdown')
+            createPostBody = document.getElementById('postAnswerBody')
+            function markdownToHtml() {
+                markup.innerHTML = marked.parse(markdown.value)
+                createPostBody.value = marked.parse(markdown.value)
+            }
+
+        </script>
     </body>
 </html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    {% load static %}
+  <meta charset="UTF-8">
+  <title>SignUp</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'signup.css' %}">
+
+</head>
+<body>
+	{% include "./components/messages.html" %}
+<!-- partial:index.partial.html -->
+<div class="box-form">
+	<div class="left">
+		<div class="overlay">
+            <br> <br> <br> <br>
+            <hr>
+            <h2>Join the Syntax Error community !</h2>
+            <hr>
+            <p> Get unstuck — ask a question </p>
+             <p> Unlock new privileges like voting and commenting</p>
+             <p> Save your favorite tags and filters</p>
+            <p> Earn reputation and badges </p>
+		<!-- <span>
+			<p>login with social media</p>
+			<a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+			<a href="#"><i class="fa fa-twitter" aria-hidden="true"></i> Login with Twitter</a>
+		</span> -->
+		</div>
+	</div>
+	
+	
+		<div class="right">
+		<h5>Signup</h5>
+		<h4>Already have an account? <a href="{% url 'sign-in' %}">Login</a></h4>
+		
+		<!-- <div class="inputs">
+			<input type="text" placeholder="user name">
+			<br>
+			<input type="password" placeholder="password">
+			<br>
+			<input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+		</div> -->
+		<form action="/signup" method="POST">
+            {% csrf_token %}
+            
+            <div class="Input">
+              <!-- <label for="account_id" style="color:rgb(238, 255, 0);">Enter account_id</label> -->
+              <input type="Number" placeholder="Enter Your account_id" id="account_id" name="account_id"
+                style="border: 2px solid black;" required><br>
+            </div>
+            <div class="Input">
+              <!-- <label for="display_name" style="color:rgb(238, 255, 0);">Display Name</label> -->
+
+              <input type="text" placeholder="Enter Your Display Name" id="display_name" name="display_name"
+                style="border: 2px solid black;" required> <br>
+            </div>
+
+            <div class="Input">
+              <!-- <label for="location" style="color:rgb(238, 255, 0);">Confirm location</label> -->
+              <input type="text" placeholder="Confirm Location" id="location" name="location" style="border: 2px solid black;"
+                required><br>
+            </div>
+            <div class="Input">
+              <!-- <label for="about_me" style="color:rgb(238, 255, 0);">About me</label> -->
+
+              <input type="Text" placeholder="About you" id="about_me" name="about_me"
+                style="border: 2px solid black;" required> <br>
+            </div>
+
+			<div class="clearfix">
+				<a href="{% url 'home' %}"> <button type="button" class="cancelbtn"> Cancel </button> </a>
+				<button type="submit" class="signupbtn">Sign Up</button>
+			  </div>
+          </form>
+			
+			<br><br>
+			
+		<div class="remember-me--forget-password">
+				<!-- Angular -->
+	<label>
+		<input type="checkbox" name="item" checked/>
+		<span class="text-checkbox">Remember me</span>
+	</label>
+		</div>
+	    
+        <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+
+      <!-- <div class="clearfix">
+        <a href="{% url 'home' %}"> <button type="button" class="cancelbtn"> Cancel </button> </a>
+        <button type="submit" class="signupbtn">Sign Up</button>
+      </div> -->
+			<!-- <br> -->
+			<!-- <button>Signup</button> -->
+	</div>
+	
+</div>
+<!-- partial -->
+  
+</body>
+</html>

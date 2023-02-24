@@ -1,64 +1,116 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <style>
-            input[type="text"] {
-                white-space: pre;
-            }
-        </style>
-        </head>
-        
-        <body>
-            {% include "./components/navbar.html" %}
-            {% include "./components/messages.html" %}
-            <form action="/PostCreated" method="POST">
-        <p>owner_user_id:{{owner_user_id}}</p>
-        <p>last_editor_user_id:NULL</p>
-        <p>post_type_id:1</p>
-        <p>accepted_answer_id:NULL</p>
-        <p>score:NULL</p>
-        <p>parent_id:NULL</p>
-        <p>view_count:0</p>
-        <p>answer_count:0</p>
-        <p>comment_count:0</p>
-        <p> owner_display_name:{{owner_display_name}}</p>
-        <p>last_editor_display_name:NULL</p>
-        <input type="hidden"  name="ownerUserId" id="ownerUserId" value={{owner_user_id}}>
-        <input type="hidden" name="ownerDisplayName" id="ownerDisplayName" value={{owner_display_name}}>
-        
 
-        <input type='text' id='createPostTitle' name='createPostTitle'>title</input>
-        <input type='text' id='createPostTags' name='createPostTags'>tags</input>
-        <p>content_license:</p>
-        <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you query in markdown" ></textarea>
-        <input type="hidden" id="createPostBody" id='createPostBody'>
-        <div id="markup"></div>
-        <p>favorite_count=models.IntegerField(("favorite_count"),null=True)</p>
-        <p>creation_date=models.DateTimeField(("creation_date"),auto_now_add=True,null=False)</p>
-        <p>community_owned_date=models.DateTimeField(("community_owned_date"),auto_now_add=True, null=True)</p>
-        <p>closed_date=models.DateTimeField(("closed_date"),auto_now_add=True, null=True)</p>
-        <p>last_edit_date=models.DateTimeField(("last_edit_date"),auto_now_add=True, null=True)</p>
-        <p>last_activity_date=models.DateTimeField(("last_activity_date"),auto_now_add=True)</p>
-        <input type='submit'>Create post</input>
-        </form>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Include Tagify plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.2.0/dist/tagify.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
 
-        <script>
-            marpup=document.getElementById('markup')
-            markdown= document.getElementById('markdown')
-            createPostBody = document.getElementById('createPostBody')
-            function markdownToHtml(){
-                console.log(markdown.value)
-                console.log(marked.parse(markdown.value))
-                markup.innerHTML = marked.parse(markdown.value)
-                createPostBody.value= marked.parse(markdown.value)
+
+    <style>
+        input[type="text"] {
+            white-space: pre;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-300">
+    {% include "./components/navbar.html" %}
+    {% include "./components/messages.html" %}
+
+
+    <form action="/PostCreated" method="POST"></form>
+
+    <input type="hidden" name="ownerUserId" id="ownerUserId" value={{owner_user_id}}>
+    <input type="hidden" name="ownerDisplayName" id="ownerDisplayName" value={{owner_display_name}}>
+    <input type="hidden" name="createPostTags" id="createPostTags">
+    <input type="hidden" id="createPostBody" id='createPostBody'>
+
+    <div class="flex flex-col m-auto mt-5 mx-2">
+        <div>
+            <label for="">Title</label>
+            <input type='text' id='createPostTitle' name='createPostTitle' class="border-2" placeholder="Title">
+        </div>
+        <div>
+            <label for=""> Post Tags</label>
+            <input type="text" placeholder="Tags" id="autosearch_tags" required class="border-2">
+            <input type="hidden" id="autosearch_hidden_tags" name="createPostTags">
+        </div>
+        <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
+            <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you answer in markdown"
+                rows="5" cols="40" class="w-full sm:w-1/2 m-1"></textarea>
+            <div id="markup" class="w-full sm:w-1/2 bg-white m-1 min-h-[5rem]"></div>
+        </div>
+        <input type='submit' value="Submit" class="hover:cursor-pointer p-1 bg-slate-400 rounded w-fit">
+
+    </div>
+
+    </form>
+
+    <script>
+        markup = document.getElementById('markup')
+        markdown = document.getElementById('markdown')
+        createPostBody = document.getElementById('createPostBody')
+        function markdownToHtml() {
+            markup.innerHTML = marked.parse(markdown.value)
+            createPostBody.value = marked.parse(markdown.value)
+        }
+
+
+        const tag = document.getElementById("autosearch_tags");
+        var hidden_tag = document.getElementById("autosearch_hidden_tags");
+
+
+        const tagify = new Tagify(tag, {
+            whitelist: [],
+            enforceWhitelist: true,
+            maxTags: 5,
+            autocomplete: {
+                enabled: true,
+                minLength: 1,
+                maxItems: 10
+            },
+            callbacks: {
+                add: function (e) {
+
+                    var tags = tagify.value.map(tag => tag.value).join('><');
+                    hidden_tag.value = '<'+tags+'>';
+                    console.log(hidden_tag.value)
+
+
+                },
+                remove: function (e) {
+                    console.log("Tag removed :", e.detail.data.value);
+                    var tags = tagify.value.map(tag => tag.value).join(' ');
+                    hidden_tag.value = tags;
+
+                }
+
+
             }
-        </script>
-    </body>
+
+
+        });
+
+        var data = {% autoescape on %}
+        {{ avail_tags | safe }}
+        {% endautoescape %}
+        tagify.settings.whitelist = data;
+
+      
+
+    </script>
+</body>
+
 </html>
