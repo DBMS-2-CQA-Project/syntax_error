@@ -1,46 +1,162 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-{% include "./components/navbar.html" %}
-{% include "./components/messages.html" %}
-        <h1>Your credentials:</h1>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="{% static 'editProfile.css' %}">
+  </head>
+
+ <body>
+    {% include "./components/navbar.html" %} 
+    {% include   "./components/messages.html" %}
+<!-- <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <div class="heading">
+            <div class="logo">
+              <span class="logo-part">M</span>ultiplyer
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="navbar-collapse collapse" style="height: 1px;">
+        <ul class="custom nav navbar-nav navbar-right">
+          <li>
+            <div class="search">
+              <input type="search" class="search-bar" placeholder="Search..." style="font-weight:600;font-size:15px">
+              <i class="fa fa-search search-icon"></i>
+            </div>
+          </li>
+          <li title="Dashboard"><a href="#">Dashboard</a></li>
+          <li><a href="#"><span class="fa fa-cog">Settings</span></a></li>
+          <li class="active" title="Profile"><a href="#"><span class="fa fa-user">Profile</span></a></li>
+          <li title="Help"><a href="#"><span class="fa fa-question">Help</span></a></li>
+          <li title="Logout"><a href="#"><span class="fa fa-sign-out">Logout</span></a></li>
+        </ul>
+  
+  
+               <div class ="search">
+                      <input type="search" class="search-bar" placeholder="Search..." style="font-weight:600;font-size:15px">
+                      <i class="fa fa-search search-icon"></i>
+                  </div>-->
+      <!-- </div>
+    </div>
+  </div> --> 
+  
+  <div class="wrapper">
+    <div class="profile">
+      <div class="content">
+        <h1> <b> Edit Profile </b></h1>
+
         <form action="/edited" method="POST">
-            {% csrf_token %}
-
-            id:{{user_id}}<br>
-            <input type='number' id='updated_account_id' name='updated_account_id' value={{user.account_id}}>account_id</input> <br>
-            reputation:{{user.reputation}}<br>
-            views:{{user.views}}<br>
-            down_votes:{{user.down_votes}}<br>
-            up_votes:{{user.up_votes}}<br>
-            <input type='text' id='updated_display_name' name='updated_display_name' value="{{user.display_name}}" required>display_name</input> <br>
-            <input type='text' id='updated_location' name='updated_location' value="{{user.location}}">location</input> <br>
-            <input type='text' id='updated_profile_image_url' name='updated_profile_image_url' value={{user_profile_image_url}}>profile_image_url</input>
-            <br>
-            <input type='text' id='updated_website_url' name='updated_website_url' value={{user.website_url}}>website_url</input><br>
-            <input type='text' id='updated_about_me' name='updated_about_me' value={{user.about_me}}>about_me</input> <br>
-            creation_date:{{user.creation_date}}<br>
-            last_access_date:{{user.last_access_date}}<br>
-            <input type="submit" value="Submit">
-            
+          {% csrf_token %}
+          <!-- Photo -->
+          <fieldset class="my-2">
+            <div class="grid-35">
+              <label for="avatar">Your Photo</label>
+            </div>
+            <div class="grid-65">
+              <span class="photo" title="Upload your Avatar!"></span>
+              <input type="text" class="btn"  id='updated_profile_image_url' name='updated_profile_image_url' />
+            </div>
+          </fieldset>
+          <fieldset class="my-2">
+            <div class="grid-35">
+              <label for="fname" >Display Name</label>
+            </div>
+    
+            <div class="grid-65">
+              <input type="text"  id='updated_display_name' name='updated_display_name' value="{{user.display_name}}" required tabindex="1" />
+            </div>
+          </fieldset>
+          <!-- Description about User -->
+          <fieldset>
+            <div class="grid-35">
+              <label for="description">About you</label>
+            </div>
+            <div class="grid-65">
+              <textarea class="h-[350px]" name="updated_about_me" id="updated_about_me" tabindex="3" value={{user.about_me|safe}}></textarea>
+            </div>
+          </fieldset>
+          <!-- Location -->
+          <fieldset class="my-2">
+            <div class="grid-35">
+              <label for="location">Location</label>
+            </div>
+            <div class="grid-65">
+              <input type="text" id="updated_location" name="updated_location" value="{{user.location}}" tabindex="4" />
+            </div>
+          </fieldset>
+          <!-- Highest Qualification -->
+          <!-- <fieldset>
+            <div class="grid-35">
+              <label for="qualification">Highest level of Education</label>
+            </div>
+            <div class="grid-65">
+              <select name="qualification" id="qualification" tabindex="8">
+                <option selected="selected" value="--------------" disabled>--------------</option>
+                <option value="primary_school">Primary school or equivalent</option>
+                <option value="high_school">High school or equivalent</option>
+                <option value="associate">Associate degree or equivalent</option>
+                <option value="bachelors">Bachelor's degree or equivalent</option>
+                <option value="post_graduate">Post-graduate or equivalent</option>
+              </select>
+            </div>
+          </fieldset> -->
+          <!-- Linkedin URL -->
+          <!-- <fieldset>
+            <div class="grid-35">
+              <label for="linkedin">LinkedIn URL</label>
+            </div>
+            <div class="grid-65">
+              <input type="text" id="linkedin" tabindex="12" />
+            </div>
+          </fieldset> -->
+          <!-- Github URL -->
+          <!-- <fieldset>
+            <div class="grid-35">
+              <label for="github">Github URL</label>
+            </div>
+            <div class="grid-65">
+              <input type="text" id="github" tabindex="13" />
+            </div>
+          </fieldset> -->
+          <!-- Website URL -->
+          <fieldset class="my-2" style="border-bottom: none;">
+            <div class="grid-35">
+              <label for="website">Website URL</label>
+            </div>
+            <div class="grid-65">
+              <input type="text" id='updated_website_url' name='updated_website_url' value={{user.website_url}}tabindex="13" />
+            </div>
+          </fieldset>
+          <fieldset>
+            <a href="/profile" type="button" class="Btn cancel" >  Cancel</a>
+            <input type="submit" class="Btn" value="Save Changes" />
+          </fieldset>
+  
         </form>
-        <img src={{user_profile_image_url}} alt="img">
+        
+      <img src={{user.profile_image_url}} alt="img">
         <form action="/manageCookies">
-            <input type="submit" value="Submit">Manage Cookies</input>
-        </form>
-
-        <form action="/createPost" method="POST">
-            <input type="submit" value="Submit">Create Post</input>
-
-        </form>
-        <script src="" async defer></script>
-    </body>
+          <input type="submit" class="hover:cursor-pointer p-1 bg-slate-400 rounded"  value="Manage Cookies"></input>
+      </form>
+      
+      </div>
+    </div>
+  </div>
+</body> 
 </html>
+  
+  
+  <!-- http://www.smashingmagazine.com/2013/08/08/release-livestyle-css-live-reload/ -->

@@ -1,26 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body class="bg-slate-300 text-center">
-  {% include "./components/navbar.html" %}
-  {% include "./components/messages.html" %}
-  <div class="m-auto mt-5 text-center items-center inline-block text-center ">
-    {%if user.profile_image_url %}
-    <img src="{{user.profile_image_url}}" alt="" class="rounded-full object-contain h-40 mx-2 border-4">
-    {%else%}
-    <i class="fa fa-user fa-3x w-[80px] rounded-[50%] border-4" aria-hidden="true"></i>
-    {%endif%}
-    <div class="text-2xl">
-{{user.display_name}}
+<body lang="en">
+  <head>
+    <style>
+      a.edit:link, a:visited {
+        background-color: rgb(96, 202, 96);
+        box-shadow: inset 0 0 0 2px #39cb58,
+              0 2px 0 0 rgba(57,203,88,0.5);
+        color: whitesmoke;
+        padding: 7px 10px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+      }
+      
+      a.edit:hover, a:active {
+        color: white;
+        background-color: rgba(57,203,88,1);
+      }
+      </style>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'profile.css' %}">
+    <title>Document</title>
+  </head>
+<body>
+{% include "./components/navbar.html" %} 
+{% include   "./components/messages.html" %}
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+  <div class="card p-4">
+    <div
+      class="image d-flex flex-column justify-content-center align-items-center"
+    >
+      <button class="btn btn-secondary">
+        {%if user.profile_image_url %}
+        <img
+          src="{{user.profile_image_url}}"
+          alt=""
+          class="rounded-full object-contain h-40 mx-2 border-4"
+        />
+        {%else%}
+        <i
+          class="fa fa-user fa-3x w-[80px] rounded-[50%] border-4"
+          aria-hidden="true"
+        ></i>
+        {%endif%}      
+    </button>
+      <span class="name mt-3">{{user.display_name}}</span>
+      <br>
+      <span class="idd">@{{user.display_name}}</span>
+      <div
+        class="d-flex flex-row justify-content-center align-items-center gap-2"
+      >
+        <span class="idd1">Last seen : {{user.last_access_date}}</span>
+        <span><i class="fa fa-copy"></i></span>
+      </div>
+      <div
+        class="d-flex flex-row justify-content-center align-items-center mt-3"
+      >
+        <span class="number"> {{user.reputation}} <span class="follow">Reputation     . </span></span> &nbsp;
+        <span class="number"> {{user.down_votes}} <span class="follow">Downvotes   </span></span> &nbsp;
+        <span class="number"> {{user.up_votes}} <span class="follow">Upvotes    </span></span>
+      </div>
+      <div class="d-flex mt-2">
+        <a class="edit" href="/editProfile" target="_blank">Edit Profile</a>
+    
+        <a class="edit" href="/AllYourPosts">See all your posts</a>
+      </div>
+      <div class="text mt-3">
+        <span>
+          <h1 class="text-xl"> <b> About - </b></h1>
+            {{user.about_me|safe}}
+            <hr>
+        </span>
+      </div>
+      <div
+        class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"
+      >
+        <span><i class="fa fa-twitter"></i></span>
+        <span><i class="fa fa-facebook-f"></i></span>
+        <span><i class="fa fa-instagram"></i></span>
+        <span><i class="fa fa-linkedin"></i></span>
+      </div>
+      <div class="px-2 rounded mt-4 date">
+        <span class="join">Member since {{user.creation_date}}</span>
+      </div>
     </div>
-    id {{user.id}}
-    location {{user.location}}
-    <a href="/AllYourPosts">See all your posts</a>
   </div>
+</div>
 </body>
 </html>
