@@ -92,8 +92,9 @@
     });
 
     var data = {% autoescape on %}
-    { { avail_users | safe } }
+    {{ avail_users | safe }}
     {% endautoescape %};
+
     tagify.settings.maxTags = 1;
     tagify.settings.whitelist = data;
 
@@ -105,20 +106,18 @@
       // Update the tagify whitelist based on the selected option
       if (selectedOption == 'username') {
         data = {% autoescape on %}
-      { { avail_users | safe } }
+      {{ avail_users | safe }}
       {% endautoescape %};
       tagify.settings.maxTags = 1;
 
     }
    else if (selectedOption == 'tags') {
-      data = {{avail_tags | safe}}
-    };
+      data = {{ avail_tags | safe }};
   }
     tagify.settings.whitelist = data;
+    tagify.settings.maxTags = 5;
   
 });
-
-
   </script>
 </body>
 
