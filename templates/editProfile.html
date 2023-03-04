@@ -66,8 +66,17 @@
               <label for="avatar">Your Photo</label>
             </div>
             <div class="grid-65">
-              <span class="photo" title="Upload your Avatar!"></span>
-              <input type="text" class="btn"  id='updated_profile_image_url' name='updated_profile_image_url' placeholder="Enter image url ......"/>
+              <!-- <span class="photo" title="Upload your Avatar!"></span> -->
+            <div class="block m-auto rounded-full object-contain h-[7rem] w-[7rem] mb-3 border-4 overflow-auto">
+                {%if user.profile_image_url%}
+                <img src="{{user.profile_image_url}}" alt="" >
+                {%else%}
+                <i class="fa fa-user fa-5x " aria-hidden="true"></i>
+                
+                {%endif%}
+            </div>
+
+              <input type="text" id='updated_profile_image_url' name='updated_profile_image_url' placeholder="Enter image url ......" value="{{user.profile_image_url}}"/>
             </div>
           </fieldset>
           <fieldset class="my-2">
