@@ -26,7 +26,7 @@
 </head>
 
 <body class="bg-slate-300">
-    {% include "./components/navbar.html" %}
+    {% include "./components/navbar2.html" %}
     {% include "./components/messages.html" %}
 
 
@@ -43,7 +43,7 @@
         
         <div>
             <label for=""> Post Tags</label>
-            <input type="text" placeholder="Tags" id="autosearch_tags" required class="border-2">
+            <input type="text" placeholder="Tags" id="autosearch_tags" required class="border-2 bg-white">
         </div>
 
         <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
@@ -59,9 +59,9 @@
     </form>
 
     <script>
-        markup = document.getElementById('markup')
-        markdown = document.getElementById('markdown')
-        createPostBody = document.getElementById('createPostBody')
+        const markup = document.getElementById('markup')
+        const markdown = document.getElementById('markdown')
+        const createPostBody = document.getElementById('createPostBody')
         function markdownToHtml() {
             markup.innerHTML = marked.parse(markdown.value)
             createPostBody.value = marked.parse(markdown.value)

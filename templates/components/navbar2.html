@@ -15,40 +15,32 @@
   <!-- Include Tagify plugin -->
   <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.2.0/dist/tagify.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
+
+
   <style>
-    .dropdown:hover .dropdown-menu {
-display: block;
-}
-.tagify{    
+    h1{
+      font-size: 32px;
+    }
+    h2{
+      font-size: 26px;
+    }
+    h3{
+      font-size: 22px;
+    }
+    h4{
+      font-size: 20px;
+    }
+    h1, h2, h3, h4, h5, h6 {
 
-  font-size: 15px;
-  line-height: 0%;
-}
-.tagify__input{
-  margin: 2px;
-}
-    </style>
+  font-weight:900;
 
+}
+  </style>
   </head>
   <body>
 
-   <div class="flex sticky p-3 top-0 bg-white h-20 items-center justify-between">
+   <div class="flex sticky p-3 top-0 bg-white h-20 items-center justify-end">
 
-  <form action="/search" method="POST">
-    {% csrf_token %}
-    <div class = "h-full ui-autocomplete flex flex-col justify-evenly ml-2">
-    <input type="text" id = "autosearch" required name="searchValue" class="border-2" >
-    <input type="hidden" id = "autosearch_hidden" required name="searchValue" class="border-2" >
-    
-    <div class="flex gap-x-2">
-      <select name="searchBy" id="searchBy" class="p-1" required>
-        <option value="username" selected>User name</option>
-        <option value="tags">Tags</option>
-      </select>
-      <input type="submit" value="Submit" class="hover:cursor-pointer bg-slate-400 p-1 rounded">
-    </div>
-    </div>
-  </form>
   <div class="flex gap-x-2 items-center">
     <a href="/createPost" class="hover:cursor-pointer p-1 bg-slate-400 rounded h-fit">Create post</a>
     <a href="/"><i class="fa fa-home m-1" style="font-size:30px" aria-hidden="true"></i></a>
@@ -74,7 +66,6 @@ display: block;
         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
           <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/profile">Profile</a></li>
           <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/AllYourPosts">Your Posts</a></li>
-          <!-- <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/editProfile">Edit Profile</a></li> -->
           <li class=""><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="/logout">Logout</a></li>
         </ul>
       </div>

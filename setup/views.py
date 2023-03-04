@@ -102,28 +102,7 @@ def logout(request):
 # home page
 def home(request):
   queries= posts.objects.filter(post_type_id=1).order_by('-view_count')[:10]
-  # DownVotesCount= downvotes.objects.values()
-  # UpVotesCount= upvotes.objects.values()
-  # UpVotesCount=list(UpVotesCount)
-  #print(UpVotesCount)
-  # a={}
-  # for i in range(len(UpVotesCount)):
-  #   pid=str(UpVotesCount[i]['post_id'])
-  #   uv=str(UpVotesCount[i]['upvotes'])
-  #   a[pid]=uv
-  # b={}
-  # for i in range(len(DownVotesCount)):
-  #   pid=str(DownVotesCount[i]['post_id'])
-  #   uv=str(DownVotesCount[i]['downvotes'])
-  #   b[pid]=uv
-  # print((a))
-  # print(b)
-  # print(UpVotesCount[1]['post_id'])
-  #order_by('-view_count')[:10]
-  
-  # return render(request, 'index.html',{'topPosts':list(queries.values()),'UpVotesOfAll':a,'DownVotesOfAll':b})
-  # global relatedPostsData
-  # relatedPostsData= posts.objects.filter(post_type_id=1)
+
   all_tags = list(tags.objects.values_list('tag_name',flat = True))
   all_user_names = list(users.objects.values_list('display_name',flat = True))
   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
@@ -135,37 +114,18 @@ def home(request):
   return render(request, 'index.html', rs_dict)
 
 
-def eachpost(request):  
-  # if request.method == 'POST':
-  #   id=request.POST.get('id')
-
-  #   answersList=list(posts.objects.filter(parent_id=id).values())
-  #   for i in range(len(answersList)):
-  #     answersList[i]['index']=i
-  #   ques=posts.objects.filter(id=id)
-  #   quesComments=list(comments.objects.filter(post_id=id).values())
-
-  #   for i in answersList:
-  #     i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
-
-  #   if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
-  #     currUserId=request.COOKIES['userId']
-  #     currUser=list(users.objects.filter(id=currUserId).values())
-  #     currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList, 'user':currUser}
-  #   else:
-  #     currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList}
-  #   return render(request,'eachpost.html',currDict)
+def eachpost(request): 
   
   if request.method=='GET':
     id=request.GET.get('quesId')
-    answersList=list(posts.objects.filter(parent_id=id).values())
+    answersList=list(posts.objects.filter(parent_id=id).order_by('-id').values())
     for i in range(len(answersList)):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
-    quesComments=list(comments.objects.filter(post_id=id).values())
+    quesComments=list(comments.objects.filter(post_id=id).order_by('id').values())
 
     for i in answersList:
-      i['commentsList']=list(comments.objects.filter(post_id=i['id']).values())
+      i['commentsList']=list(comments.objects.filter(post_id=i['id']).order_by('id').values())
 
     if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
       currUserId=request.COOKIES['userId']
@@ -220,7 +180,7 @@ def search(request):
     searchValue=request.POST.get('searchValue')
     if searchBy=='username':
       global relatedPostsList
-      print(searchValue)
+
       relatedPosts=posts.objects.filter(owner_display_name=searchValue)
       global relatedPostsData
       relatedPostsData=relatedPosts
@@ -239,8 +199,9 @@ def search(request):
     if not relatedPostsList:
       messages.error(request, "No matches found")
       return HttpResponseRedirect('/')
-
-    return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue})
+    all_tags = list(tags.objects.values_list('tag_name',flat = True))
+    all_user_names = list(users.objects.values_list('display_name',flat = True))
+    return render(request,'search.html',{'relatedPostsList':relatedPostsList,'searchValue':searchValue,'avail_tags':all_tags,'avail_users':all_user_names})
 
 
 ############
@@ -396,7 +357,7 @@ def PostEdited(request):
 def CommentAdded(request):
     if request.method=='POST':
       gotPostId=request.POST.get('PostId')
-      gotPost=posts.objects.filter(id=gotPostId).values()
+      gotPost=posts.objects.get(id=gotPostId)
       ThePostContent_license="CC BY-SA 4.0"
       commentBody=request.POST.get('Bodytext')
       if not 'userId' in request.COOKIES:
@@ -406,11 +367,12 @@ def CommentAdded(request):
       currUserId=request.COOKIES['userId']
       
       currUser= users.objects.filter(id=currUserId).values() 
+      currUser2=users.objects.get(id=currUserId)
       currUsername=currUser[0]['display_name']
       CoomentIdGeneration = comments.objects.all().values()
       leng=len(CoomentIdGeneration)
       CId= 1+CoomentIdGeneration[leng-1]['id']
-      new_comment=comments(id=CId, post_id=gotPostId, user_id=currUserId, score=0, content_license=ThePostContent_license, user_display_name=currUsername,text=commentBody,creation_date =datetime.now())
+      new_comment=comments(id=CId, post_id=gotPost, user_id=currUser2, score=0, content_license=ThePostContent_license, user_display_name=currUsername,text=commentBody,creation_date =datetime.now())
       new_comment.save()
 
       posts.objects.filter(id=gotPostId).update(comment_count=F('comment_count') + 1)
