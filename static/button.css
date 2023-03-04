@@ -1,0 +1,16 @@
+button {
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  svg {
+    transition: fill 0.3s ease-in-out;
+  }
+  
+  svg:hover {
+    fill: #4b5563;
+  }
+  
