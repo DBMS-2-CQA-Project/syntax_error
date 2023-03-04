@@ -154,6 +154,36 @@ def signin(request):
       return response
   return render(request,'signin.html')
 
+def editPost(request):
+  if request.method=='POST':
+    currPostId=request.POST['postId']
+    currUserId=request.COOKIES['userId']
+    currUser=list(users.objects.filter(id=currUserId).values())[0]
+    currPost=posts.objects.filter(id=currPostId).values()[0]
+    all_tags = list(tags.objects.values_list('tag_name',flat = True))
+    return render(request,'editPost.html',{'post':currPost, 'user':currUser,'avail_tags':all_tags})
+  
+
+def postEdited(request):
+    if request.method=='POST':
+      CPtitle=request.POST.get('createPostTitle')
+      CPTags=request.POST.get('createPostTags')
+      CPBody=request.POST.get('createPostBody')
+      currPostId=request.POST.get('postId')
+      currPost= posts.objects.get(id=currPostId)
+
+      currPost.title=CPtitle
+      currPost.tags=CPTags
+      currPost.body=CPBody
+
+      currPost.save()
+
+      messages.success(request,"post edited")
+      return HttpResponseRedirect('/AllYourPosts')
+
+
+
+      
 
 
 
@@ -336,23 +366,23 @@ def AllYourPosts(request):
 
 
 
-def PostEdited(request):  
-  ToDo=request.POST.get('EditIt')
-  EPId=request.POST.get('ThePostaData')
-  print(ToDo)
-  if(ToDo=='2'):
-            print("Bro it is deleted")
-            posts.objects.filter(id=EPId).delete()
-  else:          
-    EPTitle=request.POST.get('EditedPostTitle')
-    EPTags=request.POST.get('EditedPostTags')
-    EPContent_license=request.POST.get('EditedPostcontent_license')
-    EPBody=request.POST.get('EditedPostBody')
-    EPId=request.POST.get('ThePostaData')
-    EPlast_edit_date=datetime.now()
-    posts.objects.filter(id=EPId).update(tags=EPTags,title=EPTitle,body=EPBody,content_license=EPContent_license,last_edit_date=EPlast_edit_date)
-    TotalData=posts.objects.filter(id=EPId).values()
-  return render(request,'EditedPostPage.html')
+# def PostEdited(request):  
+#   ToDo=request.POST.get('EditIt')
+#   EPId=request.POST.get('ThePostaData')
+#   print(ToDo)
+#   if(ToDo=='2'):
+#             print("Bro it is deleted")
+#             posts.objects.filter(id=EPId).delete()
+#   else:          
+#     EPTitle=request.POST.get('EditedPostTitle')
+#     EPTags=request.POST.get('EditedPostTags')
+#     EPContent_license=request.POST.get('EditedPostcontent_license')
+#     EPBody=request.POST.get('EditedPostBody')
+#     EPId=request.POST.get('ThePostaData')
+#     EPlast_edit_date=datetime.now()
+#     posts.objects.filter(id=EPId).update(tags=EPTags,title=EPTitle,body=EPBody,content_license=EPContent_license,last_edit_date=EPlast_edit_date)
+#     TotalData=posts.objects.filter(id=EPId).values()
+#   return render(request,'EditedPostPage.html')
    
 def CommentAdded(request):
     if request.method=='POST':
