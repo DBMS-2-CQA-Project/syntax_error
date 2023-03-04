@@ -49,8 +49,8 @@ def signup(request):
     new_account_id=request.POST.get('account_id')
     new_reputation=0
     new_views=0
-    # new_down_votes=0
-    # new_up_votes=0
+    new_down_votes=0
+    new_up_votes=0
     new_display_name=request.POST.get('display_name')
     newCreationDate=datetime.now()
     newLastAccessDate=datetime.now()
@@ -72,7 +72,7 @@ def signup(request):
 def profileEdited(request):
 # if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
   id=request.COOKIES['userId']
-  updated_account_id= request.POST['updated_account_id']
+  # updated_account_id= request.POST['updated_account_id']
   updated_display_name = request.POST['updated_display_name']
   updated_location= request.POST['updated_location']
   updated_profile_image_url= request.POST['updated_profile_image_url']
@@ -81,7 +81,7 @@ def profileEdited(request):
  
   currUser= users.objects.get(id=id)
 
-  currUser.account_id= updated_account_id
+  # currUser.account_id= updated_account_id
   currUser.display_name= updated_display_name
   currUser.location= updated_location
   currUser.profile_image_url= updated_profile_image_url
