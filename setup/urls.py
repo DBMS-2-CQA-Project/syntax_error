@@ -17,6 +17,7 @@ urlpatterns=[
   path('AnsweredPost',views.AnsweredPost,name="AnsweredPost"),
   path('search',views.search,name="djsfhdj"),
   path('eachpost',views.eachpost,name="djsfhdj"),
+  path('VotesUpdate',views.Votes_Update,name= "Score"),
   path('logout',views.logout,name="logout"),
 
   path('Singlepost',views.Singlepost,name="Singlepost"),

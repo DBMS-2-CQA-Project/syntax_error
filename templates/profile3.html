@@ -1,0 +1,83 @@
+
+
+<!-- {% block content  %}
+
+  <main class="profile-page layout layout--3">
+    <div class="container">  -->
+<!-- Topics Start -->
+<!-- Topics End -->
+
+<!-- Room List Start -->
+<!-- <div class="roomList">
+        <div class="profile">
+          <div class="profile__avatar">
+            <div class="avatar avatar--large active">
+              <img src="https://randomuser.me/api/portraits/men/11.jpg" />
+            </div>
+          </div>
+          <div class="profile__info">
+            <h3>{{user.username}}</h3>
+            <p>@{{user.username}}</p>
+            <a href="edit-user.html" class="btn btn--main btn--pill">Edit Profile</a>
+          </div>
+          <div class="profile__about">
+            <h3>About</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur illo tenetur
+              facilis sunt nemo debitis quisquam hic atque aut? Ducimus alias placeat optio
+              accusamus repudiandae quis ab ex exercitationem rem?
+            </p>
+          </div>
+        </div>
+
+        <div class="roomList__header">
+          <div>
+            <h2>Study Rooms Hosted by {{user.username}}</a>
+            </h2>
+          </div>
+        </div>
+      </div> -->
+<!-- Room List End -->
+
+<!-- Activities Start -->
+<!--Activities end-->
+
+<!-- </div> -->
+<!-- </main> -->
+
+<!-- {% endblock content %} -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body class="bg-slate-300 text-center">
+    {% include "./components/navbar.html" %} 
+    {% include   "./components/messages.html" %}
+    <div class="m-auto mt-5 text-center items-center inline-block text-center">
+      {%if user.profile_image_url %}
+      <img
+        src="{{user.profile_image_url}}"
+        alt=""
+        class="rounded-full object-contain h-40 mx-2 border-4"
+      />
+      {%else%}
+      <i
+        class="fa fa-user fa-3x w-[80px] rounded-[50%] border-4"
+        aria-hidden="true"
+      ></i>
+      {%endif%}
+      <div class="text-2xl">{{user.display_name}}</div>
+      id {{user.id}} location {{user.location}} 
+      Reputation {{user.reputation}} Downvotes {{user.down_votes}} Upvotes
+      {{user.up_votes}} Member since {{user.creation_date}} About
+      {{user.about_me}} Last_seen {{user.last_access_date}}
+
+      <a href="/AllYourPosts">See all your posts</a>
+    </div>
+  </body>
+</html>
