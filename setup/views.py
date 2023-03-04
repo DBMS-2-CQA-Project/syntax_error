@@ -11,11 +11,12 @@ import json
 from datetime import datetime
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.http import JsonResponse
+from django.http import HttpResponseNotAllowed
 # relatedPostsData=posts.objects.filter(post_type_id=1)
 # from django.utils.safestring import mark_safe
 
 # filter of upvotes and time:
-# def OrderByUpvotes(request):
 #   #queriesOrder= posts.objects.filter(post_type_id=1).order_by('creation_date')[:10]
   
 #   all_tags = list(tags.objects.values_list('tag_name',flat = True))
@@ -44,7 +45,7 @@ def signup(request):
     lastRowById = list(users.objects.all().order_by('-id')[:1].values())
 
     newId= 1+lastRowById[0]['id']
-    print(newId)
+
     new_account_id=request.POST.get('account_id')
     new_reputation=0
     new_views=0
@@ -135,7 +136,23 @@ def eachpost(request):
       currDict={'ques':list(ques.values()),'quesComments':quesComments,'answersList':answersList}
     return render(request,'eachpost.html',currDict)
 
-
+def Votes_Update(request):
+    if 'loginStatus' in request.COOKIES and 'userId' in request.COOKIES:
+       if request.method == 'POST':
+         post_id = request.POST.get('id')
+         direction = request.POST.get('direction')
+         obj = posts.objects.get(id=post_id)
+         currScore = obj.score
+         if direction == 'up':
+           newScore = currScore + 1
+         elif direction == 'down':
+           newScore = currScore -1
+         obj.score = newScore
+         obj.save()
+         return JsonResponse({'newScore':newScore})
+    # else :
+    #   messages.error(request, 'Only users can upvote/downvote a post')  
+    #   return HttpResponseRedirect('/signin')
 def signin(request):
 
   if request.method=='POST':
