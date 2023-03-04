@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <script src="https://cdn.tailwindcss.com"></script>
-
+      <script src="https://cdn.tailwindcss.com"></script>      
+      
+      <!-- Include jQuery library -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      
+      <!-- Include Tagify plugin -->
+      <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.2.0/dist/tagify.min.js"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
   <title>Document</title>
   <!--
   <h1>filter By</h1>
@@ -31,7 +37,7 @@
         {{i.title|safe}}
       </div>
     {{i.body|safe}}
-    <form action="/eachpost" method="POST">
+    <form action="/eachpost" method="GET">
       <input type="hidden" value={{i.id}} name="id">
       <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
     </form>
@@ -42,12 +48,80 @@
 
 <script>
 
-  function extractContent(s) {
-      var span = document.createElement('span');
-      span.innerHTML = s;
-      return span.textContent || span.innerText;
-    };
-    // alert(extractContent("<p>Hello</p><a href='http://w3c.org'>W3C</a>"));
+//   function extractContent(s) {
+//       var span = document.createElement('span');
+//       span.innerHTML = s;
+//       return span.textContent || span.innerText;
+//     };
+//     // alert(extractContent("<p>Hello</p><a href='http://w3c.org'>W3C</a>"));
+// </script>
+
+
+<script type="text/javascript">
+
+  const tag = document.getElementById("autosearch");
+  var hidden_tag = document.getElementById("autosearch_hidden");
+
+
+  const tagify = new Tagify(tag, {
+    whitelist: [],
+    enforceWhitelist: true,
+    maxTags: 5,
+    autocomplete: {
+      enabled: true,
+      minLength: 1,
+      maxItems: 10
+    },
+    callbacks: {
+      add: function (e) {
+
+        var tags = tagify.value.map(tag => tag.value).join(' ');
+        hidden_tag.value = tags;
+
+
+      },
+      remove: function (e) {
+        console.log("Tag removed :", e.detail.data.value);
+        var tags = tagify.value.map(tag => tag.value).join(' ');
+        hidden_tag.value = tags;
+
+      }
+
+
+    }
+
+
+  });
+
+  var data = {% autoescape on %}
+  {{ avail_users | safe }}
+  {% endautoescape %};
+
+  tagify.settings.maxTags = 1;
+  tagify.settings.whitelist = data;
+  console.log(data)
+  $('#searchBy').on('change', function () {
+    var selectedOption = $(this).val();
+
+    var data = [];
+
+    // Update the tagify whitelist based on the selected option
+    if (selectedOption == 'username') {
+      data = {% autoescape on %}
+    {{ avail_users | safe }}
+    {% endautoescape %};
+    tagify.settings.maxTags = 1;
+
+  }
+   else if (selectedOption == 'tags') {
+    data = {{ avail_tags | safe }};
+  }
+  tagify.settings.whitelist = data;
+  tagify.settings.maxTags = 5;
+  
+});
+
+
 </script>
 
 </html>
