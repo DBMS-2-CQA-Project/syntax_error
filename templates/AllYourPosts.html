@@ -40,6 +40,11 @@
                 <input type="hidden" value={{i.id}} name="postId">
                 <input type="submit" value="Edit" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
               </form>
+              <form action="/deletePost" method="POST">
+                <input type="hidden" value={{i.id}} name="postId">
+                <input type="submit" value="Delete" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
+              </form>
+
             </div>
             
           </div>
