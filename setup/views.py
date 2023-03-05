@@ -183,15 +183,18 @@ def editPost(request):
 
 def postEdited(request):
     if request.method=='POST':
-      CPtitle=request.POST.get('createPostTitle')
-      CPTags=request.POST.get('createPostTags')
-      CPBody=request.POST.get('createPostBody')
+      
       currPostId=request.POST.get('postId')
       currPost= posts.objects.get(id=currPostId)
-
-      currPost.title=CPtitle
-      currPost.tags=CPTags
+      if currPost.post_type_id==1:
+        CPtitle=request.POST.get('createPostTitle')
+        CPTags=request.POST.get('createPostTags')
+        currPost.title=CPtitle
+        currPost.tags=CPTags
+      CPBody=request.POST.get('createPostBody')  
+      print(CPBody)
       currPost.body=CPBody
+      currPost.last_activity_date=datetime.now()
 
       currPost.save()
 
