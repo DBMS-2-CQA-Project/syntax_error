@@ -27,6 +27,8 @@ urlpatterns=[
   path('profile',views.profile,name='Profile'),
   path('editPost',views.editPost,name='editPost'),
   path('postEdited',views.postEdited,name='postEdited'),
+  path('deletePost',views.deletePost,name='deletePost'),
+
 
 
  # path('OrderByUpvotes',views.OrderByUpvotes,name="OrderByUpvotes")

@@ -201,6 +201,15 @@ def postEdited(request):
       messages.success(request,"post edited")
       return HttpResponseRedirect('/AllYourPosts')
 
+def deletePost(request):
+  if request.method=='POST':
+    currPostId=request.POST.get('postId')
+    currPost= posts.objects.get(id=currPostId)
+    currPost.delete()
+
+    messages.success(request,"post deleted")
+    return HttpResponseRedirect('/AllYourPosts')
+
 
 
       
