@@ -25,6 +25,7 @@
       white-space: pre;
     }
   </style>
+
 </head>
 
 <body class="bg-slate-300">
@@ -33,13 +34,17 @@
 
 
   <form action="/postEdited" method="POST">
-
-    <input type="hidden" id="autosearch_hidden_tags" name="createPostTags" required>
+    {%if post.post_type_id == 1%}
+    <input type="hidden" id="autosearch_hidden_tags" name="createPostTags" value="{{post.tags}}" required>
+    {%endif%}
+    
     <input type="hidden" id="createPostBody" name='createPostBody' required>
+    
     <input type="hidden" value={{post.id}} name="postId">
 
 
     <div class="flex flex-col m-auto mt-5 mx-2">
+      {%if post.post_type_id == 1%}
       <div>
         <label for="">Title</label>
         <input type='text' id='createPostTitle' name='createPostTitle' class="border-2" placeholder="Title" value="{{post.title}}" required>
@@ -47,8 +52,9 @@
 
       <div>
         <label for=""> Post Tags</label>
-        <input type="text" placeholder="Tags" id="autosearch_tags" required class="border-2 bg-white">
+        <input type="text" id="autosearch_tags" name = 'createPostTags'  required class="border-2 bg-white">
       </div>
+      {%endif%}
 
       <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
         <textarea type='text' id="markdown" onkeyup="markdownToHtml()"  placeholder="write you answer in markdown"
@@ -60,24 +66,28 @@
 
     </div>
   </form>
-
   <script>
     const markup = document.getElementById('markup');
     const markdown = document.getElementById('markdown');
+    const createPostBody = document.getElementById('createPostBody');
+    const tag = document.getElementById("autosearch_tags");
+    var hidden_tag = document.getElementById("autosearch_hidden_tags");    
+    
+    
+    
     const markdown_value="{{ post.body | escapejs }}"
  
     const turndownService = new TurndownService();
     const markdownContent = turndownService.turndown(markdown_value);
     markdown.value=markdownContent
-    const createPostBody = document.getElementById('createPostBody');
+    
     function markdownToHtml() {
       markup.innerHTML = marked.parse(markdown.value)
       createPostBody.value = marked.parse(markdown.value)
     }
 
 
-    const tag = document.getElementById("autosearch_tags");
-    var hidden_tag = document.getElementById("autosearch_hidden_tags");
+    
 
 
     const tagify = new Tagify(tag, {
@@ -94,7 +104,7 @@
 
           var tags = tagify.value.map(tag => tag.value).join('><');
           hidden_tag.value = '<' + tags + '>';
-          console.log(hidden_tag.value)
+          
 
 
         },
@@ -110,13 +120,23 @@
 
 
     });
+  
+     
+
+    if ({{ post.post_type_id }} == 1) {
+        previous_tags = '{{post.tags|safe}}'
+        
+        previous_tags = previous_tags.slice(1, -1);
+        console.log(typeof previous_tags)
+        previous_tags_list = previous_tags.replaceAll('><', ', ');
+      }
 
     var data = {% autoescape on %}
     {{ avail_tags | safe }}
     {% endautoescape %}
     tagify.settings.whitelist = data;
 
-
+    tagify.addTags(previous_tags_list)
 
   </script>
 </body>

@@ -119,12 +119,12 @@ def eachpost(request):
   
   if request.method=='GET':
     id=request.GET.get('quesId')
-    answersList=list(posts.objects.filter(parent_id=id).order_by('-id').values())
+    answersList=list(posts.objects.filter(parent_id=id).order_by('score').values())
     for i in range(len(answersList)):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
     quesComments=list(comments.objects.filter(post_id=id).order_by('id').values())
-
+    
     for i in answersList:
       i['commentsList']=list(comments.objects.filter(post_id=i['id']).order_by('id').values())
 
@@ -183,15 +183,18 @@ def editPost(request):
 
 def postEdited(request):
     if request.method=='POST':
-      CPtitle=request.POST.get('createPostTitle')
-      CPTags=request.POST.get('createPostTags')
-      CPBody=request.POST.get('createPostBody')
+      
       currPostId=request.POST.get('postId')
       currPost= posts.objects.get(id=currPostId)
-
-      currPost.title=CPtitle
-      currPost.tags=CPTags
+      if currPost.post_type_id==1:
+        CPtitle=request.POST.get('createPostTitle')
+        CPTags=request.POST.get('createPostTags')
+        currPost.title=CPtitle
+        currPost.tags=CPTags
+      CPBody=request.POST.get('createPostBody')  
+      print(CPBody)
       currPost.body=CPBody
+      currPost.last_activity_date=datetime.now()
 
       currPost.save()
 
