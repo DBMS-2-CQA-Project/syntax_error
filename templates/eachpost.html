@@ -38,10 +38,14 @@
 
     </div>
     <!--  -->
-    <div class="flex-1"> <!-- text-4xl p-5 -->
-      <div class="text-4xl p-5">
+    <div class="flex-1" > <!-- text-4xl p-5 -->
+      <div class="text-4xl p-5" style = "position: relative;">
         {{ques.0.title}}
+        <br>
+        <span style = "position: absolute; bottom: 0; right: 0;">Asked by : {{ques.0.owner_user_id_id}} (User ID) </span>
       </div>
+     
+     
     </div>
   </div>
   <div class="p-5">
@@ -55,11 +59,11 @@
 
     {%for j in quesComments%}
     <li class="m-3 text-base">
-      {{j.text|safe}} {% if j.user_display_name or j.user_id_id %}
-      {% if j.user_display_name %}
-      - - {{ j.user_display_name }}
+      {{j.text|safe}} {% if j.owner_display_name or j.owner_user_id_id %}
+      {% if j.owner_user_display_name %}
+       {{ j.owner_user_display_name }}
       {% else %}
-      - - {{ j.user_id_id }} (User ID)
+       {{ j.owner_user_id_id }} (User ID)
       {% endif %}
       {% endif %}
 
@@ -107,11 +111,21 @@
         </div>
         <div class="flex-1 ">
 
-          <div class="break-words overflow-auto">
+          <div class="break-words overflow-auto" style = "position: relative;">
             {{i.body|safe}}
+            <br>
+            <span style = "position: absolute; bottom: 0; right: 0;" > Answered By : {% if i.owner_display_name or i.owner_user_id_id %}
+              {% if i.owner_user_display_name %}
+               {{ i.owner_user_display_name }}
+              {% else %}
+               {{ i.owner_user_id_id }} (User ID)
+              {% endif %}
+              {% endif %}</span>
           </div>
+
         </div>
       </div>
+
       <div>
         <ul class="m-5 text-3xl">Comments
           {%for j in i.commentsList%}

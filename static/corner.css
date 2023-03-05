@@ -3,6 +3,12 @@
     padding: 10px;
     border: 1px solid black;
   }
+
+  .flex-1{
+  position: relative;
+  padding: 10px;
+  border: 1px solid black;
+}
   
   .corner-text {
     position: absolute;
