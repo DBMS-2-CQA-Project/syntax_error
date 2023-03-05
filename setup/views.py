@@ -120,11 +120,13 @@ def eachpost(request):
   if request.method=='GET':
     id=request.GET.get('quesId')
     answersList=list(posts.objects.filter(parent_id=id).order_by('score').values())
+    print(answersList[0])
     for i in range(len(answersList)):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
     quesComments=list(comments.objects.filter(post_id=id).order_by('id').values())
-    
+    # print(quesComments)
+    # quesComments_name =  users.objects.filter(id = )
     for i in answersList:
       i['commentsList']=list(comments.objects.filter(post_id=i['id']).order_by('id').values())
 
@@ -236,11 +238,16 @@ def editProfile(request):
 def search(request):
   if request.method=='POST':
     searchBy=request.POST.get('searchBy')
-    searchValue=request.POST.get('searchValue')
+    searchValue=request.POST.get('searchValue')  # himashu/ syntax, cp
+    sortBy=request.POST.get('sortBy')     # date/upvotes
     if searchBy=='username':
       global relatedPostsList
-
-      relatedPosts=posts.objects.filter(owner_display_name=searchValue)
+      
+      if sortBy == 'date':
+        relatedPosts=posts.objects.filter(owner_display_name=searchValue).order_by('-creation_date')
+      elif sortBy == 'upvotes':
+        relatedPosts=posts.objects.filter(owner_display_name=searchValue).order_by('-score')
+      
       global relatedPostsData
       relatedPostsData=relatedPosts
       relatedPostsList=list(relatedPosts.values())
@@ -250,7 +257,12 @@ def search(request):
       global searchValueList
 
       searchValueList=searchValue.split(' ')
-      allPostsList=list(posts.objects.all().values())
+      if sortBy == 'date':
+        allPostsList=list(posts.objects.all().order_by('-creation_date').values())
+      elif sortBy == 'upvotes':
+        allPostsList=list(posts.objects.all().order_by('-score').values())
+
+
       relatedPostsList=find_using_tags(allPostsList,searchValueList)
 
 

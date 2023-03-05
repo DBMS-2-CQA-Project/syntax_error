@@ -52,7 +52,7 @@
 
       <div>
         <label for=""> Post Tags</label>
-        <input type="text" id="autosearch_tags" required class="border-2 bg-white">
+        <input type="text" id="autosearch_tags" name = 'createPostTags'  required class="border-2 bg-white">
       </div>
       {%endif%}
 
@@ -73,7 +73,7 @@
     const tag = document.getElementById("autosearch_tags");
     var hidden_tag = document.getElementById("autosearch_hidden_tags");    
     
-  
+    
     
     const markdown_value="{{ post.body | escapejs }}"
  
@@ -104,7 +104,7 @@
 
           var tags = tagify.value.map(tag => tag.value).join('><');
           hidden_tag.value = '<' + tags + '>';
-          console.log(hidden_tag.value)
+          
 
 
         },
@@ -120,14 +120,15 @@
 
 
     });
+  
+     
 
     if ({{ post.post_type_id }} == 1) {
         previous_tags = '{{post.tags|safe}}'
+        
         previous_tags = previous_tags.slice(1, -1);
-        previous_tags_list = previous_tags.replace('><', ', ');
-        tag.value = previous_tags_list
-        console.log(typeof previous_tags_list)
-        console.log("fdfdkf")
+        console.log(typeof previous_tags)
+        previous_tags_list = previous_tags.replaceAll('><', ', ');
       }
 
     var data = {% autoescape on %}
@@ -135,6 +136,7 @@
     {% endautoescape %}
     tagify.settings.whitelist = data;
 
+    tagify.addTags(previous_tags_list)
 
   </script>
 </body>

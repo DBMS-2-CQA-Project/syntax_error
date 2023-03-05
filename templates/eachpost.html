@@ -15,33 +15,35 @@
 
   {% include "./components/navbar2.html" %}
   {% include "./components/messages.html" %}
-  <div class = "flex items-center">
-  <div class = "flex-3">
-    <br>
-    <div class="flex flex-col justify-center items-center">
-        <button class="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow" onclick="Votes('up',{{ques.0.id}})" >
+  <div class="flex items-center">
+    <div class="flex-3">
+      <br>
+      <div class="flex flex-col justify-center items-center">
+        <button class="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow"
+          onclick="Votes('up',{{ques.0.id}})">
           <svg class="w-6 h-6 fill-current text-gray-500 hover:text-gray-800 transition-colors">
             <path d="M12 2 L2 12 H6 V20 H18 V12 h4 L12 2 Z" />
           </svg>
         </button>
-      <span class="text-gray-500 text-2xl font-bold my-4" id = "score">{{ques.0.score}}</span>
-      <button class="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow" onclick="Votes('down',{{ques.0.id}})">
-        <svg class="w-6 h-6 fill-current text-gray-500 hover:text-gray-800 transition-colors">
-          <path d="M12 22 L22 12 H18 V4 H6 V12 H2 L12 22 Z" />
-        </svg>
-      </button>
+        <span class="text-gray-500 text-2xl font-bold my-4" id="score">{{ques.0.score}}</span>
+        <button class="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow"
+          onclick="Votes('down',{{ques.0.id}})">
+          <svg class="w-6 h-6 fill-current text-gray-500 hover:text-gray-800 transition-colors">
+            <path d="M12 22 L22 12 H18 V4 H6 V12 H2 L12 22 Z" />
+          </svg>
+        </button>
+      </div>
+
+
+
     </div>
-    
-    
-     
+    <!--  -->
+    <div class="flex-1"> <!-- text-4xl p-5 -->
+      <div class="text-4xl p-5">
+        {{ques.0.title}}
+      </div>
+    </div>
   </div>
-  <!--  -->
-  <div class="flex-1">   <!-- text-4xl p-5 -->
-    <div class =  "text-4xl p-5">
-    {{ques.0.title}}
-  </div>
-  </div>
-</div>
   <div class="p-5">
     {{ques.0.body|safe}}
   </div>
@@ -49,22 +51,32 @@
     <input type="hidden" name="quesId" id="quesId" value={{ques.0.id}}>
     <input type='submit' class="hover:cursor-pointer p-1 bg-slate-400 rounded" value="Write Answer">
   </form>
-  <div id = "quesCommentsLst" class="m-5 text-3xl">Comments
-  
-{%for j in quesComments%}
-<li class="m-3 text-base">
-  {{j.text|safe}}
-</li>
-{%endfor%}
-<button class = "text-sm hover:cursor-pointer p-2 bg-slate-400 rounded" onclick="toggleQuesComments()">View More</button>
-</div>
- <br>
+  <div id="quesCommentsLst" class="m-5 text-3xl">Comments
 
-<button onclick="showCommentOption({{ques.0.id}})" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Add comment</button>
+    {%for j in quesComments%}
+    <li class="m-3 text-base">
+      {{j.text|safe}} {% if j.user_display_name or j.user_id_id %}
+      {% if j.user_display_name %}
+      - - {{ j.user_display_name }}
+      {% else %}
+      - - {{ j.user_id_id }} (User ID)
+      {% endif %}
+      {% endif %}
+
+    </li>
+    {%endfor%}
+    <button class="text-sm hover:cursor-pointer p-2 bg-slate-400 rounded" onclick="toggleQuesComments()">View
+      More</button>
+  </div>
+  <br>
+
+
+  <button onclick="showCommentOption({{ques.0.id}})" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Add
+    comment</button>
   <div class="hidden" id={{ques.0.id}}>
     <form action="/CommentAdded" method="POST">
       <input type="hidden" name="PostId" id="PostId" value={{ ques.0.id }}>
-    
+
       <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
       <input type='submit'></input>
     </form>
@@ -75,25 +87,54 @@
     {%for i in answersList%}
     <div class="text-lg bg-slate-400 p-5 m-5 rounded-md" id={{i.id}}>
 
-      <div class="break-words overflow-auto">
-        {{i.body|safe}}
-      </div>
+      <div class="flex item-start justify-between space-x-3">
+        <div class="flex-2 h-18">
+          <div class="flex flex-col justify-center items-center">
+            <button class="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow"
+              onclick="Votes('up',{{i.id}})">
+              <svg class="w-6 h-6 fill-current text-gray-500 hover:text-gray-800 transition-colors">
+                <path d="M12 2 L2 12 H6 V20 H18 V12 h4 L12 2 Z" />
+              </svg>
+            </button>
+            <span class="text-gray-500 text-2xl font-bold my-4" id="score">{{i.score}}</span>
+            <button class="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow"
+              onclick="Votes('down',{{i.id}})">
+              <svg class="w-6 h-6 fill-current text-gray-500 hover:text-gray-800 transition-colors">
+                <path d="M12 22 L22 12 H18 V4 H6 V12 H2 L12 22 Z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex-1 ">
 
+          <div class="break-words overflow-auto">
+            {{i.body|safe}}
+          </div>
+        </div>
+      </div>
       <div>
-        <ul  class="m-5 text-3xl">Comments
-        {%for j in i.commentsList%}
-        <li class="m-5 text-base">
-          {{j.text|safe}}
-        </li>
-        {%endfor%}
-        
-      </ul>
-      {% if i.commentsList|length > 5 %}
-        <button class = "text-sm hover:cursor-pointer p-2 bg-slate-500 rounded" onclick="toggleAnsComments({{i.id}})" >View More</button>
-<br><br>
+        <ul class="m-5 text-3xl">Comments
+          {%for j in i.commentsList%}
+          <li class="m-5 text-base">
+            {{j.text|safe}} {% if j.user_display_name or j.user_id_id %}
+            {% if j.user_display_name %}
+            - - {{ j.user_display_name }}
+            {% else %}
+            - - {{ j.user_id_id }} (User ID)
+            {% endif %}
+            {% endif %}
+          </li>
+          {%endfor%}
+
+        </ul>
+        {% if i.commentsList|length > 5 %}
+        <button class="text-sm hover:cursor-pointer p-2 bg-slate-500 rounded" onclick="toggleAnsComments({{i.id}})">View
+          More</button>
+        <br><br>
         {%endif%}
 
-        <button onclick="showCommentOption({{i.id}})" class="hover:cursor-pointer p-1 bg-slate-500 rounded">Add comment</button>
+        <button onclick="showCommentOption({{i.id}})" class="hover:cursor-pointer p-1 bg-slate-500 rounded">Add
+          comment</button>
 
         <div class="hidden" id={{i.id}}>
           <form action="/CommentAdded" method="POST">
@@ -112,15 +153,15 @@
     {%endfor%}
   </div>
   <script>
-    function Votes(direction,id){
+    function Votes(direction, id) {
 
-          var obj = document.getElementById('score');
-          $.ajax({
-                 url: '/VotesUpdate',
-                 method: 'POST',
-                 data: {'id': id, 'direction': direction},
-                success: function(data) {
-                  obj.textContent = data.newScore;
+      var obj = document.getElementById('score');
+      $.ajax({
+        url: '/VotesUpdate',
+        method: 'POST',
+        data: { 'id': id, 'direction': direction },
+        success: function (data) {
+          obj.textContent = data.newScore;
         }
       });
     }
@@ -130,69 +171,69 @@
     var quesCommentsLst = document.getElementById('quesCommentsLst')
 
     var AnsCommentsLst = document.getElementsByClassName('m-5 text-3xl')
-    
+
     var liTags1 = quesCommentsLst.getElementsByTagName('li')
 
 
-    toggleAnsComments=(id)=>{
-      var answerId=document.getElementById(id);
+    toggleAnsComments = (id) => {
+      var answerId = document.getElementById(id);
       var liTags2 = answerId.getElementsByTagName('li')
-      var btn=answerId.getElementsByTagName('button')[0]
-      
-        setTimeout(function () {
-          for (var i = 4; i < liTags2.length; i++) {
-            if(liTags2[i].style.display == "list-item"){
-              liTags2[i].style.display = "none";
-              btn.innerHTML = "View More";
-            }
-            else{
-              liTags2[i].style.display = "list-item";
-              btn.innerHTML = "show less";
-            }
-            
+      var btn = answerId.getElementsByTagName('button')[2]
+
+      setTimeout(function () {
+        for (var i = 4; i < liTags2.length; i++) {
+          if (liTags2[i].style.display == "list-item") {
+            liTags2[i].style.display = "none";
+            btn.innerHTML = "View More";
           }
-        }, 500); 
+          else {
+            liTags2[i].style.display = "list-item";
+            btn.innerHTML = "show less";
+          }
+
+        }
+      }, 500);
     }
-    
 
-    for (var i = 4; i < liTags1.length;i++){
-          liTags1[i].style.display = "none";
-           }
-   
- 
 
-       
+    for (var i = 4; i < liTags1.length; i++) {
+      liTags1[i].style.display = "none";
+    }
 
-toggleQuesComments=()=>{
-  setTimeout(function () {
-    var btn = quesCommentsLst.getElementsByTagName('button')[0]
-         for (var i = 4; i < liTags1.length; i++) {
+
+
+
+
+    toggleQuesComments = () => {
+      setTimeout(function () {
+        var btn = quesCommentsLst.getElementsByTagName('button')[2]
+        for (var i = 4; i < liTags1.length; i++) {
 
           if (liTags1[i].style.display == "list-item") {
-             liTags1[i].style.display = "none";
-             btn.innerHTML = "View More";
-           }
-           else {
-             liTags1[i].style.display = "list-item";
-             btn.innerHTML = "show less";
-           }
-
-         }
-       }, 500);
-     }
-
-
-        for (var j = 1;j <AnsCommentsLst.length;j++){
-        var liTags2 = AnsCommentsLst[j].getElementsByTagName('li')
-    
-        for (var i = 4; i < liTags2.length;i++){
-        
-          liTags2[i].style.display = "none";
-           }
+            liTags1[i].style.display = "none";
+            btn.innerHTML = "View More";
+          }
+          else {
+            liTags1[i].style.display = "list-item";
+            btn.innerHTML = "show less";
           }
 
-   </script>
-  
+        }
+      }, 500);
+    }
+
+
+    for (var j = 1; j < AnsCommentsLst.length; j++) {
+      var liTags2 = AnsCommentsLst[j].getElementsByTagName('li')
+
+      for (var i = 4; i < liTags2.length; i++) {
+
+        liTags2[i].style.display = "none";
+      }
+    }
+
+  </script>
+
 
 
   <script>
