@@ -21,10 +21,13 @@ urlpatterns=[
   path('logout',views.logout,name="logout"),
 
   path('Singlepost',views.Singlepost,name="Singlepost"),
-  path('PostEdited',views.PostEdited,name="AllYourPosts"),
-  path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
+  # path('PostEdited',views.PostEdited,name="AllYourPosts"),
+  # path('EditedPostPage',views.PostEdited,name="EditedPostPage"),
   path('CommentAdded',views.CommentAdded,name="CommentAdded"),
-  path('profile',views.profile,name='Profile')
+  path('profile',views.profile,name='Profile'),
+  path('editPost',views.editPost,name='editPost'),
+  path('postEdited',views.postEdited,name='postEdited'),
+
 
  # path('OrderByUpvotes',views.OrderByUpvotes,name="OrderByUpvotes")
   # path('profile',views.profile,name="profile")

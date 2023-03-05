@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <title>Document</title>
+
 </head>
 
 <body class="bg-slate-300">
@@ -73,15 +74,11 @@
     <div class="text-center text-5xl my-5">ANSWERS</div>
     {%for i in answersList%}
     <div class="text-lg bg-slate-400 p-5 m-5 rounded-md">
-      <!-- <div>
-        {{i.owner_display_name}}
-      </div> -->
-      <div>
+
+      <div class="break-words overflow-auto">
         {{i.body|safe}}
       </div>
-      <div>
-        <!-- {{i.}} -->
-      </div>
+
       <div>
         <div  class="m-5 text-3xl">Comments
         {%for j in i.commentsList%}
