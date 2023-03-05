@@ -87,7 +87,7 @@
         <input type="hidden" name="PostId" id="PostId" value={{ ques.0.id }}>
     
         <input type='text' id='Bodytext' name='Bodytext' placeholder="write comment"></input>
-        <input type='submit'></input>
+        <input type='submit' value="Submit" class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer"></input>
       </form>
     </div>
 
@@ -130,10 +130,12 @@
           <div class="break-words overflow-auto">
             {{i.body|safe}}
           </div>
-          <span style = "position : absolute; bottom: 0; right: 0;">Answered by : {{i.owner_user_id_id}}(User ID)</span>
+          <br>
+          <span class="text-right text-[#2C6FF5] block">Answered by : {{i.owner_user_id_id}}(User ID)</span>
 
         </div>
       </div>
+      
       <div>
         <hr class="mt-5 text-black">
         <ul class="m-5 text-3xl">Comments
@@ -208,7 +210,7 @@
     toggleAnsComments = (id) => {
       var answerId = document.getElementById(id);
       var liTags2 = answerId.getElementsByTagName('li')
-      var btn = document.getElementById("ques_view_more")
+      var btn = answerId.getElementsByTagName('button')[2]
 
       setTimeout(function () {
         for (var i = 4; i < liTags2.length; i++) {
@@ -236,7 +238,7 @@
 
     toggleQuesComments = () => {
       setTimeout(function () {
-        var btn = quesCommentsLst.getElementsByTagName('button')[3]
+        var btn = document.getElementsByTagName('button')[3]
         for (var i = 4; i < liTags1.length; i++) {
 
           if (liTags1[i].style.display == "list-item") {

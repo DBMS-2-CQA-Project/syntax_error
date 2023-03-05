@@ -116,7 +116,6 @@ def home(request):
 
 
 def eachpost(request): 
-  
   if request.method=='GET':
     id=request.GET.get('quesId')
     answersList=list(posts.objects.filter(parent_id=id).order_by('-score').values())
@@ -124,7 +123,6 @@ def eachpost(request):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
     quesComments=list(comments.objects.filter(post_id=id).order_by('id').values())
-    # quesComments_name =  users.objects.filter(id = )
     for i in answersList:
       i['commentsList']=list(comments.objects.filter(post_id=i['id']).order_by('id').values())
 
