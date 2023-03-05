@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
     </head>
-    <body>
+    <body class="bg-[#f2f2f2]">
       {% include "./components/navbar2.html" %}
       {% include "./components/messages.html" %}
 
@@ -18,7 +18,7 @@
           <div class="text-4xl mt-10 text-center">All your Posts</div>
           {%for i in allPosts%}
         
-          <div class="text-xl bg-slate-400 p-5 m-5 rounded-xl">
+          <div class="text-xl bg-slate-400 p-5 m-5 bg-[#ffffff]">
             <div class="text-4xl mb-5">
               {{i.title|safe}}
             </div>
@@ -34,16 +34,20 @@
                 {%elif i.post_type_id == 2%}
                 <input type="hidden" value={{i.parent_id}} name="quesId">
                 {%endif%}
-                <input type="submit" value="See more" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
+                <input type="submit" value="See more" class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer"">
               </form>
-              <form action="/editPost" method="POST">
-                <input type="hidden" value={{i.id}} name="postId">
-                <input type="submit" value="Edit" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
-              </form>
-              <form action="/deletePost" method="POST">
-                <input type="hidden" value={{i.id}} name="postId">
-                <input type="submit" value="Delete" class="bg-slate-500 p-1 mt-2 rounded hover:cursor-pointer">
-              </form>
+              <div class="flex justify-end gap-x-2">
+                <form action="/editPost" method="POST">
+                  <input type="hidden" value={{i.id}} name="postId">
+                  <input type="submit" value="Edit"
+                    class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer">
+                </form>
+                <form action="/deletePost" method="POST">
+                  <input type="hidden" value={{i.id}} name="postId">
+                  <input type="submit" value="Delete"
+                    class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer">
+                </form>
+              </div>
 
             </div>
             

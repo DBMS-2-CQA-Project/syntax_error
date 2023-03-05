@@ -28,7 +28,7 @@
 
 </head>
 
-<body class="bg-slate-300">
+<body class="bg-[#f2f2f2]">
   {% include "./components/navbar2.html" %}
   {% include "./components/messages.html" %}
 
@@ -43,7 +43,7 @@
     <input type="hidden" value={{post.id}} name="postId">
 
 
-    <div class="flex flex-col m-auto mt-5 mx-2">
+    <div class="flex flex-col m-auto mt-5 gap-x-5 mx-5">
       {%if post.post_type_id == 1%}
       <div>
         <label for="">Title</label>
@@ -56,13 +56,13 @@
       </div>
       {%endif%}
 
-      <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
+      <div class="flex sm:flex-row flex-col m-auto">
         <textarea type='text' id="markdown" onkeyup="markdownToHtml()"  placeholder="write you answer in markdown"
           rows="5" cols="40" class="w-full sm:w-1/2 m-1"></textarea>
         <div id="markup" class="w-full sm:w-1/2 bg-white m-1 min-h-[5rem]">{{post.body|safe}}</div>
       </div>
 
-      <input type='submit' value="Submit" class="hover:cursor-pointer p-1 bg-slate-400 rounded w-fit">
+      <input type='submit' value="Submit" class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer w-fit">
 
     </div>
   </form>
