@@ -120,12 +120,10 @@ def eachpost(request):
   if request.method=='GET':
     id=request.GET.get('quesId')
     answersList=list(posts.objects.filter(parent_id=id).order_by('score').values())
-    print(answersList[0])
     for i in range(len(answersList)):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)
     quesComments=list(comments.objects.filter(post_id=id).order_by('id').values())
-    # print(quesComments)
     # quesComments_name =  users.objects.filter(id = )
     for i in answersList:
       i['commentsList']=list(comments.objects.filter(post_id=i['id']).order_by('id').values())
@@ -159,14 +157,17 @@ def signin(request):
 
   if request.method=='POST':
     id=request.POST.get('id')
-    pw=request.POST.get('display_name')
-    currUser=users.objects.filter(id=id)
+    pw=request.POST.get('pw')
+    currUser=users.objects.filter(id=id, account_id=pw)
 
     if not currUser:
       messages.error(request, "Check your credentials")
       return HttpResponseRedirect('/signin')
       
     else:
+      currUserLatestTime=users.objects.get(id=id)
+      currUserLatestTime.last_access_date=datetime.now()
+      currUserLatestTime.save()
       response=HttpResponseRedirect('/')
       response.set_cookie('userId',list(currUser.values())[0]['id'])
       response.set_cookie('loginStatus',True)
@@ -194,7 +195,6 @@ def postEdited(request):
         currPost.title=CPtitle
         currPost.tags=CPTags
       CPBody=request.POST.get('createPostBody')  
-      print(CPBody)
       currPost.body=CPBody
       currPost.last_activity_date=datetime.now()
 
@@ -324,7 +324,6 @@ def  PostAnswer(request):
     # if request.method=='POST':
     currUser=list(users.objects.filter(id=currUserId).values())[0]
     quesId=request.POST.get('quesId')
-    print(quesId)
     return render(request,'PostAnswer.html',{'quesId':quesId,'user':currUser})
 
   messages.info(request, "You have to login for answering post")
@@ -346,12 +345,10 @@ def AnsweredPost(request):
 
     currQuesId=request.POST.get('postAnswerQuesId')
     currBody=request.POST.get('postAnswerBody')
-    print(currUserId)
 
     new_AnswerPost=posts(id=CPid,owner_user_id=ownerUser, post_type_id=2, score=0,parent_id=currQuesId,view_count=0,answer_count=0,comment_count=0,owner_display_name=curruserName,
 	content_license=CPcontent_license,body=currBody, creation_date =datetime.now(),last_activity_date=datetime.now())
     new_AnswerPost.save()
-    print(currUserId)
     # Update the quesion/ create post thing
     ParentIt=posts.objects.filter(id=currQuesId).values()
     current_answer_count= ParentIt[0]['answer_count']+1
@@ -375,7 +372,6 @@ def Singlepost(request):
     if(output=="Edit"):
       global PostData
       PostData=posts.objects.filter(id=id,owner_user_id=owner_user_id_ForEditingPosts).values()
-      print(PostData)
       return render(request, 'editYourPost.html', {'postdata':PostData,'owner_user_id':owner_user_id_ForEditingPosts,'id':id})
 
     return render(request, 'eachPost.html')
@@ -387,7 +383,6 @@ def profile(request):
     return response
   currUserId=request.COOKIES['userId']
   currUser=users.objects.filter(id=currUserId).values()[0]
-  # print(currUser,currUser.id)
   return render(request, 'profile.html',{'user':currUser})
   
 

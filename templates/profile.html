@@ -27,7 +27,7 @@
     <title>Document</title>
   </head>
 <body>
-{% include "./components/navbar.html" %} 
+{% include "./components/navbar2.html" %} 
 {% include   "./components/messages.html" %}
 <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
   <div class="card p-4">
@@ -50,7 +50,7 @@
     </button>
       <span class="name mt-3">{{user.display_name}}</span>
       <br>
-      <span class="idd">@{{user.display_name}}</span>
+      <span class="idd">{{user.id}}</span>
       <div
         class="d-flex flex-row justify-content-center align-items-center gap-2"
       >

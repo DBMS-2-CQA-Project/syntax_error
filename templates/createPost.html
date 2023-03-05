@@ -25,7 +25,7 @@
     </style>
 </head>
 
-<body class="bg-slate-300">
+<body class="bg-[#f2f2f2]">
     {% include "./components/navbar2.html" %}
     {% include "./components/messages.html" %}
 
@@ -35,19 +35,21 @@
     <input type="hidden" id="autosearch_hidden_tags" name="createPostTags" required>
     <input type="hidden" id="createPostBody" name='createPostBody' required>
 
-    <div class="flex flex-col m-auto mt-5 mx-2">
-        <div>
-            <label for="">Title</label>
-            <input type='text' id='createPostTitle' name='createPostTitle' class="border-2" placeholder="Title" required>
+    <div class="flex flex-col m-auto mx-5 mt-5 mx-2 gap-y-10">
+        <div class="flex flex-col">
+            <label for="" class="text-2xl font-medium">Title</label>
+            <input type='text' id='createPostTitle' name='createPostTitle' class="border-2 text-md p-[2px] rounded-none" placeholder="Title" required>
         </div>
         
-        <div>
-            <label for=""> Post Tags</label>
+        <div class="flex flex-col">
+            <label for="" class="text-2xl font-medium"> Post Tags</label>
             <input type="text" id="autosearch_tags" required class="border-2 bg-white">
         </div>
 
-        <div class="flex w-[90vw] sm:flex-row flex-col m-auto">
-            <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="write you answer in markdown"
+        <div class="flex w-full sm:flex-row flex-col m-auto">
+                        <!-- <label for="" class="text-2xl font-bold">Body</label> -->
+
+            <textarea type='text' id="markdown" onkeyup="markdownToHtml()" placeholder="describe you question in markdown"
                 rows="5" cols="40" class="w-full sm:w-1/2 m-1"></textarea>
             <div id="markup" class="w-full sm:w-1/2 bg-white m-1 min-h-[5rem]"></div>
         </div>
@@ -79,7 +81,7 @@
             autocomplete: {
                 enabled: true,
                 minLength: 1,
-                maxItems: 10
+                maxItems: 10,
             },
             callbacks: {
                 add: function (e) {
@@ -87,7 +89,6 @@
                     var tags = tagify.value.map(tag => tag.value).join('><');
                     hidden_tag.value = '<'+tags+'>';
                     console.log(hidden_tag.value)
-
 
                 },
                 remove: function (e) {
