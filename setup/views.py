@@ -119,8 +119,8 @@ def eachpost(request):
   
   if request.method=='GET':
     id=request.GET.get('quesId')
-    answersList=list(posts.objects.filter(parent_id=id).order_by('score').values())
-    print(answersList[0])
+    answersList=list(posts.objects.filter(parent_id=id).order_by('-score').values())
+    # print(answersList[0])
     for i in range(len(answersList)):
       answersList[i]['index']=i
     ques=posts.objects.filter(id=id)

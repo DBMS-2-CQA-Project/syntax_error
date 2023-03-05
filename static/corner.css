@@ -1,0 +1,21 @@
+.flex items-center space-x-3 {
+    position: relative;
+    padding: 10px;
+    border: 1px solid black;
+  }
+  
+  .corner-text {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: red;
+    color: rgb(236, 234, 234);
+    padding: 10px;
+    font-size: 12px;
+  }
+  
+.flex items-center justify-between space-x-2{
+    position: relative;
+    padding: 10px;
+    border: 1px solid black;
+  }
