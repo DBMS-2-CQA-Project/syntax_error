@@ -48,13 +48,16 @@
     <input type="hidden" name="quesId" id="quesId" value={{ques.0.id}}>
     <input type='submit' class="hover:cursor-pointer p-1 bg-slate-400 rounded" value="Write Answer">
   </form>
-  <div class="m-5 text-3xl">Comments</div>
+  <div id = "quesCommentsLst" class="m-5 text-3xl">Comments
   
 {%for j in quesComments%}
 <li class="m-3 text-base">
   {{j.text|safe}}
 </li>
 {%endfor%}
+<button class = "h -[20px] w-[90px] text-sm hover:cursor-pointer p-2 bg-slate-400 rounded" id="viewMoreBtn1">View More</button>
+</div>
+ <br>
 
 <button onclick="showCommentOption({{ques.0.id}})" class="hover:cursor-pointer p-1 bg-slate-400 rounded">Add comment</button>
   <div class="hidden" id={{ques.0.id}}>
@@ -80,26 +83,20 @@
         <!-- {{i.}} -->
       </div>
       <div>
-        <div class="m-5 text-3xl">Comments</div>
+        <div  class="m-5 text-3xl">Comments
         {%for j in i.commentsList%}
         <li class="m-5 text-base">
           {{j.text|safe}}
         </li>
         {%endfor%}
-  <script>
-    function Votes(direction,id){
+        
+        </div> 
+        <button class = "h - [40px] w-[80px] text-sm hover:cursor-pointer p-1 bg-slate-500 rounded" >View More</button>
+        <br>
+        <br>
 
-          var obj = document.getElementById('score');
-          $.ajax({
-                 url: '/VotesUpdate',
-                 method: 'POST',
-                 data: {'id': id, 'direction': direction},
-                success: function(data) {
-                  obj.textContent = data.newScore;
-        }
-      });
-    }
-  </script>
+       
+  
     
         
         <button onclick="showCommentOption({{i.id}})" class="hover:cursor-pointer p-1 bg-slate-500 rounded">Add comment</button>
@@ -121,7 +118,81 @@
     </div>
     {%endfor%}
   </div>
+  <script>
+    function Votes(direction,id){
 
+          var obj = document.getElementById('score');
+          $.ajax({
+                 url: '/VotesUpdate',
+                 method: 'POST',
+                 data: {'id': id, 'direction': direction},
+                success: function(data) {
+                  obj.textContent = data.newScore;
+        }
+      });
+    }
+  </script>
+  <script>
+
+    var quesCommentsLst = document.getElementById('quesCommentsLst')
+
+    var AnsCommentsLst = document.getElementsByClassName('m-5 text-3xl')
+    
+    var liTags1 = quesCommentsLst.getElementsByTagName('li')
+    
+    
+    for (var i = 4; i < liTags1.length;i++){
+          
+          liTags1[i].style.display = "none";
+           }
+   
+
+   var viewMoreBtn1 = document.getElementById("viewMoreBtn1");
+   var viewMoreBtn2 = document.getElementsByClassName("h - [40px] w-[80px] text-sm hover:cursor-pointer p-1 bg-slate-500 rounded");
+ 
+   viewMoreBtn1.addEventListener("click", function() {
+   viewMoreBtn1.style.display = "none";
+   console.log(viewMoreBtn1.style)    
+
+       setTimeout(function() {
+        for (var i = 4; i < liTags1.length; i++) {
+              liTags1[i].style.display = "list-item";
+            
+             }
+                }, 500); 
+        });
+
+        for (var j = 1;j <AnsCommentsLst.length;j++){
+        var liTags2 = AnsCommentsLst[j].getElementsByTagName('li')
+    
+        
+        for (var i = 4; i < liTags2.length;i++){
+        
+          liTags2[i].style.display = "none";
+           }
+       
+          }
+
+        for (var j = 0; j<viewMoreBtn2.length;j++){
+          var liTags2 = AnsCommentsLst[j].getElementsByTagName('li')
+          
+          viewMoreBtn2[j].addEventListener("click", function() {
+        this.style.display = "none";
+       
+       setTimeout(function() {
+        for (var i = 4; i < liTags2.length; i++) {
+              console.log(liTags2)
+              liTags2[i].style.display = "list-item";
+              
+             }
+                }, 500); 
+        })
+       };
+      
+
+
+
+   </script>
   
 
 
