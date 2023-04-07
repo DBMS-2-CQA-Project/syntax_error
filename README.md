@@ -4,26 +4,49 @@
 Through our **Syntax Error** Community, many people learn new things everyday.
 
 
-# How To Use Syntax Error?
+## Follow the steps to setup the application
+
+1. Fisrt download all packages needed for the application using below code
+	```sh 
+	 pip install -r requirements.txt
+   ```
+2. Then setup .env in main folder with file name '.env' and put following code
+
+	```python
+	DB_NAME=[your psql database name]
+	DB_USERNAME=[your psql username]
+	DB_PASSWORD=[psql username pw]
+	DB_HOST=localhost
+	DB_PORT=5432
+	```
+3. Then run following code for setting up connection between databse and application
+	```sh
+	python manage.py makemigrations
+	python manage,py migrate
+	```
+
+
+
+## How To Use Syntax Error?
 
 The home page of the website shows the **Trendy Posts** to the visitors. Any visitor of our website can look into posts of others, and search posts made by users based on tags( of the post), or based on the display name of the user.
 Here we will explain about our website. How to use it and many more!!!
 
-## SignUp:
+### SignUp:
 
 When a new user Signup's in **Syntax Error**, he/she gets **access to create a post, answer a post, edit a post, and also comment a post**. He/She can also upvote or downvote a post based on his intrest.
 A profile will be registered to a SingedUp user, **whose default password is the user display name**. A registered user can also edit his profile later according to his preferences. 
 
-## SignIn:
+### SignIn:
 
 An already registered user, can just **sign in** to his/her account with **userID** and **password**. He/She can see all the posts he/she has created. Also, **cookies** automatically gets stored in his/her browser. When he or she **logouts**, the **cookies are deleted**.
 > A user can logout using **"Logout"** option  in the dropdown by hovering over his profile picture.
 
-## Profile :
+### Profile :
 
 Every signed in user has a profile, which has **information about him/her**. A signed in user can **edit his/her profile**, namely his profile photo, display name, about his location, and his website URL.
 
-## Posts:
+### Posts:
 
 Posts are **created** by registered users. Users can make **question posts, or answer to question posts**. The question posts have a **title**, and **tags**. These **tags** help visitors to **search posts** they need, and find the required answer. For each question post, using **'see more'** option, we can see the main page of the post. Here we can add **comment** to the question post or answer the question post. We can also add **comment** to the answer post .
 - Using the **"Create post"** option, a user can create a question post.
@@ -36,35 +59,35 @@ Posts are **created** by registered users. Users can make **question posts, or a
 	> A user can see all his posts in  **"Your Posts"** in the dropdown by hovering over his profile picture.
 
 
-## Search Post:
+### Search Post:
 
 Any visitor can search a post based on the post creator username or tags of the post. The **Autocompletion search** feature helps the user while searching the posts, by **suggesting some of the best matches to the post the user is looking for**.
 
-## Comments:
+### Comments:
 
 Every posts may have **comments**. Signed in users **can reply/comment to these posts**, regarding any doubt they have about the post. 
 
-## Upvote and Downvote:
+### Upvote and Downvote:
 
 In the main page of every post, a registered user can **upvote** or **downvote** the post.
 
 
-# About the Application:
+## About the Application:
 
 Firstly, the application uses a large data from the dataset provided. The below is the information about the application bulit.
 
-## a)How the application is built?
+### a)How the application is built?
 
 For making the application a framework of **Python** named **Django** is used. It is an **MVT** architecture. This framework helps in making the app easier, by providing vast functions regarding the various application components.  
 
 Using **Django** we created a project **syntaxerror** and an app **setup** in it. The folder **templates**  contains the **html** files we used in the application,. **static** folder contains the **css** files. 
 
 
-## b)Overall system architecture
+### b)Overall system architecture
 
 The application is **MVT** architecture. The **views.py** of  **syntax_error** holds the **View** place in **MVT** architecture. The functions in the views.py takes requests the user make and corresponding data regarding the request,  and  accordingly renders the templates. The tables in the database are created using the **ORM** of *Django*, in models.py. In short, using **MVT** architecture of **Django, we communicates with the models, templates and the end user.
 
-##  c) Programming languages used for different components
+###  c) Programming languages used for different components
 
 The following programming languages are used.
 - *PYTHON*:
@@ -74,20 +97,20 @@ The following programming languages are used.
 - *HTML and CSS*:
 > HTML and CSS along side with javascript are used for the front-end user interface.
 
-## d) Contribution Of Each Group Member In The Implementation:
+### d) Contribution Of Each Group Member In The Implementation:
 
-## Member 1
-
-qqqq
-
-## Member 2
+### Member 1
 
 qqqq
 
-## Member 3
+### Member 2
 
 qqqq
 
-## Member 4
+### Member 3
+
+qqqq
+
+### Member 4
 
 qqqq

@@ -29,11 +29,13 @@
         
             <div>
               <form action="/eachpost" method="GET">
+
                 {% if i.post_type_id == 1 %}
                 <input type="hidden" value={{i.id}} name="quesId">
                 {%elif i.post_type_id == 2%}
                 <input type="hidden" value={{i.parent_id}} name="quesId">
                 {%endif%}
+
                 <input type="submit" value="See more" class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer">
               </form>
               <div class="flex justify-end gap-x-2">
@@ -48,12 +50,9 @@
                     class="bg-[#595959] text-white p-[2px] px-2 font-medium mt-2 text-lg hover:cursor-pointer">
                 </form>
               </div>
-
             </div>
-            
           </div>
           {%endfor%}
         </div>
-        
     </body>
 </html>
